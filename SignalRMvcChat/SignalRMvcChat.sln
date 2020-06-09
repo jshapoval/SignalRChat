@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30104.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalRMvcChat", "SignalRMvcChat.csproj", "{8C5FD25C-47A9-49CB-8E07-F0034451EDA4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfClient", "..\WpfClient\WpfClient.csproj", "{5B9F0DDF-0A67-4C7B-883A-A1259AEE7675}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinFormsClient", "..\WinFormsClient\WinFormsClient.csproj", "{42BB20DD-BA3E-40CA-BDD0-37F5AC0BA91A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleClient", "..\ConsoleClient\ConsoleClient.csproj", "{60928BF4-8AE0-491D-A9D6-DF361EF6032B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityChatServer", "..\IdentityChatServer\IdentityChatServer.csproj", "{A08A9811-7381-41B6-8377-D32BDC6D4B9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatServerIdentity", "..\ChatServerIdentity\ChatServerIdentity.csproj", "{CBBEE4AF-CC31-444C-A33A-2A5A51CF4816}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8C5FD25C-47A9-49CB-8E07-F0034451EDA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C5FD25C-47A9-49CB-8E07-F0034451EDA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C5FD25C-47A9-49CB-8E07-F0034451EDA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C5FD25C-47A9-49CB-8E07-F0034451EDA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B9F0DDF-0A67-4C7B-883A-A1259AEE7675}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B9F0DDF-0A67-4C7B-883A-A1259AEE7675}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B9F0DDF-0A67-4C7B-883A-A1259AEE7675}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B9F0DDF-0A67-4C7B-883A-A1259AEE7675}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42BB20DD-BA3E-40CA-BDD0-37F5AC0BA91A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42BB20DD-BA3E-40CA-BDD0-37F5AC0BA91A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42BB20DD-BA3E-40CA-BDD0-37F5AC0BA91A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42BB20DD-BA3E-40CA-BDD0-37F5AC0BA91A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60928BF4-8AE0-491D-A9D6-DF361EF6032B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60928BF4-8AE0-491D-A9D6-DF361EF6032B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60928BF4-8AE0-491D-A9D6-DF361EF6032B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60928BF4-8AE0-491D-A9D6-DF361EF6032B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A08A9811-7381-41B6-8377-D32BDC6D4B9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A08A9811-7381-41B6-8377-D32BDC6D4B9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A08A9811-7381-41B6-8377-D32BDC6D4B9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A08A9811-7381-41B6-8377-D32BDC6D4B9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBBEE4AF-CC31-444C-A33A-2A5A51CF4816}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBBEE4AF-CC31-444C-A33A-2A5A51CF4816}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBBEE4AF-CC31-444C-A33A-2A5A51CF4816}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBBEE4AF-CC31-444C-A33A-2A5A51CF4816}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {499CEAC2-7194-4D79-B993-F6CDFFB13A9E}
+	EndGlobalSection
+EndGlobal

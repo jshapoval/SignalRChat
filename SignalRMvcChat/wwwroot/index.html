@@ -1,0 +1,215 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>SignalR Chat</title>
+</head>
+<body>
+    <div id="loginBlock">
+        login:<br />
+        <input id="userName" type="text" />
+        <!--password:<br />-->
+        <input id="userPassword" type="text" />
+        <input id="loginBtn" type="button" value="Войти" />
+        <input id="authBtn" type="button" value="Зарегистрироваться" />
+    </div><br />
+
+    <div id="messagesList"></div>
+    <div id="inputForm">
+        <input type="text" id="message" placeholder="Введите сообщение" />
+        <input type="text" id="receiver" placeholder="Введите получателя" />
+        <input type="button" id="sendBtn" disabled value="Отправить" />
+    </div>
+    <div id="chatroom"></div>
+
+    <script src="https://unpkg.com/@microsoft/signalr@3.1.0/dist/browser/signalr.min.js"></script>
+    <script>
+        let token;
+
+        const hubConnection = new signalR.HubConnectionBuilder()
+            .withUrl("/chat", { accessTokenFactory: () => token })
+            .build();
+
+        window.onload = function() {
+            const token = localStorage.getItem('token');
+
+            if (token) {
+                document.getElementById("loginBtn").style.display = 'none';
+                document.getElementById("authBtn").style.display = 'none';
+                document.getElementById("sendBtn").disabled = false;
+            }
+        }
+
+        window.onbeforeunload = function() {
+            localStorage.removeItem('token');
+            const token = sessionStorage.removeItem('token');
+            return '';
+        };
+
+
+        hubConnection.on("Receive", function (message, userName) {
+
+            // создаем элемент <b> для имени пользователя
+            let userNameElem = document.createElement("b");
+            userNameElem.appendChild(document.createTextNode(userName + ": "));
+
+            // создает элемент <p> для сообщения пользователя
+            let elem = document.createElement("p");
+            elem.appendChild(userNameElem);
+            elem.appendChild(document.createTextNode(message));
+
+            var firstElem = document.getElementById("chatroom").firstChild;
+            document.getElementById("chatroom").insertBefore(elem, firstElem);
+        });
+
+        
+        hubConnection.on("AfterRegist", function (resultMessage)
+        {
+            //отобразить резалт, если успешно - то зайти 
+            const elem = document.createElement("p");
+                elem.innerText = resultMessage;
+                document.getElementById("chatroom").appendChild(elem);
+
+            if (resultMessage === "Successfully!")
+            {
+                var request = new XMLHttpRequest();
+                // посылаем запрос на адрес "/token", в ответ получим токен и имя пользователя
+                request.open("POST", "/token", true);
+                request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                request.addEventListener("load", function () {
+                    if (request.status < 400) { // если запрос успешный
+
+                        let data = JSON.parse(request.response);   // парсим ответ
+                        token = data.access_token;
+                        localStorage.setItem('token', token);
+                        username = data.username;
+
+                        document.getElementById("sendBtn").disabled = false;
+
+                        hubConnection.start()       // начинаем соединение с хабом
+                            .catch(err => {
+                                console.error(err.toString());
+                                document.getElementById("loginBtn").disabled = true;
+                                document.getElementById("authBtn").style.display = 'none';
+                                //  document.getElementById("sendBtn").disabled = true;
+                            });
+                    }
+                });
+                // отправляем запрос на аутентификацию
+                request.send("username=" + document.getElementById("userName").value +
+                    "&password=" + document.getElementById("userPassword").value);
+            }
+        });
+
+        hubConnection.on("Notify", function (message) {
+
+            // создает элемент <p> для сообщения пользователя
+            let elem = document.createElement("p");
+            elem.appendChild(document.createTextNode(message));
+
+            var firstElem = document.getElementById("chatroom").firstChild;
+            document.getElementById("chatroom").insertBefore(elem, firstElem);
+        });
+
+
+        //авторризация+аутенфикация
+        document.getElementById("authBtn").addEventListener("click", function (e) {
+            let email = document.getElementById("userName").value;
+            let password = document.getElementById("userPassword").value;
+            hubConnection.invoke("Registration", email, password);
+        });
+
+        // аутентификация
+        document.getElementById("loginBtn").addEventListener("click", function (e)
+        {
+            var request = new XMLHttpRequest();
+            // посылаем запрос на адрес "/token", в ответ получим токен и имя пользователя
+            request.open("POST", "/token", true);
+            request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            request.addEventListener("load", function ()
+            {
+                if (request.status < 400) { // если запрос успешный
+
+                    let data = JSON.parse(request.response);   // парсим ответ
+                    token = data.access_token;
+                    localStorage.setItem('token', token);
+                  //  let username = data.username;
+
+                    document.getElementById("sendBtn").disabled = false;
+
+                    hubConnection.start()       // начинаем соединение с хабом
+                        .catch(err => {
+                            console.error(err.toString());
+                            document.getElementById("loginBtn").disabled = true;
+                            document.getElementById("authBtn").style.display = 'none';
+                          //  document.getElementById("sendBtn").disabled = true;
+                        });
+                }
+            });
+            // отправляем запрос на аутентификацию
+            request.send("username=" + document.getElementById("userName").value +
+                "&password=" + document.getElementById("userPassword").value);
+        });
+
+        // аутентификация измененная
+        //document.getElementById("loginBtn").addEventListener("click", function (e)
+        //{
+        //    var request = new XMLHttpRequest();
+        //    request.open("POST", "/token", true);
+        //    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        //    request.send("username=" + document.getElementById("userName").value +
+        //        "&password=" + document.getElementById("userPassword").value);
+
+        //    request.onload = function ()
+        //    {
+        //        if (request.status < 400)
+        //        { // если запрос успешный
+
+        //            let data = JSON.parse(request.response);
+        //            token = data.access_token;
+
+        //            document.getElementById("sendBtn").disabled = false;
+
+        //            hubConnection.start()
+        //            {
+        //                try {
+        //                    connection.start();
+        //                    console.log("connected");
+        //                } catch (err) {
+        //                    console.log(err.toString());
+        //                    document.getElementById("loginBtn").disabled = true;
+        //                    document.getElementById("sendBtn").disabled = true;
+        //                    setTimeout(() => start(), 5000);
+        //                }
+        //            };// начинаем соединение с хабом
+
+        //            connection.onclose(error => {
+        //                console.assert(connection.state === signalR.HubConnectionState.Disconnected);
+
+        //                const li = document.createElement("li");
+        //                li.textContent = `Connection closed due to error "${error}". Try refreshing this page to restart the connection.`;
+        //                document.getElementById("messagesList").appendChild(li);
+                        //    document.getElementById("messagesList").insertBefore(li);
+        //            });
+        //        }
+        //        else
+        //        {
+        //            console.log("Status", request.status);
+        //            console.log(request.responseText);
+        //        }
+        //    };
+        //    // отправляем запрос на аутентификацию
+
+        //});
+
+
+
+        // отправка сообщения на сервер
+        document.getElementById("sendBtn").addEventListener("click", function (e) {
+            let message = document.getElementById("message").value;
+            let to = document.getElementById("receiver").value;
+            hubConnection.invoke("Send", message, to);
+        });
+    </script>
+</body>
+</html>
