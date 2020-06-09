@@ -47,6 +47,8 @@ namespace ChatServerIdentity
         }
 
 
+
+        //kjjk
         public void Configure(IApplicationBuilder app)
         {
             app.UseDeveloperExceptionPage();
