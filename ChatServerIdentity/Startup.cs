@@ -43,12 +43,11 @@ namespace ChatServerIdentity
 
             services.AddControllersWithViews();
 
-            services.AddSignalR();
+            //services.AddSignalR();
         }
 
 
 
-        //kjjk
         public void Configure(IApplicationBuilder app)
         {
             app.UseDeveloperExceptionPage();
@@ -58,14 +57,17 @@ namespace ChatServerIdentity
 
             app.UseRouting();
 
-            app.UseAuthentication();    // подключение аутентификации
+            app.UseAuthentication();   
             app.UseAuthorization();
-
+            
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+              //  endpoints.MapHub<ChatHub>("/Home/Index");
             });
         }
     }

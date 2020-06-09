@@ -16,7 +16,7 @@ namespace ChatServerIdentity.Models
         [Required]
         public string Text { get; set; }
         public DateTime SentAtTime { get; set; }
-        public int UserId { get; set; }
-        public virtual User User { get; set; }
+        public string UserId { get; set; }
+        public virtual User Sender { get; set; }
     }
 }
