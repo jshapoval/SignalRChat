@@ -9,7 +9,7 @@
 // userName is declared in razor page.
 const username = userName;
 const textInput = document.getElementById('messageText');
-const whenInput = document.getElementById('when');
+//const whenInput = document.getElementById('when');
 const chat = document.getElementById('chat');
 const messagesQueue = [];
 

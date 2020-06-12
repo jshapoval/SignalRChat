@@ -31,25 +31,25 @@ namespace ChatServerSignalRWithIdentity
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true).AddDefaultUI()
-                .AddEntityFrameworkStores<ApplicationDbContext>();//AddDefaultUI(UIFramework.Bootstrap4)   AddIdentityUI();
-
-
-            //services.AddControllersWithViews();
-            //services.AddRazorPages();
-
             services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true).AddDefaultUI()
+                .AddEntityFrameworkStores<ApplicationDbContext>();//AddDefaultUI(UIFramework.Bootstrap4)   AddIdentityUI();
+            //
+
+            services.AddMvc(options => options.EnableEndpointRouting = false);
+            // MvcOptions.EnableEndpointRouting = false;
+            //services.AddControllersWithViews();
+            //services.AddRazorPages();
             services.AddSignalR();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);//Version_2_1
-        
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,7 +58,7 @@ namespace ChatServerSignalRWithIdentity
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-               // app.UseDatabaseErrorPage();
+                app.UseDatabaseErrorPage();
             }
             else
             {
@@ -71,9 +71,9 @@ namespace ChatServerSignalRWithIdentity
             app.UseCookiePolicy();
 
             app.UseAuthentication();
-            app.UseSignalR(routes =>
+            app.UseSignalR(route =>
             {
-                routes.MapHub<ChatHub>("/Home/Index");
+                route.MapHub<ChatHub>("/Home/Index");
             });
 
             app.UseMvc(routes =>
