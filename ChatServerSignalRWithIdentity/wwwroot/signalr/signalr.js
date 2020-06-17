@@ -1782,7 +1782,7 @@ function formatArrayBuffer(data) {
     return str.substr(0, str.length - 1);
 }
 exports.formatArrayBuffer = formatArrayBuffer;
-function sendMessage(logger, transportName, httpClient, url, accessTokenFactory, content, logMessageContent) {
+function sendMessageToPublicChat(logger, transportName, httpClient, url, accessTokenFactory, content, logMessageContent) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
         var headers, token, response, _a;
         return tslib_1.__generator(this, function (_b) {
@@ -1806,7 +1806,7 @@ function sendMessage(logger, transportName, httpClient, url, accessTokenFactory,
         });
     });
 }
-exports.sendMessage = sendMessage;
+exports.sendMessageToPublicChat = sendMessageToPublicChat;
 function createLogger(logger) {
     if (logger === undefined) {
         return new ConsoleLogger(ILogger.LogLevel.Information);
@@ -1905,7 +1905,7 @@ unwrapExports(Utils);
 var Utils_1 = Utils.Arg;
 var Utils_2 = Utils.getDataDetail;
 var Utils_3 = Utils.formatArrayBuffer;
-var Utils_4 = Utils.sendMessage;
+var Utils_4 = Utils.sendMessageToPublicChat;
 var Utils_5 = Utils.createLogger;
 var Utils_6 = Utils.Subject;
 var Utils_7 = Utils.SubjectSubscription;
@@ -2548,7 +2548,7 @@ var LongPollingTransport = /** @class */ (function () {
                 if (!this.running) {
                     return [2 /*return*/, Promise.reject(new Error("Cannot send until the transport is connected"))];
                 }
-                return [2 /*return*/, Utils.sendMessage(this.logger, "LongPolling", this.httpClient, this.url, this.accessTokenFactory, data, this.logMessageContent)];
+                return [2 /*return*/, Utils.sendMessageToPublicChat(this.logger, "LongPolling", this.httpClient, this.url, this.accessTokenFactory, data, this.logMessageContent)];
             });
         });
     };
@@ -2683,7 +2683,7 @@ var ServerSentEventsTransport = /** @class */ (function () {
                 if (!this.eventSource) {
                     return [2 /*return*/, Promise.reject(new Error("Cannot send until the transport is connected"))];
                 }
-                return [2 /*return*/, Utils.sendMessage(this.logger, "SSE", this.httpClient, this.url, this.accessTokenFactory, data, this.logMessageContent)];
+                return [2 /*return*/, Utils.sendMessageToPublicChat(this.logger, "SSE", this.httpClient, this.url, this.accessTokenFactory, data, this.logMessageContent)];
             });
         });
     };

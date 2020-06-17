@@ -5,10 +5,10 @@
     // ViewData["Title"] = User.Identity.Name;
 }
 
-@*@model IEnumerable<ChatServerSignalRWithIdentity.Models.Friends>
+@*@model IEnumerable<ChatServerSignalRWithIdentity.Models.AppUser>
 @{
     ViewData["Title"] = "Home Page";
-    var userName = User.Identity.Name;
+    var friendName = User.Identity.Name;
 }*@
 
 <div class="jumbotron bg-light">
@@ -19,7 +19,7 @@
             
             <form asp-action="Create"
                   data-ajax-begin="clearInputField" data-ajax-complete=""
-                  data-ajax-failure="alert('Fail')" data-ajax-success="sendMessage"
+                  data-ajax-failure="alert('Fail')" data-ajax-success="sendMessageToPublicChatToPublicChat"
                   data-ajax="true" data-ajax-method="POST">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
@@ -32,26 +32,33 @@
                 </div>
                 <input type="hidden" value="@userName" name="username" />
             </form>
-            @*@foreach (var friend in ModelFriend.OrderBy(m => m.LastMessageUtc))
+         
+        </div>         
+            
+            
+            @*@foreach (var friend in Model)
             {
-                string containerClass, timePosition, textAlign, contcolor, offset;
-
-                containerClass = "container";
-                timePosition = "time-left";
-                textAlign = "text-left";
-                contcolor = "bg-light";
-                offset = "col-md-6";
-
+                string containerClass, timePosition, textAlign, contcolor, offset; 
+                if (friendName == friend.UserName)
+                {
+                   
+                    containerClass = "container";
+                    timePosition = "time-left";
+                    textAlign = "text-left";
+                    contcolor = "bg-light";
+                    offset = "col-md-6";
+                }
                 <div class="row">
                     <div class="@offset">
                         <div class="@containerClass @contcolor">
+
                             <p class="sender @textAlign">@friend.UserName</p>
-                            <p class="@textAlign">@friend.LastMessage</p>
+                       
                         </div>
                     </div>
                 </div>
-            }*@
-        </div>
+            }
+        *@
 
 
         <div class="col-md-9" id="chat">
@@ -59,7 +66,7 @@
             {
                 @foreach (var message in Model.OrderBy(m => m.CreatedUtc))
                 {
-                    string containerClass, timePosition, textAlign, contcolor, offset; //может что-то еще
+                    string containerClass, timePosition, textAlign, contcolor, offset; 
                     if (userName == message.UserName)
                     {
                         containerClass = "container darker";
@@ -82,7 +89,7 @@
 
                                 <p class="sender @textAlign">@message.UserName</p>
                                 <p class="@textAlign">@message.Text</p>
-                                <span class="@timePosition">@message.CreatedUtc.ToString("HH:mm")</span>@*???*@
+                                <span class="@timePosition">@message.CreatedUtc.ToString("HH:mm")</span>
                             </div>
                         </div>
                     </div>
@@ -99,7 +106,7 @@
         <div class="col-md-12">
             <form asp-action="Create"
                   data-ajax-begin="clearInputField" data-ajax-complete=""
-                  data-ajax-failure="alert('Fail')" data-ajax-success="sendMessage"
+                  data-ajax-failure="alert('Fail')" data-ajax-success="sendMessageToPublicChatToPublicChat"
                   data-ajax="true" data-ajax-method="POST">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">

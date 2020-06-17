@@ -2,13 +2,13 @@
     .withUrl('/Home/Index')
     .build();
 
-connection.on('receiveMessage', addMessageToChat);
+connection.on('receiveMessageToPublicChat', addMessageToChat);
 
 connection.start()
     .catch(error => {
         console.error(error.message);
     });
 
-function sendMessageToHub(message) {
-    connection.invoke('sendMessage', message);
+function sendMessageToPublicChatToPublicChatToHub(message) {
+    connection.invoke('sendMessageToPublicChatToPublicChat', message);
 }
