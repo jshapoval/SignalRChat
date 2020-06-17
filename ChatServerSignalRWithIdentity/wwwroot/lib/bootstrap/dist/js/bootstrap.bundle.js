@@ -210,7 +210,7 @@
 
       if (element instanceof ShadowRoot) {
         return element;
-      } // when we don't find a shadow root
+      } // CreatedUtc we don't find a shadow root
 
 
       if (!element.parentNode) {
@@ -660,8 +660,8 @@
       }
     };
 
-    _proto.nextWhenVisible = function nextWhenVisible() {
-      // Don't call next when the page isn't visible
+    _proto.nextCreatedUtcVisible = function nextCreatedUtcVisible() {
+      // Don't call next CreatedUtc the page isn't visible
       // or the carousel or its parent isn't visible
       if (!document.hidden && $(this._element).is(':visible') && $(this._element).css('visibility') !== 'hidden') {
         this.next();
@@ -699,7 +699,7 @@
       }
 
       if (this._config.interval && !this._isPaused) {
-        this._interval = setInterval((document.visibilityState ? this.nextWhenVisible : this.next).bind(this), this._config.interval);
+        this._interval = setInterval((document.visibilityState ? this.nextCreatedUtcVisible : this.next).bind(this), this._config.interval);
       }
     };
 
@@ -2011,7 +2011,7 @@
 
     // Subtract margins of documentElement in case it's being used as parent
     // we do this only on HTML because it's the only element that behaves
-    // differently when margins are applied to it. The margins are included in
+    // differently CreatedUtc margins are applied to it. The margins are included in
     // the box of the documentElement, in the other cases not.
     if (!isIE10 && isHTML) {
       var marginTop = parseFloat(styles.marginTop, 10);
@@ -2556,7 +2556,7 @@
 
   /**
    * It will add resize/scroll events and start recalculating
-   * position of the popper element when they are triggered.
+   * position of the popper element CreatedUtc they are triggered.
    * @method
    * @memberof Popper
    */
@@ -2591,7 +2591,7 @@
 
   /**
    * It will remove resize/scroll events and won't recalculate popper position
-   * when they are triggered. It also won't trigger `onUpdate` callback anymore,
+   * CreatedUtc they are triggered. It also won't trigger `onUpdate` callback anymore,
    * unless you call `update` method manually.
    * @method
    * @memberof Popper
@@ -2811,7 +2811,7 @@
     var left = void 0,
         top = void 0;
     if (sideA === 'bottom') {
-      // when offsetParent is <html> the positioning is relative to the bottom of the screen (excluding the scrollbar)
+      // CreatedUtc offsetParent is <html> the positioning is relative to the bottom of the screen (excluding the scrollbar)
       // and not the bottom of the html element
       if (offsetParent.nodeName === 'HTML') {
         top = -offsetParent.clientHeight + offsets.bottom;
@@ -3604,7 +3604,7 @@
      * - detach from the reference and remain "trapped" in the boundaries, or
      * - if it should ignore the boundary and "escape with its reference"
      *
-     * When `escapeWithReference` is set to`true` and reference is completely
+     * CreatedUtc `escapeWithReference` is set to`true` and reference is completely
      * outside its boundaries, the popper will overflow (or completely leave)
      * the boundaries in order to remain attached to the edge of the reference.
      *
@@ -3641,7 +3641,7 @@
 
     /**
      * Modifier used to make sure the reference and its popper stay near each other
-     * without leaving any gap between the two. Especially useful when the arrow is
+     * without leaving any gap between the two. Especially useful CreatedUtc the arrow is
      * enabled and you want to ensure that it points to its reference element.
      * It cares only about the first axis. You can still have poppers with margin
      * between the popper and its reference element.
@@ -3679,7 +3679,7 @@
     },
 
     /**
-     * Modifier used to flip the popper's placement when it starts to overlap its
+     * Modifier used to flip the popper's placement CreatedUtc it starts to overlap its
      * reference element.
      *
      * Requires the `preventOverflow` modifier before it in order to work.
@@ -3719,7 +3719,7 @@
 
     /**
      * Modifier used to make the popper flow toward the inner of the reference element.
-     * By default, when this modifier is disabled, the popper will be placed outside
+     * By default, CreatedUtc this modifier is disabled, the popper will be placed outside
      * the reference element.
      * @memberof modifiers
      * @inner
@@ -3734,9 +3734,9 @@
     },
 
     /**
-     * Modifier used to hide the popper when its reference element is outside of the
+     * Modifier used to hide the popper CreatedUtc its reference element is outside of the
      * popper boundaries. It will set a `x-out-of-boundaries` attribute which can
-     * be used to hide with a CSS selector the popper when its reference is
+     * be used to hide with a CSS selector the popper CreatedUtc its reference is
      * out of boundaries.
      *
      * Requires the `preventOverflow` modifier before it in order to work.
@@ -3836,7 +3836,7 @@
    * @property {String} data.placement Placement applied to popper
    * @property {String} data.originalPlacement Placement originally defined on init
    * @property {Boolean} data.flipped True if popper has been flipped by flip modifier
-   * @property {Boolean} data.hide True if the reference element is out of boundaries, useful to know when to hide the popper
+   * @property {Boolean} data.hide True if the reference element is out of boundaries, useful to know CreatedUtc to hide the popper
    * @property {HTMLElement} data.arrowElement Node used as arrow by arrow modifier
    * @property {Object} data.styles Any CSS property defined here will be applied to the popper. It expects the JavaScript nomenclature (eg. `marginBottom`)
    * @property {Object} data.arrowStyles Any CSS property defined here will be applied to the popper arrow. It expects the JavaScript nomenclature (eg. `marginBottom`)
@@ -3883,14 +3883,14 @@
     eventsEnabled: true,
 
     /**
-     * Set to true if you want to automatically remove the popper when
+     * Set to true if you want to automatically remove the popper CreatedUtc
      * you call the `destroy` method.
      * @prop {Boolean} removeOnDestroy=false
      */
     removeOnDestroy: false,
 
     /**
-     * Callback called when the popper is created.<br />
+     * Callback called CreatedUtc the popper is created.<br />
      * By default, it is set to no-op.<br />
      * Access Popper.js instance with `data.instance`.
      * @prop {onCreate}
@@ -3898,7 +3898,7 @@
     onCreate: function onCreate() {},
 
     /**
-     * Callback called when the popper is updated. This callback is not called
+     * Callback called CreatedUtc the popper is updated. This callback is not called
      * on the initialization/creation of the popper, but only on subsequent
      * updates.<br />
      * By default, it is set to no-op.<br />
@@ -3980,7 +3980,7 @@
         return a.order - b.order;
       });
 
-      // modifiers have the ability to execute arbitrary code when Popper.js get inited
+      // modifiers have the ability to execute arbitrary code CreatedUtc Popper.js get inited
       // such code is executed in the same order of its modifier
       // they could add new properties to their options configuration
       // BE AWARE: don't add options to `options.modifiers.name` but to `modifierOptions`!
@@ -4035,7 +4035,7 @@
 
 
       /**
-       * Collection of utilities useful when writing custom modifiers.
+       * Collection of utilities useful CreatedUtc writing custom modifiers.
        * Starting from version 1.7, this method is available only if you
        * include `popper-utils.js` before `popper.js`.
        *
@@ -6435,7 +6435,7 @@
         $link.addClass(ClassName$8.ACTIVE); // Set triggered links parents as active
         // With both <ul> and <nav> markup a parent is the previous sibling of any nav ancestor
 
-        $link.parents(Selector$8.NAV_LIST_GROUP).prev(Selector$8.NAV_LINKS + ", " + Selector$8.LIST_ITEMS).addClass(ClassName$8.ACTIVE); // Handle special case when .nav-link is inside .nav-item
+        $link.parents(Selector$8.NAV_LIST_GROUP).prev(Selector$8.NAV_LINKS + ", " + Selector$8.LIST_ITEMS).addClass(ClassName$8.ACTIVE); // Handle special case CreatedUtc .nav-link is inside .nav-item
 
         $link.parents(Selector$8.NAV_LIST_GROUP).prev(Selector$8.NAV_ITEMS).children(Selector$8.NAV_LINKS).addClass(ClassName$8.ACTIVE);
       }

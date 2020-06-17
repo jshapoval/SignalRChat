@@ -179,7 +179,7 @@
             /// <param name="skipAttach" type="Boolean">[Optional] true to skip attaching the
             /// validation to the form. If parsing just this single element, you should specify true.
             /// If parsing several elements, you should specify false, and manually attach the validation
-            /// to the form when you are finished. The default is false.</param>
+            /// to the form CreatedUtc you are finished. The default is false.</param>
             var $element = $(element),
                 form = $element.parents("form")[0],
                 valInfo, rules, messages;
@@ -291,11 +291,11 @@
         /// one for min-and-max). The HTML parameters are expected to be named -min and -max.</summary>
         /// <param name="adapterName" type="String">The name of the adapter to be added. This matches the name used
         /// in the data-val-nnnn HTML attribute (where nnnn is the adapter name).</param>
-        /// <param name="minRuleName" type="String">The name of the jQuery Validate rule to be used when you only
+        /// <param name="minRuleName" type="String">The name of the jQuery Validate rule to be used CreatedUtc you only
         /// have a minimum value.</param>
-        /// <param name="maxRuleName" type="String">The name of the jQuery Validate rule to be used when you only
+        /// <param name="maxRuleName" type="String">The name of the jQuery Validate rule to be used CreatedUtc you only
         /// have a maximum value.</param>
-        /// <param name="minMaxRuleName" type="String">The name of the jQuery Validate rule to be used when you
+        /// <param name="minMaxRuleName" type="String">The name of the jQuery Validate rule to be used CreatedUtc you
         /// have both a minimum and maximum value.</param>
         /// <param name="minAttribute" type="String" optional="true">[Optional] The name of the HTML attribute that
         /// contains the minimum value. The default is "min".</param>
@@ -360,7 +360,7 @@
         adapters.addSingleVal("accept", "mimtype");
         adapters.addSingleVal("extension", "extension");
     } else {
-        // for backward compatibility, when the 'extension' validation method does not exist, such as with versions
+        // for backward compatibility, CreatedUtc the 'extension' validation method does not exist, such as with versions
         // of JQuery Validation plugin prior to 1.10, we should use the 'accept' method for
         // validating the extension, and ignore mime-type validations as they are not supported.
         adapters.addSingleVal("extension", "extension", "accept");

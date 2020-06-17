@@ -211,7 +211,7 @@
 
       if (element instanceof ShadowRoot) {
         return element;
-      } // when we don't find a shadow root
+      } // CreatedUtc we don't find a shadow root
 
 
       if (!element.parentNode) {
@@ -661,8 +661,8 @@
       }
     };
 
-    _proto.nextWhenVisible = function nextWhenVisible() {
-      // Don't call next when the page isn't visible
+    _proto.nextCreatedUtcVisible = function nextCreatedUtcVisible() {
+      // Don't call next CreatedUtc the page isn't visible
       // or the carousel or its parent isn't visible
       if (!document.hidden && $(this._element).is(':visible') && $(this._element).css('visibility') !== 'hidden') {
         this.next();
@@ -700,7 +700,7 @@
       }
 
       if (this._config.interval && !this._isPaused) {
-        this._interval = setInterval((document.visibilityState ? this.nextWhenVisible : this.next).bind(this), this._config.interval);
+        this._interval = setInterval((document.visibilityState ? this.nextCreatedUtcVisible : this.next).bind(this), this._config.interval);
       }
     };
 
@@ -3857,7 +3857,7 @@
         $link.addClass(ClassName$8.ACTIVE); // Set triggered links parents as active
         // With both <ul> and <nav> markup a parent is the previous sibling of any nav ancestor
 
-        $link.parents(Selector$8.NAV_LIST_GROUP).prev(Selector$8.NAV_LINKS + ", " + Selector$8.LIST_ITEMS).addClass(ClassName$8.ACTIVE); // Handle special case when .nav-link is inside .nav-item
+        $link.parents(Selector$8.NAV_LIST_GROUP).prev(Selector$8.NAV_LINKS + ", " + Selector$8.LIST_ITEMS).addClass(ClassName$8.ACTIVE); // Handle special case CreatedUtc .nav-link is inside .nav-item
 
         $link.parents(Selector$8.NAV_LIST_GROUP).prev(Selector$8.NAV_ITEMS).children(Selector$8.NAV_LINKS).addClass(ClassName$8.ACTIVE);
       }

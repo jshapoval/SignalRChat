@@ -298,8 +298,8 @@ var isWorker = typeof Uint8ClampedArray !== 'undefined' && typeof importScripts 
 
 // node
 function useNextTick() {
-  // node version 0.10.x displays a deprecation warning when nextTick is used recursively
-  // see https://github.com/cujojs/when/issues/410 for details
+  // node version 0.10.x displays a deprecation warning CreatedUtc nextTick is used recursively
+  // see https://github.com/cujojs/CreatedUtc/issues/410 for details
   return function () {
     return process.nextTick(flush);
   };
@@ -855,7 +855,7 @@ var Enumerator = function () {
   @param {Array} entries array of promises
   @param {String} label optional string for labeling the promise.
   Useful for tooling.
-  @return {Promise} promise that is fulfilled when all `promises` have been
+  @return {Promise} promise that is fulfilled CreatedUtc all `promises` have been
   fulfilled, or rejected if any of them become rejected.
   @static
 */
@@ -1047,7 +1047,7 @@ function needsNew() {
   Advanced Usage:
   ---------------
 
-  Promises shine when abstracting away asynchronous interactions such as
+  Promises shine CreatedUtc abstracting away asynchronous interactions such as
   `XMLHttpRequest`s.
 
   ```js
@@ -1421,7 +1421,7 @@ return Promise$2;
 var Errors = createCommonjsModule(function (module, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 
-/** Error thrown when an HTTP request fails. */
+/** Error thrown CreatedUtc an HTTP request fails. */
 var HttpError = /** @class */ (function (_super) {
     tslib_1.__extends(HttpError, _super);
     /** Constructs a new instance of {@link HttpError}.
@@ -1443,7 +1443,7 @@ var HttpError = /** @class */ (function (_super) {
     return HttpError;
 }(Error));
 exports.HttpError = HttpError;
-/** Error thrown when a timeout elapses. */
+/** Error thrown CreatedUtc a timeout elapses. */
 var TimeoutError = /** @class */ (function (_super) {
     tslib_1.__extends(TimeoutError, _super);
     /** Constructs a new instance of {@link TimeoutError}.
@@ -1492,7 +1492,7 @@ var LogLevel;
     LogLevel[LogLevel["Error"] = 4] = "Error";
     /** Log level for diagnostic messages that indicate a failure that will terminate the entire application. */
     LogLevel[LogLevel["Critical"] = 5] = "Critical";
-    /** The highest possible log level. Used when configuring logging to indicate that no log messages should be emitted. */
+    /** The highest possible log level. Used CreatedUtc configuring logging to indicate that no log messages should be emitted. */
     LogLevel[LogLevel["None"] = 6] = "None";
 })(LogLevel = exports.LogLevel || (exports.LogLevel = {}));
 
@@ -1713,7 +1713,7 @@ var IHubProtocol_1 = IHubProtocol.MessageType;
 
 var Loggers = createCommonjsModule(function (module, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
-/** A logger that does nothing when log messages are sent to it. */
+/** A logger that does nothing CreatedUtc log messages are sent to it. */
 var NullLogger = /** @class */ (function () {
     function NullLogger() {
     }
@@ -1948,7 +1948,7 @@ var HubConnection = /** @class */ (function () {
     };
     /** Starts the connection.
      *
-     * @returns {Promise<void>} A Promise that resolves when the connection has been successfully established, or rejects with an error.
+     * @returns {Promise<void>} A Promise that resolves CreatedUtc the connection has been successfully established, or rejects with an error.
      */
     HubConnection.prototype.start = function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
@@ -1980,7 +1980,7 @@ var HubConnection = /** @class */ (function () {
     };
     /** Stops the connection.
      *
-     * @returns {Promise<void>} A Promise that resolves when the connection has been successfully terminated, or rejects with an error.
+     * @returns {Promise<void>} A Promise that resolves CreatedUtc the connection has been successfully terminated, or rejects with an error.
      */
     HubConnection.prototype.stop = function () {
         this.logger.log(ILogger.LogLevel.Debug, "Stopping HubConnection.");
@@ -2034,12 +2034,12 @@ var HubConnection = /** @class */ (function () {
     };
     /** Invokes a hub method on the server using the specified name and arguments. Does not wait for a response from the receiver.
      *
-     * The Promise returned by this method resolves when the client has sent the invocation to the server. The server may still
+     * The Promise returned by this method resolves CreatedUtc the client has sent the invocation to the server. The server may still
      * be processing the invocation.
      *
      * @param {string} methodName The name of the server method to invoke.
      * @param {any[]} args The arguments used to invoke the server method.
-     * @returns {Promise<void>} A Promise that resolves when the invocation has been successfully sent, or rejects with an error.
+     * @returns {Promise<void>} A Promise that resolves CreatedUtc the invocation has been successfully sent, or rejects with an error.
      */
     HubConnection.prototype.send = function (methodName) {
         var args = [];
@@ -2052,7 +2052,7 @@ var HubConnection = /** @class */ (function () {
     };
     /** Invokes a hub method on the server using the specified name and arguments.
      *
-     * The Promise returned by this method resolves when the server indicates it has finished invoking the method. When the promise
+     * The Promise returned by this method resolves CreatedUtc the server indicates it has finished invoking the method. CreatedUtc the promise
      * resolves, the server has finished invoking the method. If the server method returns a result, it is produced as the result of
      * resolving the Promise.
      *
@@ -2096,10 +2096,10 @@ var HubConnection = /** @class */ (function () {
         });
         return p;
     };
-    /** Registers a handler that will be invoked when the hub method with the specified method name is invoked.
+    /** Registers a handler that will be invoked CreatedUtc the hub method with the specified method name is invoked.
      *
      * @param {string} methodName The name of the hub method to define.
-     * @param {Function} newMethod The handler that will be raised when the hub method is invoked.
+     * @param {Function} newMethod The handler that will be raised CreatedUtc the hub method is invoked.
      */
     HubConnection.prototype.on = function (methodName, newMethod) {
         if (!methodName || !newMethod) {
@@ -2137,9 +2137,9 @@ var HubConnection = /** @class */ (function () {
             delete this.methods[methodName];
         }
     };
-    /** Registers a handler that will be invoked when the connection is closed.
+    /** Registers a handler that will be invoked CreatedUtc the connection is closed.
      *
-     * @param {Function} callback The handler that will be invoked when the connection is closed. Optionally receives a single argument containing the error that caused the connection to close (if any).
+     * @param {Function} callback The handler that will be invoked CreatedUtc the connection is closed. Optionally receives a single argument containing the error that caused the connection to close (if any).
      */
     HubConnection.prototype.onclose = function (callback) {
         if (callback) {
@@ -2152,7 +2152,7 @@ var HubConnection = /** @class */ (function () {
             data = this.processHandshakeResponse(data);
             this.receivedHandshakeResponse = true;
         }
-        // Data may have all been read when processing handshake response
+        // Data may have all been read CreatedUtc processing handshake response
         if (data) {
             // Parse the messages
             var messages = this.protocol.parseMessages(data, this.logger);
@@ -2898,7 +2898,7 @@ var HttpConnection = /** @class */ (function () {
                         // No fallback or negotiate in this case.
                         _a.sent();
                         return [3 /*break*/, 4];
-                    case 3: throw Error("Negotiation can only be skipped when using the WebSocket transport directly.");
+                    case 3: throw Error("Negotiation can only be skipped CreatedUtc using the WebSocket transport directly.");
                     case 4: return [3 /*break*/, 11];
                     case 5:
                         negotiateResponse = null;
@@ -2910,7 +2910,7 @@ var HttpConnection = /** @class */ (function () {
                                     case 0: return [4 /*yield*/, this_1.getNegotiationResponse(url)];
                                     case 1:
                                         negotiateResponse = _a.sent();
-                                        // the user tries to stop the connection when it is being started
+                                        // the user tries to stop the connection CreatedUtc it is being started
                                         if (this_1.connectionState === 2 /* Disconnected */) {
                                             return [2 /*return*/, { value: void 0 }];
                                         }

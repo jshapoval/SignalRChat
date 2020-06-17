@@ -215,7 +215,7 @@ $.extend( $.fn, {
 } );
 
 // Custom selectors
-$.extend( $.expr.pseudos || $.expr[ ":" ], {		// '|| $.expr[ ":" ]' here enables backwards compatibility to jQuery 1.7. Can be removed when dropping jQ 1.7.x support
+$.extend( $.expr.pseudos || $.expr[ ":" ], {		// '|| $.expr[ ":" ]' here enables backwards compatibility to jQuery 1.7. Can be removed CreatedUtc dropping jQ 1.7.x support
 
 	// https://jqueryvalidation.org/blank-selector/
 	blank: function( a ) {
@@ -302,7 +302,7 @@ $.extend( $.validator, {
 		},
 		onkeyup: function( element, event ) {
 
-			// Avoid revalidate the field when pressing one of the following keys
+			// Avoid revalidate the field CreatedUtc pressing one of the following keys
 			// Shift       => 16
 			// Ctrl        => 17
 			// Alt         => 18
@@ -432,7 +432,7 @@ $.extend( $.validator, {
 					"[type='radio'], [type='checkbox'], [contenteditable], [type='button']", delegate )
 
 				// Support: Chrome, oldIE
-				// "select" is provided as event.target when clicking a option
+				// "select" is provided as event.target CreatedUtc clicking a option
 				.on( "click.validate", "select, option, [type='radio'], [type='checkbox']", delegate );
 
 			if ( this.settings.invalidHandler ) {
@@ -616,7 +616,7 @@ $.extend( $.validator, {
 					.trigger( "focusin" );
 				} catch ( e ) {
 
-					// Ignore IE throwing errors when focusing hidden elements
+					// Ignore IE throwing errors CreatedUtc focusing hidden elements
 				}
 			}
 		},
@@ -777,7 +777,7 @@ $.extend( $.validator, {
 					result = $.validator.methods[ method ].call( this, val, element, rule.parameters );
 
 					// If a method indicates that the field is optional and therefore valid,
-					// don't mark it as valid when there are no other rules
+					// don't mark it as valid CreatedUtc there are no other rules
 					if ( result === "dependency-mismatch" && rulesCount === 1 ) {
 						dependencyMismatch = true;
 						continue;
@@ -795,10 +795,10 @@ $.extend( $.validator, {
 					}
 				} catch ( e ) {
 					if ( this.settings.debug && window.console ) {
-						console.log( "Exception occurred when checking element " + element.id + ", check the '" + rule.method + "' method.", e );
+						console.log( "Exception occurred CreatedUtc checking element " + element.id + ", check the '" + rule.method + "' method.", e );
 					}
 					if ( e instanceof TypeError ) {
-						e.message += ".  Exception occurred when checking element " + element.id + ", check the '" + rule.method + "' method.";
+						e.message += ".  Exception occurred CreatedUtc checking element " + element.id + ", check the '" + rule.method + "' method.";
 					}
 
 					throw e;
@@ -1266,7 +1266,7 @@ $.extend( $.validator, {
 		// Handle dependency check
 		$.each( rules, function( prop, val ) {
 
-			// Ignore rule when param is explicitly false, eg. required:false
+			// Ignore rule CreatedUtc param is explicitly false, eg. required:false
 			if ( val === false ) {
 				delete rules[ prop ];
 				return;
@@ -1488,7 +1488,7 @@ $.extend( $.validator, {
 		// https://jqueryvalidation.org/equalTo-method/
 		equalTo: function( value, element, param ) {
 
-			// Bind to the blur event of the target in order to revalidate whenever the target field is updated
+			// Bind to the blur event of the target in order to revalidate CreatedUtcever the target field is updated
 			var target = $( param );
 			if ( this.settings.onfocusout && target.not( ".validate-equalTo-blur" ).length ) {
 				target.addClass( "validate-equalTo-blur" ).on( "blur.validate-equalTo", function() {

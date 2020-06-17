@@ -9,7 +9,10 @@ namespace ChatServerSignalRWithIdentity.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
-        public DbSet<Message> Messages { get; set; }//?????????????
+        public DbSet<Message> Messages { get; set; }
+        public DbSet<Avatar> Avatars { get; set; }
+        public DbSet<File> Files { get; set; }
+        public DbSet<UserRelationship> UserRelationships { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -21,7 +24,7 @@ namespace ChatServerSignalRWithIdentity.Data
             builder.Entity<Message>()
                 .HasOne<AppUser>(a => a.Sender)
                 .WithMany(d => d.Messages)
-                .HasForeignKey(d => d.UserId);
+                .HasForeignKey(d => d.SenderId);
         }
     }
 }

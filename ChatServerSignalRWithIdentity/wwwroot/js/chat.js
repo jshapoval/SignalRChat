@@ -1,21 +1,21 @@
 ﻿class Message {
-    constructor(username, text, when) {
+    constructor(username, text, CreatedUtc) {
         this.userName = username;
         this.text = text;
-        this.when = when;
+        this.CreatedUtc = CreatedUtc;
     }
 }
 
 // userName is declared in razor page.
 const username = userName;
 const textInput = document.getElementById('messageText');
-//const whenInput = document.getElementById('when');
+//const CreatedUtcInput = document.getElementById('CreatedUtc');
 const chat = document.getElementById('chat');
 const messagesQueue = [];
 
 document.getElementById('submitButton').addEventListener('click', () => {
     var currentdate = new Date();
-    when.innerHTML =
+    CreatedUtc.innerHTML =
         (currentdate.getMonth() + 1) + "/"
         + currentdate.getDate() + "/"
         + currentdate.getFullYear() + " "
@@ -31,7 +31,7 @@ function sendMessage() {
     let text = messagesQueue.shift() || "";
     if (text.trim() === "") return;
     
-    let when = new Date();
+    let CreatedUtc = new Date();
     let message = new Message(username, text);
     sendMessageToHub(message);
 }
@@ -48,10 +48,10 @@ function addMessageToChat(message) {
     let text = document.createElement('p');
     text.innerHTML = message.text;
 
-    let when = document.createElement('span');
-    when.className = isCurrentUserMessage ? "time-left" : "time-right";
+    let CreatedUtc = document.createElement('span');
+    CreatedUtc.className = isCurrentUserMessage ? "time-left" : "time-right";
     var currentdate = new Date();
-    when.innerHTML = 
+    CreatedUtc.innerHTML = 
         (currentdate.getMonth() + 1) + "/"
         + currentdate.getDate() + "/"
         + currentdate.getFullYear() + " "
@@ -59,6 +59,6 @@ function addMessageToChat(message) {
 
     container.appendChild(sender);
     container.appendChild(text);
-    container.appendChild(when);
+    container.appendChild(CreatedUtc);
     chat.appendChild(container);
 }

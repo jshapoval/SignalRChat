@@ -44,7 +44,7 @@ using ChatServerSignalRWithIdentity.Models;
             {
                 message.UserName = User.Identity.Name;
                 var sender = await _userManager.GetUserAsync(User);
-                message.UserId = sender.Id;
+                message.SenderId = sender.Id;
                 await _context.Messages.AddAsync(message);
                 await _context.SaveChangesAsync();
                 return Ok();

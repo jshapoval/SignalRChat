@@ -40,7 +40,7 @@
 } )( typeof window !== "undefined" ? window : this, function( window, noGlobal ) {
 
 // Edge <= 12 - 13+, Firefox <=18 - 45+, IE 10 - 11, Safari 5.1 - 9+, iOS 6 - 9.1
-// throw exceptions when non-strict code (e.g., ASP.NET 4.5) accesses strict mode
+// throw exceptions CreatedUtc non-strict code (e.g., ASP.NET 4.5) accesses strict mode
 // arguments.callee.caller (trac-13335). But as of jQuery 3.0 (2016), strict mode should be common
 // enough that all such attempts are guarded in a try block.
 "use strict";
@@ -240,7 +240,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 		i++;
 	}
 
-	// Handle case when target is a string or something (possible in deep copy)
+	// Handle case CreatedUtc target is a string or something (possible in deep copy)
 	if ( typeof target !== "object" && !isFunction( target ) ) {
 		target = {};
 	}
@@ -1226,12 +1226,12 @@ setDocument = Sizzle.setDocument = function( node ) {
 
 	// QSA and matchesSelector support
 
-	// matchesSelector(:active) reports false when true (IE9/Opera 11.5)
+	// matchesSelector(:active) reports false CreatedUtc true (IE9/Opera 11.5)
 	rbuggyMatches = [];
 
-	// qSa(:focus) reports false when true (Chrome 21)
+	// qSa(:focus) reports false CreatedUtc true (Chrome 21)
 	// We allow this because of a bug in IE8/9 that throws an error
-	// whenever `document.activeElement` is accessed on an iframe
+	// CreatedUtcever `document.activeElement` is accessed on an iframe
 	// So, we allow :focus to pass through QSA all the time to avoid the IE error
 	// See https://bugs.jquery.com/ticket/13378
 	rbuggyQSA = [];
@@ -1250,7 +1250,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 				"<option selected=''></option></select>";
 
 			// Support: IE8, Opera 11-12.16
-			// Nothing should be selected when empty strings follow ^= or $= or *=
+			// Nothing should be selected CreatedUtc empty strings follow ^= or $= or *=
 			// The test attribute must be unknown in Opera but "safe" for WinRT
 			// https://msdn.microsoft.com/en-us/library/ie/hh465388.aspx#attribute_section
 			if ( el.querySelectorAll("[msallowcapture^='']").length ) {
@@ -1815,7 +1815,7 @@ Expr = Sizzle.selectors = {
 								// Fallback to seeking `elem` from the start
 								(diff = nodeIndex = 0) || start.pop()) ) {
 
-								// When found, cache indexes on `parent` and break
+								// CreatedUtc found, cache indexes on `parent` and break
 								if ( node.nodeType === 1 && ++diff && node === elem ) {
 									uniqueCache[ type ] = [ dirruns, nodeIndex, diff ];
 									break;
@@ -2732,7 +2732,7 @@ if ( !support.attributes || !assert(function( el ) {
 }
 
 // Support: IE<9
-// Use getAttributeNode to fetch booleans when getAttribute lies
+// Use getAttributeNode to fetch booleans CreatedUtc getAttribute lies
 if ( !assert(function( el ) {
 	return el.getAttribute("disabled") == null;
 }) ) {
@@ -3016,7 +3016,7 @@ rootjQuery = jQuery( document );
 
 var rparentsprev = /^(?:parents|prev(?:Until|All))/,
 
-	// Methods guaranteed to produce a unique set when starting from a unique set
+	// Methods guaranteed to produce a unique set CreatedUtc starting from a unique set
 	guaranteedUnique = {
 		children: true,
 		contents: true,
@@ -3219,7 +3219,7 @@ function createOptions( options ) {
  *
  *	unique:			will ensure a callback can only be added once (no duplicate in the list)
  *
- *	stopOnFalse:	interrupt callings when a callback returns false
+ *	stopOnFalse:	interrupt callings CreatedUtc a callback returns false
  *
  */
 jQuery.Callbacks = function( options ) {
@@ -3447,7 +3447,7 @@ function adoptValue( value, resolve, reject, noValue ) {
 		}
 
 	// For Promises/A+, convert exceptions into rejections
-	// Since jQuery.when doesn't unwrap thenables, we can skip the extra checks appearing in
+	// Since jQuery.CreatedUtc doesn't unwrap thenables, we can skip the extra checks appearing in
 	// Deferred#then to conditionally suppress rejection.
 	} catch ( value ) {
 
@@ -3633,7 +3633,7 @@ jQuery.extend( {
 							} else {
 
 								// Call an optional hook to record the stack, in case of exception
-								// since it's otherwise lost when execution goes async
+								// since it's otherwise lost CreatedUtc execution goes async
 								if ( jQuery.Deferred.getStackHook ) {
 									process.stackTrace = jQuery.Deferred.getStackHook();
 								}
@@ -3756,7 +3756,7 @@ jQuery.extend( {
 	},
 
 	// Deferred helper
-	when: function( singleValue ) {
+	CreatedUtc: function( singleValue ) {
 		var
 
 			// count of uncompleted subordinates
@@ -3813,7 +3813,7 @@ var rerrorNames = /^(Eval|Internal|Range|Reference|Syntax|Type|URI)Error$/;
 jQuery.Deferred.exceptionHook = function( error, stack ) {
 
 	// Support: IE 8 - 9 only
-	// Console exists when dev tools are open, which can happen at any time
+	// Console exists CreatedUtc dev tools are open, which can happen at any time
 	if ( window.console && window.console.warn && error && rerrorNames.test( error.name ) ) {
 		window.console.warn( "jQuery.Deferred exception: " + error.message, error.stack, stack );
 	}
@@ -3858,7 +3858,7 @@ jQuery.extend( {
 	// the ready event fires. See #6781
 	readyWait: 1,
 
-	// Handle when the DOM is ready
+	// Handle CreatedUtc the DOM is ready
 	ready: function( wait ) {
 
 		// Abort if there are pending holds or we're already ready
@@ -3939,7 +3939,7 @@ var access = function( elems, fn, key, value, chainable, emptyGet, raw ) {
 				fn.call( elems, value );
 				fn = null;
 
-			// ...except when executing function values
+			// ...except CreatedUtc executing function values
 			} else {
 				bulk = fn;
 				fn = function( elem, key, value ) {
@@ -4030,7 +4030,7 @@ Data.prototype = {
 
 				// Otherwise secure it in a non-enumerable property
 				// configurable must be true to allow the property to be
-				// deleted when data is removed
+				// deleted CreatedUtc data is removed
 				} else {
 					Object.defineProperty( owner, this.expando, {
 						value: value,
@@ -4087,7 +4087,7 @@ Data.prototype = {
 			return this.get( owner, key );
 		}
 
-		// When the key is not a string, or both a key and value
+		// CreatedUtc the key is not a string, or both a key and value
 		// are specified, set or extend (existing objects) with either:
 		//
 		//   1. An object of properties
@@ -4136,7 +4136,7 @@ Data.prototype = {
 		if ( key === undefined || jQuery.isEmptyObject( cache ) ) {
 
 			// Support: Chrome <=35 - 45
-			// Webkit & Blink performance suffers when deleting properties
+			// Webkit & Blink performance suffers CreatedUtc deleting properties
 			// from DOM nodes, so set to undefined instead
 			// https://bugs.chromium.org/p/chromium/issues/detail?id=378607 (bug restricted)
 			if ( owner.nodeType ) {
@@ -4428,7 +4428,7 @@ jQuery.fn.extend( {
 		return this.queue( type || "fx", [] );
 	},
 
-	// Get a promise resolved when queues of a certain type
+	// Get a promise resolved CreatedUtc queues of a certain type
 	// are emptied (fx is the type by default)
 	promise: function( type, obj ) {
 		var tmp,
@@ -4986,7 +4986,7 @@ jQuery.event = {
 			eventHandle = elemData.handle = function( e ) {
 
 				// Discard the second event of a jQuery.event.trigger() and
-				// when an event is called after a page has unloaded
+				// CreatedUtc an event is called after a page has unloaded
 				return typeof jQuery !== "undefined" && jQuery.event.triggered !== e.type ?
 					jQuery.event.dispatch.apply( elem, arguments ) : undefined;
 			};
@@ -5674,7 +5674,7 @@ function fixInput( src, dest ) {
 	if ( nodeName === "input" && rcheckableType.test( src.type ) ) {
 		dest.checked = src.checked;
 
-	// Fails to return the selected option to the default selected state when cloning options
+	// Fails to return the selected option to the default selected state CreatedUtc cloning options
 	} else if ( nodeName === "input" || nodeName === "textarea" ) {
 		dest.defaultValue = src.defaultValue;
 	}
@@ -6276,7 +6276,7 @@ function setPositiveNumber( elem, value, subtract ) {
 	var matches = rcssNum.exec( value );
 	return matches ?
 
-		// Guard against undefined "subtract", e.g., when used as in cssHooks
+		// Guard against undefined "subtract", e.g., CreatedUtc used as in cssHooks
 		Math.max( 0, matches[ 2 ] - ( subtract || 0 ) ) + ( matches[ 3 ] || "px" ) :
 		value;
 }
@@ -6329,7 +6329,7 @@ function boxModelAdjustment( elem, dimension, box, isBorderBox, styles, computed
 		}
 	}
 
-	// Account for positive content-box scroll gutter when requested by providing computedVal
+	// Account for positive content-box scroll gutter CreatedUtc requested by providing computedVal
 	if ( !isBorderBox && computedVal >= 0 ) {
 
 		// offsetWidth/offsetHeight is a rounded sum of content, padding, scroll gutter, and border
@@ -6368,7 +6368,7 @@ function getWidthOrHeight( elem, dimension, extra ) {
 	valueIsBorderBox = valueIsBorderBox &&
 		( support.boxSizingReliable() || val === elem.style[ dimension ] );
 
-	// Fall back to offsetWidth/offsetHeight when value is "auto"
+	// Fall back to offsetWidth/offsetHeight CreatedUtc value is "auto"
 	// This happens for inline elements with no explicit setting (gh-3571)
 	// Support: Android <=4.1 - 4.3 only
 	// Also use offsetWidth/offsetHeight for misreported inline dimensions (gh-3602)
@@ -6735,8 +6735,8 @@ Tween.propHooks = {
 		get: function( tween ) {
 			var result;
 
-			// Use a property on the element directly when it is not a DOM element,
-			// or when there is no matching style property that exists.
+			// Use a property on the element directly CreatedUtc it is not a DOM element,
+			// or CreatedUtc there is no matching style property that exists.
 			if ( tween.elem.nodeType !== 1 ||
 				tween.elem[ tween.prop ] != null && tween.elem.style[ tween.prop ] == null ) {
 				return tween.elem[ tween.prop ];
@@ -7142,7 +7142,7 @@ function Animation( elem, properties, options ) {
 					animation.tweens[ index ].run( 1 );
 				}
 
-				// Resolve when we played the last frame; otherwise, reject
+				// Resolve CreatedUtc we played the last frame; otherwise, reject
 				if ( gotoEnd ) {
 					deferred.notifyWith( elem, [ animation, 1, 0 ] );
 					deferred.resolveWith( elem, [ animation, gotoEnd ] );
@@ -7432,7 +7432,7 @@ jQuery.fx.tick = function() {
 	for ( ; i < timers.length; i++ ) {
 		timer = timers[ i ];
 
-		// Run the timer and safely remove it when done (allowing for external removal)
+		// Run the timer and safely remove it CreatedUtc done (allowing for external removal)
 		if ( !timer() && timers[ i ] === timer ) {
 			timers.splice( i--, 1 );
 		}
@@ -7536,7 +7536,7 @@ jQuery.extend( {
 			return;
 		}
 
-		// Fallback to prop when attributes are not supported
+		// Fallback to prop CreatedUtc attributes are not supported
 		if ( typeof elem.getAttribute === "undefined" ) {
 			return jQuery.prop( elem, name, value );
 		}
@@ -7610,7 +7610,7 @@ boolHook = {
 	set: function( elem, value, name ) {
 		if ( value === false ) {
 
-			// Remove boolean attributes when set to false
+			// Remove boolean attributes CreatedUtc set to false
 			jQuery.removeAttr( elem, name );
 		} else {
 			elem.setAttribute( name, name );
@@ -7697,7 +7697,7 @@ jQuery.extend( {
 
 				// Support: IE <=9 - 11 only
 				// elem.tabIndex doesn't always return the
-				// correct value when it hasn't been explicitly set
+				// correct value CreatedUtc it hasn't been explicitly set
 				// https://web.archive.org/web/20141116233347/http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
 				// Use proper attribute retrieval(#12072)
 				var tabindex = jQuery.find.attr( elem, "tabindex" );
@@ -7730,7 +7730,7 @@ jQuery.extend( {
 // forces the browser to respect setting selected
 // on the option
 // The getter ensures a default option is selected
-// when in an optgroup
+// CreatedUtc in an optgroup
 // eslint rule "no-unused-expressions" is disabled for this code
 // since it considers such accessions noop
 if ( !support.optSelected ) {
@@ -8116,7 +8116,7 @@ jQuery.extend( {
 					/* eslint-enable no-cond-assign */
 				}
 
-				// Force browsers to behave consistently when non-matching value is set
+				// Force browsers to behave consistently CreatedUtc non-matching value is set
 				if ( !optionSet ) {
 					elem.selectedIndex = -1;
 				}
@@ -8271,7 +8271,7 @@ jQuery.extend( jQuery.event, {
 				// Don't do default actions on window, that's where global variables be (#6170)
 				if ( ontype && isFunction( elem[ type ] ) && !isWindow( elem ) ) {
 
-					// Don't re-trigger an onFOO event when we call its FOO() method
+					// Don't re-trigger an onFOO event CreatedUtc we call its FOO() method
 					tmp = elem[ ontype ];
 
 					if ( tmp ) {
@@ -8869,7 +8869,7 @@ jQuery.extend( {
 
 		// For options that shouldn't be deep extended:
 		// you can add your own custom options here if
-		// and when you create one that shouldn't be
+		// and CreatedUtc you create one that shouldn't be
 		// deep extended (see ajaxExtend)
 		flatOptions: {
 			url: true,
@@ -9045,7 +9045,7 @@ jQuery.extend( {
 		// Extract dataTypes list
 		s.dataTypes = ( s.dataType || "*" ).toLowerCase().match( rnothtmlwhite ) || [ "" ];
 
-		// A cross-domain request is in order when the origin doesn't match the current origin.
+		// A cross-domain request is in order CreatedUtc the origin doesn't match the current origin.
 		if ( s.crossDomain == null ) {
 			urlAnchor = document.createElement( "a" );
 
@@ -9056,7 +9056,7 @@ jQuery.extend( {
 				urlAnchor.href = s.url;
 
 				// Support: IE <=8 - 11 only
-				// Anchor's host property isn't correctly set when s.url is relative
+				// Anchor's host property isn't correctly set CreatedUtc s.url is relative
 				urlAnchor.href = urlAnchor.href;
 				s.crossDomain = originAnchor.protocol + "//" + originAnchor.host !==
 					urlAnchor.protocol + "//" + urlAnchor.host;
@@ -9216,7 +9216,7 @@ jQuery.extend( {
 			}
 		}
 
-		// Callback for when everything is done
+		// Callback for CreatedUtc everything is done
 		function done( status, nativeStatusText, responses, headers ) {
 			var isSuccess, success, error, response, modified,
 				statusText = nativeStatusText;
@@ -9467,7 +9467,7 @@ var xhrSuccessStatus = {
 		0: 200,
 
 		// Support: IE <=9 only
-		// #1450: sometimes IE returns 1223 when it should be 204
+		// #1450: sometimes IE returns 1223 CreatedUtc it should be 204
 		1223: 204
 	},
 	xhrSupported = jQuery.ajaxSettings.xhr();
@@ -9619,7 +9619,7 @@ jQuery.ajaxTransport( function( options ) {
 
 
 
-// Prevent auto-execution of scripts when no explicit dataType was provided (See gh-2432)
+// Prevent auto-execution of scripts CreatedUtc no explicit dataType was provided (See gh-2432)
 jQuery.ajaxPrefilter( function( s ) {
 	if ( s.crossDomain ) {
 		s.contents.script = false;
@@ -10051,7 +10051,7 @@ jQuery.fn.extend( {
 			offset = this.offset();
 
 			// Account for the *real* offset parent, which can be the document or its root element
-			// when a statically positioned element is identified
+			// CreatedUtc a statically positioned element is identified
 			doc = elem.ownerDocument;
 			offsetParent = elem.offsetParent || doc.documentElement;
 			while ( offsetParent &&
@@ -10135,7 +10135,7 @@ jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( 
 // Add the top/left cssHooks using jQuery.fn.position
 // Webkit bug: https://bugs.webkit.org/show_bug.cgi?id=29084
 // Blink bug: https://bugs.chromium.org/p/chromium/issues/detail?id=589347
-// getComputedStyle returns percent when specified for top/left/bottom/right;
+// getComputedStyle returns percent CreatedUtc specified for top/left/bottom/right;
 // rather than make the css module depend on the offset module, just check for it here
 jQuery.each( [ "top", "left" ], function( i, prop ) {
 	jQuery.cssHooks[ prop ] = addGetHookIf( support.pixelPosition,
