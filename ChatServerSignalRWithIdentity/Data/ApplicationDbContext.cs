@@ -1,18 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using ChatServerSignalRWithIdentity.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+using System.Threading.Tasks;
+using ChatServerSignalRWithIdentity.Data.DTO;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using File = ChatServerSignalRWithIdentity.Models.File;
+using MongoDB.Driver.GridFS;
 
 namespace ChatServerSignalRWithIdentity.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
+        public DbSet<AppUser> AspNetUsers { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<MessageResponse> MessageResponses { get; set; }
+        public DbSet<AppUserResponse> AppUserResponses { get; set; }
         public DbSet<Avatar> Avatars { get; set; }
         public DbSet<File> Files { get; set; }
         public DbSet<UserRelationship> UserRelationships { get; set; }
+        public DbSet<ChatModel> ChatModels { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -26,5 +38,7 @@ namespace ChatServerSignalRWithIdentity.Data
                 .WithMany(d => d.Messages)
                 .HasForeignKey(d => d.SenderId);
         }
+
+
     }
 }

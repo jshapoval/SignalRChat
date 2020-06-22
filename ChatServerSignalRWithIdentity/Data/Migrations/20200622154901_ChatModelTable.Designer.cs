@@ -4,14 +4,16 @@ using ChatServerSignalRWithIdentity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ChatServerSignalRWithIdentity.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200622154901_ChatModelTable")]
+    partial class ChatModelTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,9 +113,6 @@ namespace ChatServerSignalRWithIdentity.Data.Migrations
                     b.Property<int?>("ChatModelId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ChatModelId1")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("datetime2");
 
@@ -139,8 +138,6 @@ namespace ChatServerSignalRWithIdentity.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ChatModelId");
-
-                    b.HasIndex("ChatModelId1");
 
                     b.HasIndex("OwnerId");
 
@@ -386,17 +383,12 @@ namespace ChatServerSignalRWithIdentity.Data.Migrations
                     b.Property<int?>("ChatModelId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ChatModelId1")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.HasIndex("AvatarId");
 
                     b.HasIndex("ChatModelId");
-
-                    b.HasIndex("ChatModelId1");
 
                     b.HasDiscriminator().HasValue("AppUser");
                 });
@@ -436,10 +428,6 @@ namespace ChatServerSignalRWithIdentity.Data.Migrations
                     b.HasOne("ChatServerSignalRWithIdentity.Models.ChatModel", null)
                         .WithMany("Messages")
                         .HasForeignKey("ChatModelId");
-
-                    b.HasOne("ChatServerSignalRWithIdentity.Models.ChatModel", null)
-                        .WithMany("MessagesList")
-                        .HasForeignKey("ChatModelId1");
 
                     b.HasOne("ChatServerSignalRWithIdentity.Models.AppUser", "Owner")
                         .WithMany()
@@ -508,12 +496,8 @@ namespace ChatServerSignalRWithIdentity.Data.Migrations
                         .HasForeignKey("AvatarId");
 
                     b.HasOne("ChatServerSignalRWithIdentity.Models.ChatModel", null)
-                        .WithMany("AppUserList")
-                        .HasForeignKey("ChatModelId");
-
-                    b.HasOne("ChatServerSignalRWithIdentity.Models.ChatModel", null)
                         .WithMany("AppUsers")
-                        .HasForeignKey("ChatModelId1");
+                        .HasForeignKey("ChatModelId");
                 });
 #pragma warning restore 612, 618
         }
