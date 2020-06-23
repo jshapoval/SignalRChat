@@ -18,9 +18,8 @@ namespace ChatServerSignalRWithIdentity.Models
         //    AppUsers = new List<AppUser>();
         //}
         public int Id { get; set; }
-        public List<AppUser> AppUserList { get; set; }
-        public List<Message> MessagesList { get; set; }
-
+        public List<AppUserResponse> AppUserList { get; set; }
+        public List<MessageResponse> MessagesList { get; set; }
 
         //public IEnumerable<AppUser> AppUsers
         //{
@@ -32,12 +31,12 @@ namespace ChatServerSignalRWithIdentity.Models
         //    get { return Messages.Skip(0); }
         //}
 
-        public IEnumerable<Tuple<AppUser, Message>> Components
-        {
-            get
-            {
-                return AppUserList.Zip(MessagesList, (a, b) => Tuple.Create(a, b));
-            }
-        }
+        //public IEnumerable<Tuple<AppUser, Message>> Components
+        //{
+        //    get
+        //    {
+        //        return AppUserList.Zip(MessagesList, (a, b) => Tuple.Create(a, b));
+        //    }
+        //}
     }
 }

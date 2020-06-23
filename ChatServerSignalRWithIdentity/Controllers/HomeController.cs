@@ -22,7 +22,6 @@ using ChatServerSignalRWithIdentity.Models;
     [Authorize]
     public class HomeController : Controller
     {
-       // private readonly ILogger<HomeController> _logger;
        public readonly ApplicationDbContext _context;
        public readonly UserManager<AppUser> _userManager;
        protected readonly IMapper _mapper;
@@ -34,55 +33,7 @@ using ChatServerSignalRWithIdentity.Models;
             _mapper = mapper; 
         }
 
-        //  public async Task<IActionResult> Index()
-        //// public async Task<ApiResponse<ICollection<MessageResponse>>> Index()
-        // {
-        //     var currentUser = await _userManager.GetUserAsync(User);
-        //     if (User.Identity.IsAuthenticated)
-        //     {
-        //         ViewBag.CurrentUserName = currentUser.UserName;
-        //     }
-
-        //     //var messages = await _context.Messages.ToListAsync();
-        //     //return View(messages);
-
-        //     var messages = await _context.Messages.ToListAsync();
-        //     var dto =  _mapper.Map<ICollection<Message>, ICollection<MessageResponse>>(messages);
-        //    // return new ApiResponse<ICollection<MessageResponse>>(dto);
-        //        return View(dto);
-        // }
-
-        //public async Task<IActionResult> Index()
-        //{
-        //    var currentUser = await _userManager.GetUserAsync(User);
-        //    if (User.Identity.IsAuthenticated)
-        //    {
-        //       ViewBag.CurrentUserName = currentUser.UserName;
-        //    }
-
-        //    var friends = await _context.AspNetUsers.ToListAsync();
-        //    var dto = _mapper.Map<ICollection<AppUser>, ICollection<AppUserResponse>>(friends);
-        //    return View(dto);
-        //}
-
-        //public async Task<IActionResult> Index()
-        //// public async Task<ApiResponse<ICollection<ChatModel>>> Index()
-        //{
-        //    var currentUser = await _userManager.GetUserAsync(User);
-        //    if (User.Identity.IsAuthenticated)
-        //    {
-        //        ViewBag.CurrentUserName = currentUser.UserName;
-        //    }
-
-        //    var messages = await _context.ChatModels.ToListAsync();
-        //    return View(messages);
-
-        //    // return new ApiResponse<ICollection<MessageResponse>>(dto);
-        //}
-
-
-        public async Task<IActionResult> Index()
-         // public async Task<ApiResponse<ICollection<ChatModel>>> Index()
+       public async Task<IActionResult> Index()
         {
             var currentUser = await _userManager.GetUserAsync(User);
             if (User.Identity.IsAuthenticated) 
@@ -91,11 +42,14 @@ using ChatServerSignalRWithIdentity.Models;
             }
 
             var users = await _context.AspNetUsers.ToListAsync(); 
-            var usersDto = _mapper.Map<ICollection<AppUser>, ICollection<AppUserResponse>>(users).ToList();
             var messages = await _context.Messages.ToListAsync();
-            var messagesDto = _mapper.Map<ICollection<Message>, ICollection<MessageResponse>>(messages).ToList();
-          //  return View(usersDto.Zip(messagesDto,(m,u)=>Tuple.Create(m,u)));
-          return View(Tuple.Create(usersDto, messagesDto));
+
+          var response = new ChatModel
+          {
+              AppUserList = _mapper.Map<List<AppUserResponse>>(users),
+              MessagesList = _mapper.Map<List<MessageResponse>>(messages)
+          };
+          return View(response);
         }
 
 

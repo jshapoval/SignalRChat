@@ -1,9 +1,4 @@
-﻿@*@model IEnumerable<ChatServerSignalRWithIdentity.Models.MessageResponse>*@
-@*@model IEnumerable<ChatServerSignalRWithIdentity.Data.DTO.AppUserResponse>*@
-
-@*@model IEnumerable<ChatServerSignalRWithIdentity.Models.ChatModel>*@
-
-@model Tuple< List<ChatServerSignalRWithIdentity.Data.DTO.AppUserResponse>, List<ChatServerSignalRWithIdentity.Models.MessageResponse>>
+﻿@model ChatModel
 
 @{
     ViewData["Title"] = "Home Page";
@@ -37,9 +32,9 @@
             <p></p>
 
             @*список друзей*@
-            @if (Model.Item1.Count != 0)
+            @if (Model.AppUserList.Any())
             {
-                foreach (var friend in Model.Item1)
+                foreach (var friend in Model.AppUserList)
                 {
                     string containerClass, timePosition, textAlign, contcolor, offset;
 
@@ -49,10 +44,17 @@
                     contcolor = "bg-light";
 
                     <div class="row">
-                        <div class="@containerClass @contcolor">
-
-                            <p class="sender @textAlign">@friend.Login</p>
+                        <div class="col-md-1">
+                            <img src="Images/pf.jpg" 
+                                 width="50" height="50" alt="lorem">
                         </div>
+                        
+                        <div class="col-md-2 offset-md-1">
+                            <div class="@containerClass @contcolor">
+                                <p class="sender @textAlign">@friend.Login</p>
+                            </div>
+                        </div>
+                        
                     </div>
                 }
 
@@ -66,9 +68,9 @@
 
         @*сообщения*@
         <div class="col-md-9" id="chat">
-            @if (Model.Item2.Count != 0)
+            @if (Model.MessagesList.Any())
             {
-                @foreach (var message in Model.Item2.OrderBy(m => m.CreatedUtc))
+                @foreach (var message in Model.MessagesList.OrderBy(m => m.CreatedUtc))
                     {
                         string containerClass, timePosition, textAlign, contcolor, offset;
                         if (userName == message.UserName)

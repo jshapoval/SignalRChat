@@ -1,7 +1,7 @@
 ﻿
 @import url('https://fonts.googleapis.com/css?family=Shadows+Into+Light&display=swap');
 body {
-font-family: 'Shadows Into Light', cursive;
+font-family: 'Halant';
 font-size: 1.4em;
 
 }
@@ -76,7 +76,7 @@ body {
 
 #chat .sender {
     font-size: 0.8em;
-    font-family: 'Shadows Into Light', cursive;
+    font-family: 'Cantora One', cursive;
     font-size: 12px;
 
 }

@@ -9755,7 +9755,8 @@ button.bg-dark:focus {
 }
 
 .text-right {
-  text-align: right !important;
+    text-align: right !important;
+    font-size: 15px;
 }
 
 .text-center {
@@ -9844,6 +9845,7 @@ button.bg-dark:focus {
 
 .font-italic {
   font-style: italic !important;
+
 }
 
 .text-white {
