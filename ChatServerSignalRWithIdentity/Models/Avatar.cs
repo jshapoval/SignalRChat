@@ -10,7 +10,7 @@ namespace ChatServerSignalRWithIdentity.Models
         public int Id { get; set; }
         public bool Default { get; set; }
 
-        public byte[] Image { get; set; }//ну или на файл ссылайся
+    //    public byte[] Image { get; set; }
 
         public File Original { get; set; }
         public File Square { get; set; }

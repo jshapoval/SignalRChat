@@ -16,6 +16,7 @@ using ChatServerSignalRWithIdentity.Models;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+    using Microsoft.Data.SqlClient;
 
     namespace ChatServerSignalRWithIdentity.Controllers
 {
@@ -67,6 +68,37 @@ using ChatServerSignalRWithIdentity.Models;
 
             return Error();
         }
+
+
+        public async Task<IActionResult> CreatePrivate(Message message, AppUserResponse to)
+        {
+            if (ModelState.IsValid)
+            {
+                message.UserName = User.Identity.Name;
+                var sender = await _userManager.GetUserAsync(User);
+                message.SenderId = sender.Id;
+                await _context.Messages.AddAsync(message);
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+
+            return Error();
+        }
+
+        public async Task<IActionResult> FindFriend(string friendLogin)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (User.Identity.IsAuthenticated)
+            {
+                ViewBag.CurrentUserName = currentUser.UserName;
+            }
+
+            var user =  _context.AspNetUsers.ToList().Find(i => i.UserName == friendLogin) ;
+            var newFriend = _mapper.Map<AppUserResponse>(user);
+            
+            return View(newFriend);
+        }
+
 
         public IActionResult Privacy()
         {

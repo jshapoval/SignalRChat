@@ -50,6 +50,7 @@ namespace ChatServerSignalRWithIdentity
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
+              
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true).AddDefaultUI()
                 .AddEntityFrameworkStores<ApplicationDbContext>();//AddDefaultUI(UIFramework.Bootstrap4)   AddIdentityUI();
@@ -74,7 +75,6 @@ namespace ChatServerSignalRWithIdentity
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
@@ -94,18 +94,6 @@ namespace ChatServerSignalRWithIdentity
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            
-            //app.UseRouting();
-
-            //app.UseAuthorization();
-            //app.UseSignalR(route => { route.MapHub<ChatHub>("/Home/Index"); });
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapControllerRoute(
-            //        name: "default",
-            //        pattern: "{controller=Home}/{action=Index}/{id?}");
-            //    endpoints.MapRazorPages();
-            //});
         }
     }
 }

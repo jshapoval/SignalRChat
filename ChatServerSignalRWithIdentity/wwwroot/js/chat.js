@@ -27,13 +27,13 @@ function clearInputField() {
     textInput.value = "";
 }
 
-function sendMessageToPublicChatToPublicChat() {
+function sendMessageToPublicChat() {
     let text = messagesQueue.shift() || "";
     if (text.trim() === "") return;
     
     let CreatedUtc = new Date();
     let message = new Message(username, text);
-    sendMessageToPublicChatToPublicChatToHub(message);
+    sendMessageToPublicChatToHub(message);
 }
 
 function addMessageToChat(message) {

@@ -14,7 +14,7 @@ namespace ChatServerSignalRWithIdentity.Models
         [ForeignKey("OwnerId")]
         public ICollection<File> Files { get; set; }
 
-        public virtual Avatar Avatar { get; set; }
+        public  virtual Avatar Avatar { get; set; }
         public bool IsDeleted { get; set; }
 
         public AppUser()

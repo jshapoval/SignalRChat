@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" , initial-scale="1.0" />
-    @*<title>@ViewData["Title"] -  ChatServerSignalRWithIdentity</title>*@
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -27,7 +26,30 @@
     <nav class="navbar navbar-expand-sm flex-column flex-sm-row  navbar-dark bg-primary">
         @*navbar-toggleable-sm*@
         <div class="container">
-            <a class="navbae-brand" asp-area="" asp-controller="Home" asp-action="Index">@*ili ne index*@
+            
+            
+        <div class="col-md-3" id="friends">
+            <form asp-action="Create"
+                  data-ajax-begin="clearInputField" data-ajax-complete=""
+                  data-ajax-failure="alert('Fail')" data-ajax-success="sendMessageToPublicChat"
+                  data-ajax="true" data-ajax-method="POST">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="d-flex form-group">
+                    <form asp-action="FindFriend"
+                         data-ajax-begin="clearInputField" data-ajax-complete=""
+                         data-ajax-failure="alert('Fail')" data-ajax-success="findFriendInBase"
+                         data-ajax="true" data-ajax-method="POST">
+                           <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                     
+                            <input name="Text" class="form-control" id="messageText" />
+                            <input type="submit" value="Go" id="submitButton" class="btn " />
+                                    @*<input type="hidden" value="@userName" name="username" />*@
+                        </form>
+                </div>
+            </form>
+        </div>
+
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">@*ili ne index*@
                 @*<i class="fab fa-facebook-messenger"></i> &nbsp; ChatServerSignalRWithIdentity*@
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -36,7 +58,7 @@
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                 <partial name="_LoginPartial"/>
-                <ul class="navbar-nav flex-grow-1">
+                <ul class="navbar-nav flex-grow-1 text-light">
 
                 </ul>
             </div>

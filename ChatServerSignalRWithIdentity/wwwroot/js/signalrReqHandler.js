@@ -9,6 +9,6 @@ connection.start()
         console.error(error.message);
     });
 
-function sendMessageToPublicChatToPublicChatToHub(message) {
-    connection.invoke('sendMessageToPublicChatToPublicChat', message);
+function sendMessageToPublicChatToHub(message) {
+    connection.invoke('sendMessageToPublicChat', message);
 }

@@ -15,7 +15,7 @@
 
             <form asp-action="Create"
                   data-ajax-begin="clearInputField" data-ajax-complete=""
-                  data-ajax-failure="alert('Fail')" data-ajax-success="sendMessageToPublicChatToPublicChat"
+                  data-ajax-failure="alert('Fail')" data-ajax-success="sendMessageToPublicChat"
                   data-ajax="true" data-ajax-method="POST">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
@@ -40,22 +40,22 @@
 
                     containerClass = "container";
                     timePosition = "time-left";
-                    textAlign = "text-right";
+                    textAlign = "sendertext-right";
                     contcolor = "bg-light";
 
-                    <div class="row">
+                    <div class="row" onclick="OpenDialog">
                         <div class="col-md-1">
-                            <img src="Images/pf.jpg" 
-                                 width="50" height="50" alt="lorem">
+                            <img src="Images/pf.jpg"
+                                 width="50" height="50" alt="avatar" class="rounded-circle">
                         </div>
-                        
-                        <div class="col-md-2 offset-md-1">
+
+                        <div class="col-md-2 offset-md-2">
                             <div class="@containerClass @contcolor">
                                 <p class="sender @textAlign">@friend.Login</p>
                             </div>
                         </div>
-                        
                     </div>
+                    <p></p>
                 }
 
             }
@@ -71,35 +71,35 @@
             @if (Model.MessagesList.Any())
             {
                 @foreach (var message in Model.MessagesList.OrderBy(m => m.CreatedUtc))
+                {
+                    string containerClass, timePosition, textAlign, contcolor, offset;
+                    if (userName == message.UserName)
                     {
-                        string containerClass, timePosition, textAlign, contcolor, offset;
-                        if (userName == message.UserName)
-                        {
-                            containerClass = "container darker";
-                            timePosition = "time-left text-light";
-                            textAlign = "text-left text-white";
-                            contcolor = "bg-primary";
-                            offset = "col-md-6 offset-md-6";
-                        }
-                        else
-                        {
-                            containerClass = "container";
-                            timePosition = "time-left";
-                            textAlign = "text-left";
-                            contcolor = "bg-light";
-                            offset = "col-md-6";
-                        }
-                        <div class="row">
-                            <div class="@offset">
-                                <div class="@containerClass @contcolor">
+                        containerClass = "container darker";
+                        timePosition = "time-left text-light";
+                        textAlign = "text-left text-white";
+                        contcolor = "bg-primary";
+                        offset = "col-md-6 offset-md-6";
+                    }
+                    else
+                    {
+                        containerClass = "container";
+                        timePosition = "time-left";
+                        textAlign = "text-left";
+                        contcolor = "bg-light";
+                        offset = "col-md-6";
+                    }
+                    <div class="row">
+                        <div class="@offset">
+                            <div class="@containerClass @contcolor">
 
-                                    <p class="sender @textAlign">@message.UserName</p>
-                                    <p class="@textAlign">@message.Text</p>
-                                    <span class="@timePosition">@message.CreatedUtc.ToString("HH:mm")</span>
-                                </div>
+                                <p class="sender @textAlign">@message.UserName</p>
+                                <p class="@textAlign">@message.Text</p>
+                                <span class="@timePosition">@message.CreatedUtc.ToString("HH:mm")</span>
                             </div>
                         </div>
-                    }
+                    </div>
+                }
             }
         </div>
 
@@ -111,7 +111,7 @@
         <div class="col-md-12">
             <form asp-action="Create"
                   data-ajax-begin="clearInputField" data-ajax-complete=""
-                  data-ajax-failure="alert('Fail')" data-ajax-success="sendMessageToPublicChatToPublicChat"
+                  data-ajax-failure="alert('Fail')" data-ajax-success="sendMessageToPublicChat"
                   data-ajax="true" data-ajax-method="POST">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
@@ -126,6 +126,9 @@
             </form>
         </div>
 
+        <div class="col-md-12">
+            <p></p>
+        </div>
     </div>
 </div>
 
@@ -142,10 +145,3 @@
 <script src="~/js/chat.js"></script>
 <script src="~/js/signalrReqHandler.js"></script>
 
-@*@section scripts {
-
-        <script src="~/lib/signalr/signalr.min.js"></script>
-        <script src="~/lib/jquery/dist/jquery.unobtrusive-ajax.min.js"></script>
-        <script src="~/js/chat.js"></script>
-        <script src="~/js/signalrReqHandler.js"></script>
-    }*@

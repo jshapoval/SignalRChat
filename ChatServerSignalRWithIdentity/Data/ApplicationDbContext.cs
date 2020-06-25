@@ -19,12 +19,15 @@ namespace ChatServerSignalRWithIdentity.Data
     {
         public DbSet<AppUser> AspNetUsers { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Participant> Participants { get; set; }
         public DbSet<MessageResponse> MessageResponses { get; set; }
         public DbSet<AppUserResponse> AppUserResponses { get; set; }
         public DbSet<Avatar> Avatars { get; set; }
         public DbSet<File> Files { get; set; }
         public DbSet<UserRelationship> UserRelationships { get; set; }
         public DbSet<ChatModel> ChatModels { get; set; }
+
+        public DbSet<Dialog> Dialogs { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -37,8 +40,9 @@ namespace ChatServerSignalRWithIdentity.Data
                 .HasOne<AppUser>(a => a.Sender)
                 .WithMany(d => d.Messages)
                 .HasForeignKey(d => d.SenderId);
+
+            builder.Entity<Participant>().HasKey("DialogId", "AppUserId");
         }
-
-
+        
     }
 }

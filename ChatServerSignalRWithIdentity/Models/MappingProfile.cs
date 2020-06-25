@@ -20,7 +20,13 @@ namespace ChatServerSignalRWithIdentity.Models
                 .ForMember(dest => dest.ImageId, opt => opt.MapFrom(x => x.Avatar.Square_100Id));
 
             CreateMap<AppUserResponse, AppUser>();
-            //CreateMap<Dialog, DialogDTO>();
+
+            CreateMap<Participant, ParticipantResponse>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(x => x.AppUserId))
+                .ForMember(dest => dest.Login, opt => opt.MapFrom(x => x.Sender.Email))
+                .ForMember(dest => dest.ImageId, opt => opt.MapFrom(x => x.Sender.Avatar.Square_100Id));
+
+           // CreateMap<Dialog, DialogResponse>();
         }
     }
 }
