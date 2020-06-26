@@ -11,8 +11,8 @@ namespace ChatServerSignalRWithIdentity.Models
     {
         public MappingProfile()
         {
-            CreateMap<Message, MessageResponse>();
-            CreateMap<MessageResponse, Message>();
+            CreateMap<Message, MessageModel>();
+            CreateMap<MessageModel, Message>();
 
             CreateMap<AppUser, AppUserResponse>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(x => x.Id))
@@ -23,10 +23,10 @@ namespace ChatServerSignalRWithIdentity.Models
 
             CreateMap<Participant, ParticipantResponse>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(x => x.AppUserId))
-                .ForMember(dest => dest.Login, opt => opt.MapFrom(x => x.Sender.Email))
-                .ForMember(dest => dest.ImageId, opt => opt.MapFrom(x => x.Sender.Avatar.Square_100Id));
+                .ForMember(dest => dest.Login, opt => opt.MapFrom(x => x.AppUser.Email))
+                .ForMember(dest => dest.ImageId, opt => opt.MapFrom(x => x.AppUser.Avatar.Square_100Id));
 
-           // CreateMap<Dialog, DialogResponse>();
+            CreateMap<Dialog, DialogResponse>();
         }
     }
 }

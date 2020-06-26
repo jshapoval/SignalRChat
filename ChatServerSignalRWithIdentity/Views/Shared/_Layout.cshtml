@@ -27,35 +27,32 @@
         @*navbar-toggleable-sm*@
         <div class="container">
             
-            
-        <div class="col-md-3" id="friends">
-            <form asp-action="Create"
-                  data-ajax-begin="clearInputField" data-ajax-complete=""
-                  data-ajax-failure="alert('Fail')" data-ajax-success="sendMessageToPublicChat"
-                  data-ajax="true" data-ajax-method="POST">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="d-flex form-group">
-                    <form asp-action="FindFriend"
-                         data-ajax-begin="clearInputField" data-ajax-complete=""
-                         data-ajax-failure="alert('Fail')" data-ajax-success="findFriendInBase"
-                         data-ajax="true" data-ajax-method="POST">
-                           <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                     
-                            <input name="Text" class="form-control" id="messageText" />
-                            <input type="submit" value="Go" id="submitButton" class="btn " />
-                                    @*<input type="hidden" value="@userName" name="username" />*@
-                        </form>
-                </div>
-            </form>
-        </div>
+            <div class="col-md-3" id="friends">
+                <form asp-action="Searching"
+                      data-ajax-begin="clearInputField" data-ajax-complete=""
+                      data-ajax-failure="alert('Fail')" data-ajax-success="findFriendInBase"
+                      data-ajax="true" data-ajax-method="POST">
 
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">@*ili ne index*@
-                @*<i class="fab fa-facebook-messenger"></i> &nbsp; ChatServerSignalRWithIdentity*@
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="d-flex form-group">
+
+                        <input name="Login" class="form-control" id="login"/>
+                        @*<form action="https://google.com">*@
+                        <input type="submit" value="Go" id="submitButton" class="btn "/>
+                        @*<input type="hidden" value="@userName" name="username" />*@
+                        @*</form>*@
+
+                    </div>
+                </form>
+                </div>
+
+            @*<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                <i class="fab fa-facebook-messenger"></i> &nbsp; ChatServerSignalRWithIdentity
+            </a>*@
+            @*<button class="navbar-toggler" type="button" data-toggle="collapse"
                     aria-expanded="False" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
-            </button>
+            </button>*@
             <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                 <partial name="_LoginPartial"/>
                 <ul class="navbar-nav flex-grow-1 text-light">

@@ -10,10 +10,7 @@
 
     <div class="row">
         <div class="col-md-12" id="friends">
-           
-            Maybe it is he?
 
-            <p></p>
             
             @if (Model != null)
             {
@@ -27,6 +24,7 @@
                 <div class="row" onclick="OpenDialog">
 
                     <div class="col-md-3">
+                        Maybe it is he?
                         <img src="Images/pf.jpg"
                              width="50" height="50" alt="avatar" class="rounded-circle">
                     </div>
@@ -44,22 +42,6 @@
             {
                 <h1>No result</h1>
             }
-            
-            <form asp-action="Create"
-                  data-ajax-begin="clearInputField" data-ajax-complete=""
-                  data-ajax-failure="alert('Fail')" data-ajax-success="sendMessageToPublicChat"
-                  data-ajax="true" data-ajax-method="POST">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <input name="Text" class="form-control" id="messageText" />
-                </div>
-                <div class="form-group">
-                    <div class="col-md-8 offset-md-8">
-                        <input type="submit" value="Search" id="submitButton" class="btn " />
-                    </div>
-                </div>
-                <input type="hidden" value="@userName" name="username" />
-            </form>
 
         </div>
     </div>

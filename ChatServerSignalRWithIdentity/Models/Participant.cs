@@ -10,10 +10,9 @@ namespace ChatServerSignalRWithIdentity.Models
     {
       //  public int  Id { get; set; }
         public int DialogId { get; set; }
-
-        [Required]
         public string AppUserId { get; set; }
-        public AppUser Sender { get; set; }
-      //  public bool KeyReceived { get; set; }
+        public string AppUserName { get; set; }
+
+        public virtual AppUser AppUser { get; set; }
     }
 }

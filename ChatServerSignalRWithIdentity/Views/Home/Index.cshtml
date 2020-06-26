@@ -18,23 +18,20 @@
                   data-ajax-failure="alert('Fail')" data-ajax-success="sendMessageToPublicChat"
                   data-ajax="true" data-ajax-method="POST">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
+                <div class="d-flex form-group">
                     <input name="Text" class="form-control" id="messageText" />
-                </div>
-                <div class="form-group">
-                    <div class="col-md-8 offset-md-8">
                         <input type="submit" value="Search" id="submitButton" class="btn " />
-                    </div>
+                    
                 </div>
                 <input type="hidden" value="@userName" name="username" />
             </form>
 
             <p></p>
 
-            @*список друзей*@
-            @if (Model.AppUserList.Any())
+            @*список друзей/диалогов*@
+            @if (Model.DialogsList.Any())
             {
-                foreach (var friend in Model.AppUserList)
+                foreach (var dialog in Model.DialogsList.Where(x => x.Participants.Contains(new Participant { AppUserName = User.Identity.Name})))
                 {
                     string containerClass, timePosition, textAlign, contcolor, offset;
 
@@ -43,7 +40,7 @@
                     textAlign = "sendertext-right";
                     contcolor = "bg-light";
 
-                    <div class="row" onclick="OpenDialog">
+                    <div class="row friend" data-dialog-id="@dialog.Id" data-friend-id="" onclick="OpenDialog">
                         <div class="col-md-1">
                             <img src="Images/pf.jpg"
                                  width="50" height="50" alt="avatar" class="rounded-circle">
@@ -51,10 +48,27 @@
 
                         <div class="col-md-2 offset-md-2">
                             <div class="@containerClass @contcolor">
-                                <p class="sender @textAlign">@friend.Login</p>
+                                <p class="sender @textAlign">friend.Login</p>
                             </div>
                         </div>
                     </div>
+
+
+                    <script type="text/javascript">
+                        $('.dialog').click(function () {
+                            let dialogId = $(this).attr('data-dialog-id').val;
+                            let userId = $(this).attr('data-user-id').val;
+                        });
+
+                            
+                            @*$("#jqg").jqGrid({
+                                url: '@Url.Action("GetData")',
+                                datatype: "json",
+                          sortname: 'Id', // сортировка по умолчанию по столбцу Id
+                                sortorder: "desc", // порядок сортировки
+                            });
+                        });*@
+                    </script> 
                     <p></p>
                 }
 
@@ -109,27 +123,29 @@
         </div>
 
         <div class="col-md-12">
-            <form asp-action="Create"
-                  data-ajax-begin="clearInputField" data-ajax-complete=""
-                  data-ajax-failure="alert('Fail')" data-ajax-success="sendMessageToPublicChat"
-                  data-ajax="true" data-ajax-method="POST">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <input name="Text" class="form-control" id="messageText" />
-                </div>
-                <div class="form-group">
-                    <div class="col-md-6 offset-md-5">
-                        <input type="submit" value="Send" id="submitButton" class="btn " />
+            <div class="col-md-9 offset-md-3">
+                <form asp-action="Create"
+                      data-ajax-begin="clearInputField" data-ajax-complete=""
+                      data-ajax-failure="alert('Fail')" data-ajax-success="sendMessageToPublicChat"
+                      data-ajax="true" data-ajax-method="POST">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <input name="Text" class="form-control" id="messageText" />
                     </div>
+                    <div class="form-group">
+                        <div class="col-md-6 offset-md-5">
+                            <input type="submit" value="Send" id="submitButton" class="btn " />
+                        </div>
+                    </div>
+                    <input type="hidden" value="@userName" name="username" />
+                </form>
                 </div>
-                <input type="hidden" value="@userName" name="username" />
-            </form>
-        </div>
+            </div>
 
-        <div class="col-md-12">
-            <p></p>
+            <div class="col-md-12">
+                <p></p>
+            </div>
         </div>
-    </div>
 </div>
 
 

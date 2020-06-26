@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ChatServerSignalRWithIdentity.Migrations
 {
-    public partial class start : Migration
+    public partial class restart : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -84,7 +84,7 @@ namespace ChatServerSignalRWithIdentity.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AppUserResponses",
+                name: "AppUserResponse",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
@@ -94,9 +94,9 @@ namespace ChatServerSignalRWithIdentity.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AppUserResponses", x => x.Id);
+                    table.PrimaryKey("PK_AppUserResponse", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AppUserResponses_ChatModels_ChatModelId",
+                        name: "FK_AppUserResponse_ChatModels_ChatModelId",
                         column: x => x.ChatModelId,
                         principalTable: "ChatModels",
                         principalColumn: "Id",
@@ -262,7 +262,7 @@ namespace ChatServerSignalRWithIdentity.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MessageResponses",
+                name: "Messages",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -278,44 +278,13 @@ namespace ChatServerSignalRWithIdentity.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MessageResponses", x => x.Id);
+                    table.PrimaryKey("PK_Messages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MessageResponses_ChatModels_ChatModelId",
+                        name: "FK_Messages_ChatModels_ChatModelId",
                         column: x => x.ChatModelId,
                         principalTable: "ChatModels",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_MessageResponses_AspNetUsers_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_MessageResponses_AspNetUsers_SenderId",
-                        column: x => x.SenderId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Messages",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DialogId = table.Column<int>(nullable: false),
-                    SenderId = table.Column<string>(nullable: true),
-                    OwnerId = table.Column<string>(nullable: true),
-                    UserName = table.Column<string>(nullable: true),
-                    Text = table.Column<string>(nullable: false),
-                    CreatedUtc = table.Column<DateTime>(nullable: false),
-                    Read = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Messages", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Messages_Dialogs_DialogId",
                         column: x => x.DialogId,
@@ -361,8 +330,8 @@ namespace ChatServerSignalRWithIdentity.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AppUserResponses_ChatModelId",
-                table: "AppUserResponses",
+                name: "IX_AppUserResponse_ChatModelId",
+                table: "AppUserResponse",
                 column: "ChatModelId");
 
             migrationBuilder.CreateIndex(
@@ -440,19 +409,9 @@ namespace ChatServerSignalRWithIdentity.Migrations
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MessageResponses_ChatModelId",
-                table: "MessageResponses",
+                name: "IX_Messages_ChatModelId",
+                table: "Messages",
                 column: "ChatModelId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MessageResponses_OwnerId",
-                table: "MessageResponses",
-                column: "OwnerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MessageResponses_SenderId",
-                table: "MessageResponses",
-                column: "SenderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_DialogId",
@@ -522,7 +481,7 @@ namespace ChatServerSignalRWithIdentity.Migrations
                 table: "Files");
 
             migrationBuilder.DropTable(
-                name: "AppUserResponses");
+                name: "AppUserResponse");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -538,9 +497,6 @@ namespace ChatServerSignalRWithIdentity.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
-
-            migrationBuilder.DropTable(
-                name: "MessageResponses");
 
             migrationBuilder.DropTable(
                 name: "Messages");

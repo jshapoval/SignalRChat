@@ -25,4 +25,6 @@
     <Folder Include="wwwroot\NewFolder\" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties wwwroot_4signalr_4signalr_1min_1js_1map__JsonSchema="https://json.schemastore.org/templatesources" /></VisualStudio></ProjectExtensions>
+
 </Project>

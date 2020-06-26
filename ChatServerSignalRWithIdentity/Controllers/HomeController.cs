@@ -44,25 +44,50 @@ using ChatServerSignalRWithIdentity.Models;
 
             var users = await _context.AspNetUsers.ToListAsync(); 
             var messages = await _context.Messages.ToListAsync();
+            var dialogs = await _context.Dialogs.ToListAsync();
 
           var response = new ChatModel
           {
-              AppUserList = _mapper.Map<List<AppUserResponse>>(users),
-              MessagesList = _mapper.Map<List<MessageResponse>>(messages)
+              AppUserList = _mapper.Map<List<AppUser>>(users),
+              MessagesList = _mapper.Map<List<Message>>(messages),
+              DialogsList = _mapper.Map<List<Dialog>>(dialogs)
           };
+
           return View(response);
         }
 
 
-        public async Task<IActionResult> Create(Message message)
+        public async Task<IActionResult> Create(MessageModel messageModel)
         {
             if (ModelState.IsValid)
             {
-                message.UserName = User.Identity.Name;
+                var dialog = await _context.Dialogs.FindAsync(messageModel.DialogId);
+
                 var sender = await _userManager.GetUserAsync(User);
+                var anotherUser = await _userManager.FindByIdAsync(messageModel.UserId);
+
+                if (dialog is null)
+                {
+                    dialog = new Dialog
+                    {
+                        Participants = new List<Participant>
+                            {new Participant {AppUserId = sender.Id, AppUserName = sender.UserName}, new Participant {AppUserId = anotherUser.Id, AppUserName = anotherUser.UserName}}
+                    };
+
+                    await _context.Dialogs.AddAsync(dialog);
+                    await _context.SaveChangesAsync();
+                }
+
+                var message = _mapper.Map<Message>(messageModel);
+                
+                message.UserName = sender.UserName;
                 message.SenderId = sender.Id;
+                message.DialogId = dialog.Id;
+
+                //var dialog = _context.Dialogs.FirstOrDefaultAsync(x=>x.Participants.Any(y=>y.AppUserId == sender.Id) && x.Participants.Any(y => y.AppUserId == sender.Id))
                 await _context.Messages.AddAsync(message);
                 await _context.SaveChangesAsync();
+
                 return Ok();
             }
 
@@ -85,7 +110,7 @@ using ChatServerSignalRWithIdentity.Models;
             return Error();
         }
 
-        public async Task<IActionResult> FindFriend(string friendLogin)
+        public async Task<IActionResult> Searching(string friendLogin)
         {
             var currentUser = await _userManager.GetUserAsync(User);
             if (User.Identity.IsAuthenticated)
