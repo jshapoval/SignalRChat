@@ -19,27 +19,6 @@ namespace ChatServerSignalRWithIdentity.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("ChatServerSignalRWithIdentity.Data.DTO.AppUserResponse", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("ChatModelId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ImageId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Login")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChatModelId");
-
-                    b.ToTable("AppUserResponse");
-                });
-
             modelBuilder.Entity("ChatServerSignalRWithIdentity.Models.Avatar", b =>
                 {
                     b.Property<int>("Id")
@@ -99,6 +78,9 @@ namespace ChatServerSignalRWithIdentity.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("ChatModelId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("LastActivityUtc")
                         .HasColumnType("datetime2");
 
@@ -106,6 +88,8 @@ namespace ChatServerSignalRWithIdentity.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ChatModelId");
 
                     b.ToTable("Dialogs");
                 });
@@ -190,6 +174,9 @@ namespace ChatServerSignalRWithIdentity.Migrations
                     b.Property<string>("AppUserId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("AppUserName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("DialogId", "AppUserId");
 
                     b.HasIndex("AppUserId");
@@ -199,21 +186,24 @@ namespace ChatServerSignalRWithIdentity.Migrations
 
             modelBuilder.Entity("ChatServerSignalRWithIdentity.Models.UserRelationship", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("BigUserId")
-                        .HasColumnType("int");
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("SmallUserId")
-                        .HasColumnType("int");
+                    b.Property<string>("BigUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SmallUserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
 
                     b.ToTable("UserRelationships");
                 });
@@ -431,19 +421,17 @@ namespace ChatServerSignalRWithIdentity.Migrations
                     b.Property<int?>("AvatarId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ChatModelId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.HasIndex("AvatarId");
 
-                    b.HasDiscriminator().HasValue("AppUser");
-                });
+                    b.HasIndex("ChatModelId");
 
-            modelBuilder.Entity("ChatServerSignalRWithIdentity.Data.DTO.AppUserResponse", b =>
-                {
-                    b.HasOne("ChatServerSignalRWithIdentity.Models.ChatModel", null)
-                        .WithMany("AppUserList")
-                        .HasForeignKey("ChatModelId");
+                    b.HasDiscriminator().HasValue("AppUser");
                 });
 
             modelBuilder.Entity("ChatServerSignalRWithIdentity.Models.Avatar", b =>
@@ -467,6 +455,13 @@ namespace ChatServerSignalRWithIdentity.Migrations
                     b.HasOne("ChatServerSignalRWithIdentity.Models.File", "Square_600")
                         .WithMany()
                         .HasForeignKey("Square_600Id");
+                });
+
+            modelBuilder.Entity("ChatServerSignalRWithIdentity.Models.Dialog", b =>
+                {
+                    b.HasOne("ChatServerSignalRWithIdentity.Models.ChatModel", null)
+                        .WithMany("DialogsList")
+                        .HasForeignKey("ChatModelId");
                 });
 
             modelBuilder.Entity("ChatServerSignalRWithIdentity.Models.File", b =>
@@ -510,6 +505,13 @@ namespace ChatServerSignalRWithIdentity.Migrations
                         .HasForeignKey("DialogId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ChatServerSignalRWithIdentity.Models.UserRelationship", b =>
+                {
+                    b.HasOne("ChatServerSignalRWithIdentity.Models.AppUser", null)
+                        .WithMany("Relationships")
+                        .HasForeignKey("AppUserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -568,6 +570,10 @@ namespace ChatServerSignalRWithIdentity.Migrations
                     b.HasOne("ChatServerSignalRWithIdentity.Models.Avatar", "Avatar")
                         .WithMany()
                         .HasForeignKey("AvatarId");
+
+                    b.HasOne("ChatServerSignalRWithIdentity.Models.ChatModel", null)
+                        .WithMany("AppUserList")
+                        .HasForeignKey("ChatModelId");
                 });
 #pragma warning restore 612, 618
         }

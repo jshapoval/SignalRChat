@@ -3,15 +3,14 @@
 @{
     ViewData["Title"] = "Home Page";
     var userName = User.Identity.Name;
+    
 }
 
 
 <div class="jumbotron bg-light">
 
     <div class="row">
-        <div class="col-md-12" id="friends">
-
-            
+  
             @if (Model != null)
             {
                 string containerClass, timePosition, textAlign, contcolor, offset;
@@ -21,21 +20,40 @@
                     textAlign = "sendertext-right";
                     contcolor = "bg-light";
 
-                <div class="row" onclick="OpenDialog">
+                var anotherUserId = Model.Id;
+            <div class="col-md-12" id="friends">
+                Youre friend?
+                <p></p>
+                <div class="row">
 
-                    <div class="col-md-3">
-                        Maybe it is he?
-                        <img src="Images/pf.jpg"
-                             width="50" height="50" alt="avatar" class="rounded-circle">
+                    <div class="col-md-2">
+                        <img src="/Images/pf.jpg" width="50" height="50" alt="avatar" class="rounded-circle" />
                     </div>
 
-                    <div class="col-md-5 offset-md-2">
+                    <div class="col-md-3">
                         <div class="@containerClass @contcolor">
                             <p class="sender @textAlign">@Model.Login</p>
                         </div>
                     </div>
+
+                    <div class="col-md-3 offset-4">
+                        <form asp-action="AddFriend"
+                              data-ajax-begin="clearInputField" data-ajax-complete=""
+                              data-ajax-failure="alert('Fail')" data-ajax-success="addFriendAndCreateDialog"
+                              data-ajax="true" data-ajax-method="POST">
+
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="d-flex form-group">
+                                
+                            <input type="submit"  onclick="changeButtonFollow()" value="Follow" id="followButton" class="btn" />
+                                @*<input type="submit" value="Follow" id="submitButton" class="btn "/>*@
+                            </div>
+
+                            <input type="hidden" value="@anotherUserId" name="anotherUserId" />
+                        </form>
+                    </div>
                 </div>
-                <p></p>
+               </div>
             }
 
             else
@@ -43,7 +61,6 @@
                 <h1>No result</h1>
             }
 
-        </div>
     </div>
 </div>
 

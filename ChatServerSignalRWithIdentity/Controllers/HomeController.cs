@@ -57,7 +57,7 @@ using ChatServerSignalRWithIdentity.Models;
         }
 
 
-        public async Task<IActionResult> Create(MessageModel messageModel)
+        public async Task<IActionResult> Send(MessageModel messageModel)
         {
             if (ModelState.IsValid)
             {
@@ -95,22 +95,7 @@ using ChatServerSignalRWithIdentity.Models;
         }
 
 
-        public async Task<IActionResult> CreatePrivate(Message message, AppUserResponse to)
-        {
-            if (ModelState.IsValid)
-            {
-                message.UserName = User.Identity.Name;
-                var sender = await _userManager.GetUserAsync(User);
-                message.SenderId = sender.Id;
-                await _context.Messages.AddAsync(message);
-                await _context.SaveChangesAsync();
-                return Ok();
-            }
-
-            return Error();
-        }
-
-        public async Task<IActionResult> Searching(string friendLogin)
+        public async Task<IActionResult> Searching(string username)
         {
             var currentUser = await _userManager.GetUserAsync(User);
             if (User.Identity.IsAuthenticated)
@@ -118,12 +103,49 @@ using ChatServerSignalRWithIdentity.Models;
                 ViewBag.CurrentUserName = currentUser.UserName;
             }
 
-            var user =  _context.AspNetUsers.ToList().Find(i => i.UserName == friendLogin) ;
+            var user =  _context.AspNetUsers.ToList().Find(i => i.UserName == username) ;
             var newFriend = _mapper.Map<AppUserResponse>(user);
             
             return View(newFriend);
         }
 
+        
+
+        public async Task<IActionResult> AddFriend(string anotherUserId)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (User.Identity.IsAuthenticated)
+            {
+                ViewBag.CurrentUserName = currentUser.UserName;
+            }
+
+            var anotherUser = _context.AspNetUsers.ToList().Find(i => i.Id == anotherUserId);//нашли пользователя с такой айдишкой
+
+            //теперь добавляем в друзья (пока без требования ответного подтверждения), т.е. статус отношений устанавливаем у юсера и создаем диалог
+
+            var values = new[] {currentUser.Id, anotherUserId}.OrderBy(x => x).ToArray();
+
+            await _context.Entry(currentUser).Collection(x => x.Relationships).LoadAsync();
+
+            currentUser.Relationships.Add(new UserRelationship() { BigUserId = values.Last(), SmallUserId = values.First(), Id = String.Concat(values.Last(), values.First()), Status = RelationshipStatus.Friend});
+                //у второго нет то диалога пока, может надо исправить или добавить согласие
+
+            var dialog = new Dialog
+                {
+                    Participants = new List<Participant>
+                        {
+                            new Participant {AppUserId = currentUser.Id, AppUserName = currentUser.UserName}, 
+                            new Participant {AppUserId = anotherUser.Id, AppUserName = anotherUser.UserName}
+                        }
+                };
+
+                await _context.Dialogs.AddAsync(dialog);
+                await _context.SaveChangesAsync();
+
+                return Ok();
+            //return View(dialog);
+        }
 
         public IActionResult Privacy()
         {
@@ -171,5 +193,20 @@ using ChatServerSignalRWithIdentity.Models;
         //    return View(pic);
         //}
 
+
+        public async Task<IActionResult> CreatePrivate(Message message, AppUserResponse to)
+        {
+            if (ModelState.IsValid)
+            {
+                message.UserName = User.Identity.Name;
+                var sender = await _userManager.GetUserAsync(User);
+                message.SenderId = sender.Id;
+                await _context.Messages.AddAsync(message);
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+
+            return Error();
+        }
     }
 }

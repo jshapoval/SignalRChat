@@ -36,6 +36,12 @@ function sendMessageToPublicChat() {
     sendMessageToPublicChatToHub(message);
 }
 
+function changeButtonFollow() {
+    var elem = document.getElementById("followButton");
+    if (elem.value == "Unfollow") elem.value = "Follow";
+    else elem.value = "Unfollow";
+}
+
 function addMessageToChat(message) {
     let isCurrentUserMessage = message.userName === username;
 

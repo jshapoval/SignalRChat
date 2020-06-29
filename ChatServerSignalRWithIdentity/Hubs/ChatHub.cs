@@ -22,8 +22,8 @@ namespace ChatServerSignalRWithIdentity.Hubs
         public async Task SendMessageToPublicChat(Message message) =>
             await Clients.All.SendAsync("receiveMessageToPublicChat", message);
 
-        public async Task FindFriendInBase(string friendLogin) =>
-            await Clients.All.SendAsync("receiveMessageToPublicChat", friendLogin);
+        //public async Task FindFriendInBase(string friendLogin) =>
+        //    await Clients.All.SendAsync("receiveMessageToPublicChat", friendLogin);
 
 
         //public async Task SendMessageToPrivateChat(Message message, string to)

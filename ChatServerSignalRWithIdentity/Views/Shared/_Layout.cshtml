@@ -24,9 +24,8 @@
 <body>
 <header>
     <nav class="navbar navbar-expand-sm flex-column flex-sm-row  navbar-dark bg-primary">
-        @*navbar-toggleable-sm*@
         <div class="container">
-            
+
             <div class="col-md-3" id="friends">
                 <form asp-action="Searching"
                       data-ajax-begin="clearInputField" data-ajax-complete=""
@@ -36,31 +35,52 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="d-flex form-group">
 
-                        <input name="Login" class="form-control" id="login"/>
-                        @*<form action="https://google.com">*@
-                        <input type="submit" value="Go" id="submitButton" class="btn "/>
-                        @*<input type="hidden" value="@userName" name="username" />*@
-                        @*</form>*@
-
+                        <input name="Username" class="form-control" id="username" />
+                        <input type="submit" value="Go" id="submitButton" class="btn " />
                     </div>
                 </form>
-                </div>
-
-            @*<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                <i class="fab fa-facebook-messenger"></i> &nbsp; ChatServerSignalRWithIdentity
-            </a>*@
-            @*<button class="navbar-toggler" type="button" data-toggle="collapse"
-                    aria-expanded="False" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>*@
-            <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                <partial name="_LoginPartial"/>
-                <ul class="navbar-nav flex-grow-1 text-light">
-
-                </ul>
             </div>
+
+            <div class="col-md-3">  
+                
+                </div>
+          
+
+
+            @*<div class="col-md-3" id="toHome">
+
+                    <div class="d-flex form-group">
+                        <style type="text/css">
+                            .my_content_container a {
+                                border-bottom: 1px solid #777777;
+                                border-left: 1px solid #6c757d;
+                                border-right: 1px solid #333333;
+                                border-top: 1px solid #6c757d;
+                                color: #000000;
+                                display: block;
+                                height: 1.5em;
+                                padding: 0 1em;
+                                width: 3em;
+                                text-decoration: none;
+                            }
+                        </style>
+
+                        <div class="my_content_container">
+                            <a href="/">Home</a>
+                        </div>
+
+                    </div>
+            </div>*@
+
+
+        <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+            <partial name="_LoginPartial" />
+            <a href="/" style="color:Black;">Home</a>
+            <ul class="navbar-nav flex-grow-1 text-light">
+            </ul>
         </div>
-    </nav>
+        </div>
+</nav>
 </header>
 
 <div class="container">
