@@ -9,10 +9,10 @@ namespace ChatServerSignalRWithIdentity.Data.DTO
 {
     public class AppUserResponse
     {
-        //     public virtual ICollection<RelationshipStatus> Relationships { get; set; }
         public string Id { get; set; }
         public string Login { get; set; }
         public string ImageId { get; set; }
+        public virtual ICollection<UserRelationship> Relationships { get; set; }
 
         //public AppUserResponse()
         //{

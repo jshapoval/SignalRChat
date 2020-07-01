@@ -1,26 +1,35 @@
-﻿@model ChatServerSignalRWithIdentity.Data.DTO.AppUserResponse
+﻿@using ChatServerSignalRWithIdentity.Data
+@using Microsoft.AspNetCore.Identity
+@model ChatServerSignalRWithIdentity.Models.Couple
+@*поменяй на респонс*@
 
 @{
     ViewData["Title"] = "Home Page";
     var userName = User.Identity.Name;
+
     
+    await Entry(Model.MyUser).Collection(x => x.Relationships).LoadAsync();
+    var firstVersion = Model.MyUser.Relationships.ToList().Find(i => i.Id == String.Concat(Model.MyUser.Id, Model.OtherUser.Id));
+    var secondVersion = Model.MyUser.Relationships.ToList().Find(i => i.Id == String.Concat(Model.OtherUser.Id, Model.MyUser.Id));
+    var values = new[] { Model.MyUser.Id, Model.OtherUser.Id }.OrderBy(x => x).ToArray();
+
 }
 
 
 <div class="jumbotron bg-light">
 
     <div class="row">
-  
-            @if (Model != null)
-            {
-                string containerClass, timePosition, textAlign, contcolor, offset;
 
-                    containerClass = "container";
-                    timePosition = "time-left";
-                    textAlign = "sendertext-right";
-                    contcolor = "bg-light";
+        @if (Model != null)
+        {
+            string containerClass, timePosition, textAlign, contcolor, offset;
 
-                var anotherUserId = Model.Id;
+            containerClass = "container";
+            timePosition = "time-left";
+            textAlign = "sendertext-right";
+            contcolor = "bg-light";
+
+            var anotherUserId = Model.OtherUser.Id;
             <div class="col-md-12" id="friends">
                 Youre friend?
                 <p></p>
@@ -32,45 +41,124 @@
 
                     <div class="col-md-3">
                         <div class="@containerClass @contcolor">
-                            <p class="sender @textAlign">@Model.Login</p>
+                            <p class="sender @textAlign">@Model.OtherUser.Login</p>
                         </div>
                     </div>
 
                     <div class="col-md-3 offset-4">
-                        <form asp-action="AddFriend"
-                              data-ajax-begin="clearInputField" data-ajax-complete=""
-                              data-ajax-failure="alert('Fail')" data-ajax-success="addFriendAndCreateDialog"
-                              data-ajax="true" data-ajax-method="POST">
-
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        @if (firstVersion is null && secondVersion is null)
+                        {
                             <div class="d-flex form-group">
-                                
-                            <input type="submit"  onclick="changeButtonFollow()" value="Follow" id="followButton" class="btn" />
-                                @*<input type="submit" value="Follow" id="submitButton" class="btn "/>*@
+                                <form asp-action="AddFriend"
+                                      data-ajax-begin="clearInputField" data-ajax-complete=""
+                                      data-ajax-failure="alert('Fail')"
+                                      data-ajax="true" data-ajax-method="POST">
+
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <input type="submit" onclick="changeButtonFollow()" value="Follow" id="followButton" class="btn" />
+                                    <input type="hidden" value="@anotherUserId" name="anotherUserId" />
+                                </form>
+
+                                <form asp-action="Block"
+                                      data-ajax-begin="clearInputField" data-ajax-complete=""
+                                      data-ajax-failure="alert('Fail')"
+                                      data-ajax="true" data-ajax-method="POST">
+
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <input type="submit" onclick="changeButtonBlock()" value="Block" id="blockButton" class="btn" />
+                                    <input type="hidden" value="@anotherUserId" name="anotherUserId" />
+                                </form>
                             </div>
 
-                            <input type="hidden" value="@anotherUserId" name="anotherUserId" />
-                        </form>
+                        }
+                        
+                        else if (firstVersion?.Status==RelationshipStatus.Friend || secondVersion?.Status == RelationshipStatus.Friend)
+                        {
+                            <div class="d-flex form-group">
+
+                            <form asp-action="DeleteFriend"
+                                  data-ajax-begin="clearInputField" data-ajax-complete=""
+                                  data-ajax-failure="alert('Fail')"
+                                  data-ajax="true" data-ajax-method="POST">
+
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <input type="submit" onclick="changeButtonUnfollow()" value="Unfollow" id="unfollowButton" class="btn" />
+                                <input type="hidden" value="@anotherUserId" name="anotherUserId" />
+                            </form>
+
+                            <form asp-action="Block"
+                                  data-ajax-begin="clearInputField" data-ajax-complete=""
+                                  data-ajax-failure="alert('Fail')"
+                                  data-ajax="true" data-ajax-method="POST">
+
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <input type="submit" onclick="changeButtonBlock()" value="Block" id="blockButton" class="btn" />
+                                <input type="hidden" value="@anotherUserId" name="anotherUserId" />
+                            </form>
+                             </div>
+                        }
+
+                        else if (firstVersion?.Status==RelationshipStatus.BigBlockSmaller && Model.MyUser.Id== values.Last()
+                                 || secondVersion?.Status == RelationshipStatus.BigBlockSmaller && Model.MyUser.Id == values.Last()
+                                 || firstVersion?.Status == RelationshipStatus.SmallBlockBigger && Model.MyUser.Id == values.First()
+                                 || secondVersion?.Status == RelationshipStatus.SmallBlockBigger && Model.MyUser.Id == values.First())
+                        {
+                            <div class="d-flex form-group">
+                            <form asp-action="AddFriend"
+                                  data-ajax-begin="clearInputField" data-ajax-complete=""
+                                  data-ajax-failure="alert('Fail')"
+                                  data-ajax="true" data-ajax-method="POST">
+
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <input type="submit" onclick="changeButtonFollow()" value="Follow" id="followButton" class="btn" />
+                                <input type="hidden" value="@anotherUserId" name="anotherUserId" />
+                            </form>
+
+                            @*по идее кнопка подписки должна быть видна, но не доступна, пока заблочен*@
+
+                            <form asp-action="Unblock"
+                                  data-ajax-begin="clearInputField" data-ajax-complete=""
+                                  data-ajax-failure="alert('Fail')"
+                                  data-ajax="true" data-ajax-method="POST">
+
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <input type="submit" onclick="changeButtonUnblock()" value="Unblock" id="unblockButton" class="btn" />
+                                <input type="hidden" value="@anotherUserId" name="anotherUserId" />
+                            </form>
+                          </div>
+
+                        }
+
+                        else if (firstVersion?.Status == RelationshipStatus.SmallBlockBigger && Model.MyUser.Id == values.Last()
+                                 || secondVersion?.Status == RelationshipStatus.SmallBlockBigger && Model.MyUser.Id == values.Last()
+                                 || firstVersion?.Status == RelationshipStatus.BigBlockSmaller && Model.MyUser.Id == values.First()
+                                 || secondVersion?.Status == RelationshipStatus.BigBlockSmaller && Model.MyUser.Id == values.First())
+                        {
+                            <h1>you are in the block </h1>
+                        }
+
                     </div>
                 </div>
-               </div>
-            }
+            </div>
 
-            else
-            {
-                <h1>No result</h1>
-            }
+        }
+
+        else
+        {
+            <h1>No result</h1>
+        }
 
     </div>
 </div>
 
 
-@if (User.Identity.IsAuthenticated)
-{
-    <script>
-        const userName = "@ViewBag.CurrentUserName";
-    </script>
-}
+@*@if (User.Identity.IsAuthenticated)
+    {
+        <script>
+            const userName = "@ViewBag.CurrentUserName";
+            const userId = "@ViewBag.CurrentUserId";
+        </script>
+    }*@
 
 <script src="~/lib/signalr/signalr.min.js"></script>
 <script src="~/lib/jquery/dist/jquery.unobtrusive-ajax.min.js"></script>

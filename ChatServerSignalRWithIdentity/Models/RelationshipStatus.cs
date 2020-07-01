@@ -7,10 +7,11 @@ namespace ChatServerSignalRWithIdentity.Models
 {
     public enum RelationshipStatus
     {
-        Friend,
+       Stranger,
+       Friend,
         SmallBlockBigger,
         BigBlockSmaller,
-        SmallFollowBigger,
-        BigFollowSmaller
+       SmallFollowBigger,
+       BigFollowSmaller
     }
 }

@@ -42,6 +42,22 @@ function changeButtonFollow() {
     else elem.value = "Unfollow";
 }
 
+function changeButtonBlock() {
+    var elem = document.getElementById("blockButton");
+    if (elem.value == "Unblock") elem.value = "Block";
+    else elem.value = "Unblock";
+
+    function changeButtonUnfollow() {
+        var elem = document.getElementById("unfollowButton");
+        if (elem.value == "Follow") elem.value = "Unfollow";
+        else elem.value = "Follow";
+    }
+
+    function changeButtonUnblock() {
+        var elem = document.getElementById("unblockButton");
+        if (elem.value == "Block") elem.value = "Unblock";
+        else elem.value = "Block";
+
 function addMessageToChat(message) {
     let isCurrentUserMessage = message.userName === username;
 
