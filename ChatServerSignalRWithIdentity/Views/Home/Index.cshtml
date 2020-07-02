@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Home Page";
     var userName = User.Identity.Name;
+
 }
 
 
@@ -30,7 +31,7 @@
             @*список друзей/диалогов*@
             @if (Model.DialogsList.Any())
             {
-                foreach (var dialog in Model.DialogsList.Where(x => x.Participants.Contains(new Participant { AppUserName = User.Identity.Name})))
+                foreach (var dialog in Model.DialogsList.Where(x => x.Participants.Contains(new Participant { AppUserName = userName})))
                 {
                     string containerClass, timePosition, textAlign, contcolor, offset;
 
@@ -38,25 +39,45 @@
                     timePosition = "time-left";
                     textAlign = "sendertext-right";
                     contcolor = "bg-light";
+        
+                    @if (dialog.Participants.First().AppUserId == userName)
+                    {
+                        <div class="row friend" data-dialog-id="@dialog.Id" data-friend-id="@dialog.Participants.Last().AppUserId" onclick="OpenDialog">
+                            <div class="col-md-1">
+                                <img src="Images/pf.jpg"
+                                     width="50" height="50" alt="avatar" class="rounded-circle">
+                            </div>
 
-                    <div class="row friend" data-dialog-id="@dialog.Id" data-friend-id="" onclick="OpenDialog">
-                        <div class="col-md-1">
-                            <img src="Images/pf.jpg"
-                                 width="50" height="50" alt="avatar" class="rounded-circle">
-                        </div>
-
-                        <div class="col-md-2 offset-md-2">
-                            <div class="@containerClass @contcolor">
-                                <p class="sender @textAlign">friend.Login</p>
+                            <div class="col-md-2 offset-md-2">
+                                <div class="@containerClass @contcolor">
+                                    <p class="sender @textAlign">@dialog.Participants.Last().AppUserName</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    }
+
+                    else
+                    {
+                        <div class="row friend" data-dialog-id="@dialog.Id" data-friend-id="@dialog.Participants.First().AppUserId" onclick="OpenDialog">
+                            <div class="col-md-1">
+                                <img src="Images/pf.jpg"
+                                     width="50" height="50" alt="avatar" class="rounded-circle">
+                            </div>
+
+                            <div class="col-md-2 offset-md-2">
+                                <div class="@containerClass @contcolor">
+                                    <p class="sender @textAlign">@dialog.Participants.First().AppUserName</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                  
 
 
                     <script type="text/javascript">
                         $('.dialog').click(function () {
                             let dialogId = $(this).attr('data-dialog-id').val;
-                            let userId = $(this).attr('data-user-id').val;
+                            let userId = $(this).attr('data-friend-id').val;
                         });
 
                             
@@ -75,8 +96,6 @@
 
 
         </div>
-
-
 
 
         @*сообщения*@

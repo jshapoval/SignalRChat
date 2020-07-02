@@ -6,13 +6,11 @@
 @{
     ViewData["Title"] = "Home Page";
     var userName = User.Identity.Name;
-
-    
-    await Entry(Model.MyUser).Collection(x => x.Relationships).LoadAsync();
-    var firstVersion = Model.MyUser.Relationships.ToList().Find(i => i.Id == String.Concat(Model.MyUser.Id, Model.OtherUser.Id));
-    var secondVersion = Model.MyUser.Relationships.ToList().Find(i => i.Id == String.Concat(Model.OtherUser.Id, Model.MyUser.Id));
-    var values = new[] { Model.MyUser.Id, Model.OtherUser.Id }.OrderBy(x => x).ToArray();
-
+    var myUserId = Model.MyUser.Id;
+    var otherUserId = Model.OtherUser.Id;
+    var values = new[] { myUserId, otherUserId }.OrderBy(x => x).ToArray();
+    var relationship = Model.MyUser.Relationships.ToList().Find(i => i.Id == String.Concat(values.First(), values.Last()));
+    var status = Model.Status;
 }
 
 
@@ -46,7 +44,7 @@
                     </div>
 
                     <div class="col-md-3 offset-4">
-                        @if (firstVersion is null && secondVersion is null)
+                        @if (relationship is null || status==RelationshipStatus.Stranger)
                         {
                             <div class="d-flex form-group">
                                 <form asp-action="AddFriend"
@@ -72,7 +70,7 @@
 
                         }
                         
-                        else if (firstVersion?.Status==RelationshipStatus.Friend || secondVersion?.Status == RelationshipStatus.Friend)
+                        else if (relationship?.Status==RelationshipStatus.Friend)
                         {
                             <div class="d-flex form-group">
 
@@ -98,10 +96,8 @@
                              </div>
                         }
 
-                        else if (firstVersion?.Status==RelationshipStatus.BigBlockSmaller && Model.MyUser.Id== values.Last()
-                                 || secondVersion?.Status == RelationshipStatus.BigBlockSmaller && Model.MyUser.Id == values.Last()
-                                 || firstVersion?.Status == RelationshipStatus.SmallBlockBigger && Model.MyUser.Id == values.First()
-                                 || secondVersion?.Status == RelationshipStatus.SmallBlockBigger && Model.MyUser.Id == values.First())
+                        else if (relationship?.Status==RelationshipStatus.BigBlockSmaller && Model.MyUser.Id== values.Last()
+                                 || relationship?.Status == RelationshipStatus.SmallBlockBigger && Model.MyUser.Id == values.First())
                         {
                             <div class="d-flex form-group">
                             <form asp-action="AddFriend"
@@ -129,10 +125,8 @@
 
                         }
 
-                        else if (firstVersion?.Status == RelationshipStatus.SmallBlockBigger && Model.MyUser.Id == values.Last()
-                                 || secondVersion?.Status == RelationshipStatus.SmallBlockBigger && Model.MyUser.Id == values.Last()
-                                 || firstVersion?.Status == RelationshipStatus.BigBlockSmaller && Model.MyUser.Id == values.First()
-                                 || secondVersion?.Status == RelationshipStatus.BigBlockSmaller && Model.MyUser.Id == values.First())
+                        else if (relationship?.Status == RelationshipStatus.SmallBlockBigger && Model.MyUser.Id == values.Last()
+                                 || relationship?.Status == RelationshipStatus.BigBlockSmaller && Model.MyUser.Id == values.First())
                         {
                             <h1>you are in the block </h1>
                         }
@@ -152,13 +146,13 @@
 </div>
 
 
-@*@if (User.Identity.IsAuthenticated)
+@if (User.Identity.IsAuthenticated)
     {
         <script>
             const userName = "@ViewBag.CurrentUserName";
             const userId = "@ViewBag.CurrentUserId";
         </script>
-    }*@
+    }
 
 <script src="~/lib/signalr/signalr.min.js"></script>
 <script src="~/lib/jquery/dist/jquery.unobtrusive-ajax.min.js"></script>

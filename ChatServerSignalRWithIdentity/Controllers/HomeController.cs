@@ -103,16 +103,36 @@ using ChatServerSignalRWithIdentity.Models;
                 ViewBag.CurrentUserName = currentUser.UserName;
             }
 
-            var user =  _context.AspNetUsers.ToList().Find(i => i.UserName == username) ;
-         
-            var newFriend = _mapper.Map<AppUserResponse>(user);
-            var myUser = _mapper.Map<AppUserResponse>(currentUser);
+            var otherUser =  _context.AspNetUsers.ToList().Find(i => i.UserName == username) ;
+          
+            await _context.Entry(currentUser).Collection(x => x.Relationships).LoadAsync();
 
+            var values = new[] { currentUser.Id, otherUser.Id }.OrderBy(x => x).ToArray();
+           
+            var relationship = currentUser.Relationships.ToList().Find(i => i.Id == String.Concat(values.First(),values.Last()));
+            
+            RelationshipStatus status;
+
+            if (relationship is null)
+            {
+                currentUser.Relationships.Add(new UserRelationship() { BigUserId = values.Last(), SmallUserId = values.First(), Id = String.Concat(values.First(), values.Last()), Status = RelationshipStatus.Stranger });
+                status = RelationshipStatus.Stranger;
+            }
+
+            else
+            {
+                status = relationship.Status;
+            }
+
+            var newFriend = _mapper.Map<AppUserResponse>(otherUser);
+            var myUser = _mapper.Map<AppUserResponse>(currentUser);
+          
             var response = new Couple()
             {
                 MyUser = myUser,
-                OtherUser = newFriend
-            };
+                OtherUser = newFriend,
+                Status = status
+        };
 
                 return View(response);
         }

@@ -11,5 +11,6 @@ namespace ChatServerSignalRWithIdentity.Models
     {
         public AppUserResponse MyUser { get; set; }
         public AppUserResponse OtherUser { get; set; }
+        public RelationshipStatus Status { get; set; }
     }
 }
