@@ -10,8 +10,8 @@ namespace ChatServerSignalRWithIdentity.Models
     public class ChatModel
     {
         public int Id { get; set; }
-        public List<AppUser> AppUserList { get; set; }//потом заменить на друзей 
-        public List<Dialog> DialogsList { get; set; }
+        public List<AppUser> FriendList { get; set; }//потом заменить на друзей 
+        public List<Dialog> DialogsWithFriendsList { get; set; }
         public List<Message> MessagesList { get; set; }
 
     }

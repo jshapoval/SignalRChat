@@ -1,9 +1,9 @@
 ﻿
 @import url('https://fonts.googleapis.com/css?family=Shadows+Into+Light&display=swap');
 body {
-font-family: 'Halant';
-font-size: 1.4em;
-
+    font-family: 'Roboto', sans-serif;
+    
+    font-size: 1.2em;
 }
 
 a.navbar-brand {

@@ -22,109 +22,102 @@
 
 
 <body>
-<header>
-    <nav class="navbar navbar-expand-sm flex-column flex-sm-row  navbar-dark bg-primary">
-        <div class="container">
+    <header>
+        <nav class="navbar navbar-expand-sm flex-column flex-sm-row  navbar-dark bg-primary">
+            <div class="container">
 
-            <div class="col-md-3" id="friends">
-                <form asp-action="Searching"
-                      data-ajax-begin="clearInputField" data-ajax-complete=""
-                      data-ajax-failure="alert('Fail')" data-ajax-success="findFriendInBase"
-                      data-ajax="true" data-ajax-method="POST">
-
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="d-flex form-group">
-
-                        <input name="Username" class="form-control" id="username" />
-                        <input type="submit" value="Go" id="submitButton" class="btn " />
-                    </div>
-                </form>
-            </div>
-
-            <div class="col-md-3">  
-                
-                </div>
-          
-
-
-            @*<div class="col-md-3" id="toHome">
-
-                    <div class="d-flex form-group">
-                        <style type="text/css">
-                            .my_content_container a {
-                                border-bottom: 1px solid #777777;
-                                border-left: 1px solid #6c757d;
-                                border-right: 1px solid #333333;
-                                border-top: 1px solid #6c757d;
-                                color: #000000;
-                                display: block;
-                                height: 1.5em;
-                                padding: 0 1em;
-                                width: 3em;
-                                text-decoration: none;
-                            }
-                        </style>
-
-                        <div class="my_content_container">
-                            <a href="/">Home</a>
+                <div class="col-md-3" id="friends">
+                    <form action="/home/searching" method="get" class="mt-1">
+                        <div class="d-flex form-group">
+                            <input name="Username" class="form-control" id="username"/>
+                            <input type="submit" value="Go" id="submitButton" class="btn btn-primary"/>
                         </div>
+                    </form>
+                </div>
 
-                    </div>
-            </div>*@
+                <div class="col-md-3">
+
+                </div>
 
 
-        <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-            <partial name="_LoginPartial" />
-            <a href="/" style="color:Black;">Home</a>
-            <ul class="navbar-nav flex-grow-1 text-light">
-            </ul>
-        </div>
-        </div>
-</nav>
-</header>
 
-<div class="container">
-    <partial name="_CookieConsentPartial"/>
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
-</div>
-    
-<footer class="border-top footer text-muted">
+                @*<div class="col-md-3" id="toHome">
+
+                            <div class="d-flex form-group">
+                                <style type="text/css">
+                                    .my_content_container a {
+                                        border-bottom: 1px solid #777777;
+                                        border-left: 1px solid #6c757d;
+                                        border-right: 1px solid #333333;
+                                        border-top: 1px solid #6c757d;
+                                        color: #000000;
+                                        display: block;
+                                        height: 1.5em;
+                                        padding: 0 1em;
+                                        width: 3em;
+                                        text-decoration: none;
+                                    }
+                                </style>
+
+                                <div class="my_content_container">
+                                    <a href="/">Home</a>
+                                </div>
+
+                            </div>
+                    </div>*@
+
+
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <partial name="_LoginPartial" />
+                    <a href="/" style="color:White;">Home</a>
+                    <ul class="navbar-nav flex-grow-1 text-light">
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+        @*<script src="~/js/site.js" asp-append-version="true"></script>*@
+    </environment>
+
     <div class="container">
-        &copy; 2020 - JuliaChat - <a asp-area="" asp-controller="Home" asp-action="Privacy">@*ili index?*@</a>
+        <partial name="_CookieConsentPartial" />
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
     </div>
-</footer>
 
-<environment include="Development">
-    <script src="~/lib/jquery/dist/jquery.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
-    @*<script src="~/js/site.js" asp-append-version="true"></script>*@
-</environment>
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2020 - JuliaChat - <a asp-area="" asp-controller="Home" asp-action="Privacy">@*ili index?*@</a>
+        </div>
+    </footer>
 
-
-
-
-@*naverno echo dlya exclude*@
-<environment exclude="Development">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
-            asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-            asp-fallback-test="window.jQuery"
-            crossorigin="anonymous"
-            integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
-    </script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"
-            asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
-            asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-            crossorigin="anonymous"
-            integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o">
-    </script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-</environment>
-
-@RenderSection("Scripts", required: false)
+    @*naverno echo dlya exclude*@
+    <environment exclude="Development">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+        </script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o">
+        </script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    </environment>
+ 
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
+
+
 
 
 

@@ -37,6 +37,7 @@
                         <img src="/Images/pf.jpg" width="50" height="50" alt="avatar" class="rounded-circle" />
                     </div>
 
+
                     <div class="col-md-3">
                         <div class="@containerClass @contcolor">
                             <p class="sender @textAlign">@Model.OtherUser.Login</p>
@@ -46,82 +47,58 @@
                     <div class="col-md-3 offset-4">
                         @if (relationship is null || status==RelationshipStatus.Stranger)
                         {
-                            <div class="d-flex form-group">
-                                <form asp-action="AddFriend"
-                                      data-ajax-begin="clearInputField" data-ajax-complete=""
-                                      data-ajax-failure="alert('Fail')"
-                                      data-ajax="true" data-ajax-method="POST">
+                        <div class="d-flex form-group">
+                            <form action="AddFriend">
+                                <input type="submit" value="Follow" class="btn" />
+                                <input type="hidden" value="@anotherUserId" name="anotherUserId" />
+                            </form>
 
-                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                    <input type="submit" onclick="changeButtonFollow()" value="Follow" id="followButton" class="btn" />
-                                    <input type="hidden" value="@anotherUserId" name="anotherUserId" />
-                                </form>
+                            <button id="blockActionsButton" class="block btn" data-user-id="@anotherUserId" data-action-type="block">Block</button>
 
-                                <form asp-action="Block"
-                                      data-ajax-begin="clearInputField" data-ajax-complete=""
-                                      data-ajax-failure="alert('Fail')"
-                                      data-ajax="true" data-ajax-method="POST">
+                            @*value="@anotherUserId"*@
+                            @*1<button class="block btn" data-user-id="@anotherUserId">Block</button>*@
 
-                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                    <input type="submit" onclick="changeButtonBlock()" value="Block" id="blockButton" class="btn" />
-                                    <input type="hidden" value="@anotherUserId" name="anotherUserId" />
-                                </form>
-                            </div>
+                            @*2<div id="blockButton">
+            <button data-user-id="@anotherUserId" id="1" name="block" class="btn btn-info block">Block</button>
+            <button data-user-id="@anotherUserId" id="1" name="unblock" class="btn btn-danger unblock">Unblock</button>
+        </div>*@
+                        </div>
 
                         }
                         
                         else if (relationship?.Status==RelationshipStatus.Friend)
                         {
-                            <div class="d-flex form-group">
-
-                            <form asp-action="DeleteFriend"
-                                  data-ajax-begin="clearInputField" data-ajax-complete=""
-                                  data-ajax-failure="alert('Fail')"
-                                  data-ajax="true" data-ajax-method="POST">
-
-                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                <input type="submit" onclick="changeButtonUnfollow()" value="Unfollow" id="unfollowButton" class="btn" />
-                                <input type="hidden" value="@anotherUserId" name="anotherUserId" />
-                            </form>
-
-                            <form asp-action="Block"
-                                  data-ajax-begin="clearInputField" data-ajax-complete=""
-                                  data-ajax-failure="alert('Fail')"
-                                  data-ajax="true" data-ajax-method="POST">
-
-                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                <input type="submit" onclick="changeButtonBlock()" value="Block" id="blockButton" class="btn" />
-                                <input type="hidden" value="@anotherUserId" name="anotherUserId" />
-                            </form>
-                             </div>
+                        <div class="d-flex form-group">
+                            <button class="delete btn" data-user-id="@anotherUserId">Unfollow</button>
+                           
+                            <button id="blockActionsButton" class="block btn" data-user-id="@anotherUserId" data-action-type="block">Block</button>
+                            @*1<button class="block btn" data-user-id="@anotherUserId">Block</button>*@
+                            @*2<div id="blockButton">
+                                <button data-user-id="@anotherUserId" id="1" name="block" class="btn btn-info block">Block</button>
+                                <button data-user-id="@anotherUserId" id="1" name="unblock" class="btn btn-danger unblock">Unblock</button>
+                            </div>*@
+                        </div>
                         }
 
                         else if (relationship?.Status==RelationshipStatus.BigBlockSmaller && Model.MyUser.Id== values.Last()
                                  || relationship?.Status == RelationshipStatus.SmallBlockBigger && Model.MyUser.Id == values.First())
                         {
-                            <div class="d-flex form-group">
-                            <form asp-action="AddFriend"
-                                  data-ajax-begin="clearInputField" data-ajax-complete=""
-                                  data-ajax-failure="alert('Fail')"
-                                  data-ajax="true" data-ajax-method="POST">
+                        <div class="d-flex form-group">
 
-                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                <input type="submit" onclick="changeButtonFollow()" value="Follow" id="followButton" class="btn" />
-                                <input type="hidden" value="@anotherUserId" name="anotherUserId" />
-                            </form>
-
-                            @*по идее кнопка подписки должна быть видна, но не доступна, пока заблочен*@
-
-                            <form asp-action="Unblock"
-                                  data-ajax-begin="clearInputField" data-ajax-complete=""
-                                  data-ajax-failure="alert('Fail')"
-                                  data-ajax="true" data-ajax-method="POST">
-
-                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                <input type="submit" onclick="changeButtonUnblock()" value="Unblock" id="unblockButton" class="btn" />
-                                <input type="hidden" value="@anotherUserId" name="anotherUserId" />
-                            </form>
-                          </div>
+                        @*по идее кнопка подписки должна быть видна, но не доступна, пока заблочен*@
+                             <form action="AddFriend">
+                                  <input type="submit" onclick="changeButtonFollow()" value="Follow" id="followButton" class="btn" />
+                                  <input type="hidden" value="@anotherUserId" name="anotherUserId" />
+                             </form>
+                      
+                        <button id="blockActionsButton" class="unblock btn" data-user-id="@anotherUserId" data-action-type="unblock">Unblock</button>
+                       
+                        @*1<button class="unblock btn" data-user-id="@anotherUserId">Unblock</button>*@
+                        @*2<div id="unblockButton">
+                            <button data-user-id="@anotherUserId" id="1" name="unblock" class="btn btn-info unblock">unBlock</button>
+                            <button data-user-id="@anotherUserId" id="1" name="block" class="btn btn-danger block">block</button>
+                        </div>*@
+                        </div>
 
                         }
 
@@ -154,8 +131,128 @@
         </script>
     }
 
-<script src="~/lib/signalr/signalr.min.js"></script>
+<script src="~/lib/signalr/signalr.min.js"/>
 <script src="~/lib/jquery/dist/jquery.unobtrusive-ajax.min.js"></script>
 <script src="~/js/chat.js"></script>
 <script src="~/js/signalrReqHandler.js"></script>
 
+@*<script>
+    $(function() {
+     
+        $('.block').off().on('click',
+            function () {
+                let userId = $(this).attr('data-user-id');
+
+                $.post("/home/block/" + userId, function (data) {
+                    alert("Friend in block with " + userId);
+                });
+
+                var dataString = 'userId='+ userId ;
+                var parent = $(this);
+
+                $("#blockButton").fadeOut(300);
+                $.ajax({
+                    type: "POST",
+                    data: dataString,
+                    cache: false,
+
+                    success: function(html)
+                    {
+                        $("#blockButton").html('<button id="' +userId '" name="unblock" class="btn btn-danger unblock">Unblock</button>');
+                        $("#blockButton").fadeIn(300);
+
+                    } 
+                });
+                return false;
+            });
+    });
+
+
+    $(function () {
+
+        $('.unblock').off().on('click',
+            function () {
+                let userId = $(this).attr('data-user-id');
+
+                $.post("/home/unblock/" + userId, function (data) {
+                    alert("Friend in unblock with " + userId);
+                });
+
+                var dataString = 'userId=' + userId;
+                var parent = $(this);
+
+                $("#unblockButton").fadeOut(300);
+                $.ajax({
+                    type: "POST",
+                    data: dataString,
+                    cache: false,
+
+                    success: function (html) {
+                        $("#unblockButton").html('<button id="' + userId '" name="block" class="btn btn-danger block">Block</button>');
+                        $("#unblockButton").fadeIn(300);
+
+                    }
+                });
+                return false;
+            });
+    });
+
+</script>*@
+
+<script>
+    $('.delete').off().on('click',
+        function () {
+            let userId = $(this).attr('data-user-id');
+            
+            $.post("/home/deletefriend/" + userId, function( data ) {
+                alert("You're not friends anymore with " + userId);
+            });
+        });
+</script>
+
+@*<script>
+    $('.block').off().on('click',
+        function () {
+            let userId = $(this).attr('data-user-id');
+
+            $.post("/home/block/" + userId, function (data) {
+                alert("Friend in block with " + userId);
+            });
+        });
+</script>
+
+<script>
+    $('.unblock').off().on('click',
+        function () {
+            let userId = $(this).attr('data-user-id');
+
+            $.post("/home/unblock/" + userId, function (data) {
+                alert("Friend in block with " + userId);
+            });
+        });
+</script>*@
+
+<script>
+    $('#blockActionsButton').off().on('click',
+        function () {
+            //const userId = $(this).value;
+            const actionType = $(this).attr('data-action-type');
+            let userId = $(this).attr('data-user-id');
+
+            if (actionType === 'block') {
+                $.post("/home/block/" + userId,
+                    function(data) {
+                        alert("Friend in block with " + userId);
+                        $(this).attr('data-action-type', 'unblock');
+                        $(this).text('Unblock');
+                    });
+            } else {
+                $.post("/home/unblock/" + userId,
+                    function(data) {
+                        alert("Friend unblocked");
+                        $(this).attr('data-action-type', 'block');
+                        $(this).text('Block');
+                    });
+            }
+        });
+</script>

@@ -3,6 +3,11 @@
 @{
     ViewData["Title"] = "Home Page";
     var userName = User.Identity.Name;
+    var id = Model.Id;
+    var auList = Model.FriendList;
+    var dList = Model.DialogsWithFriendsList.Count;
+    var mList = Model.MessagesList;
+
 
 }
 
@@ -10,6 +15,9 @@
 <div class="jumbotron bg-light">
 
     <div class="row">
+    @*список диалогов с друзьями*@
+    @if (Model.DialogsWithFriendsList.Count!=0)
+    {
         <div class="col-md-3" id="friends">
             Friends
 
@@ -19,80 +27,77 @@
                   data-ajax="true" data-ajax-method="POST">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="d-flex form-group">
-                    <input name="Text" class="form-control" id="messageText" />
-                        <input type="submit" value="Search" id="submitButton" class="btn " />
-                    
+                    <input name="Text" class="form-control" id="messageText"/>
+                    <input type="submit" value="Search" id="submitButton" class="btn "/>
+
                 </div>
-                <input type="hidden" value="@userName" name="username" />
+                <input type="hidden" value="@userName" name="username"/>
             </form>
 
             <p></p>
 
-            @*список друзей/диалогов*@
-            @if (Model.DialogsList.Any())
+
+            @foreach (var dialog in Model.DialogsWithFriendsList)
             {
-                foreach (var dialog in Model.DialogsList.Where(x => x.Participants.Contains(new Participant { AppUserName = userName})))
-                {
-                    string containerClass, timePosition, textAlign, contcolor, offset;
+            string containerClass, timePosition, textAlign, contcolor, offset;
 
-                    containerClass = "container";
-                    timePosition = "time-left";
-                    textAlign = "sendertext-right";
-                    contcolor = "bg-light";
-        
-                    @if (dialog.Participants.First().AppUserId == userName)
-                    {
-                        <div class="row friend" data-dialog-id="@dialog.Id" data-friend-id="@dialog.Participants.Last().AppUserId" onclick="OpenDialog">
-                            <div class="col-md-1">
-                                <img src="Images/pf.jpg"
-                                     width="50" height="50" alt="avatar" class="rounded-circle">
-                            </div>
+            containerClass = "container";
+            timePosition = "time-left";
+            textAlign = "sendertext-right";
+            contcolor = "bg-light";
 
-                            <div class="col-md-2 offset-md-2">
-                                <div class="@containerClass @contcolor">
-                                    <p class="sender @textAlign">@dialog.Participants.Last().AppUserName</p>
-                                </div>
-                            </div>
+            @if (dialog.Participants.First().AppUserName == userName)
+            {
+                <div class="row friend" data-dialog-id="@dialog.Id" data-friend-id="@dialog.Participants.Last().AppUserId" onclick="OpenDialog">
+                    <div class="col-md-1">
+                        <img src="Images/pf.jpg"
+                             width="50" height="50" alt="avatar" class="rounded-circle">
+                    </div>
+
+                    <div class="col-md-2 offset-md-2">
+                        <div class="@containerClass @contcolor">
+                            <p class="sender @textAlign">@dialog.Participants.Last().AppUserName</p>
                         </div>
-                    }
+                    </div>
+                </div>
+            }
 
-                    else
-                    {
-                        <div class="row friend" data-dialog-id="@dialog.Id" data-friend-id="@dialog.Participants.First().AppUserId" onclick="OpenDialog">
-                            <div class="col-md-1">
-                                <img src="Images/pf.jpg"
-                                     width="50" height="50" alt="avatar" class="rounded-circle">
-                            </div>
+            else
+            {
+                <div class="row friend" data-dialog-id="@dialog.Id" data-friend-id="@dialog.Participants.First().AppUserId" onclick="OpenDialog">
+                    <div class="col-md-1">
+                        <img src="Images/pf.jpg"
+                             width="50" height="50" alt="avatar" class="rounded-circle">
+                    </div>
 
-                            <div class="col-md-2 offset-md-2">
-                                <div class="@containerClass @contcolor">
-                                    <p class="sender @textAlign">@dialog.Participants.First().AppUserName</p>
-                                </div>
-                            </div>
+                    <div class="col-md-2 offset-md-2">
+                        <div class="@containerClass @contcolor">
+                            <p class="sender @textAlign">@dialog.Participants.First().AppUserName</p>
                         </div>
-                    }
-                  
+                    </div>
+                </div>
+            }
 
 
-                    <script type="text/javascript">
-                        $('.dialog').click(function () {
-                            let dialogId = $(this).attr('data-dialog-id').val;
-                            let userId = $(this).attr('data-friend-id').val;
-                        });
+
+            <script type="text/javascript">
+                $('.dialog').click(function() {
+                    let dialogId = $(this).attr('data-dialog-id').val;
+                    let userId = $(this).attr('data-friend-id').val;
+                });
 
                             
-                            @*$("#jqg").jqGrid({
+                @*$("#jqg").jqGrid({
                                 url: '@Url.Action("GetData")',
                                 datatype: "json",
                           sortname: 'Id', // сортировка по умолчанию по столбцу Id
                                 sortorder: "desc", // порядок сортировки
                             });
                         });*@
-                    </script> 
-                    <p></p>
-                }
-
+            </script>
+            <p></p>
             }
+          
 
 
         </div>
@@ -140,7 +145,7 @@
             <p></p>
         </div>
 
-        <div class="col-md-12">
+        @*<div class="col-md-12">
             <div class="col-md-9 offset-md-3">
                 <form asp-action="Send"
                       data-ajax-begin="clearInputField" data-ajax-complete=""
@@ -148,22 +153,29 @@
                       data-ajax="true" data-ajax-method="POST">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        <input name="Text" class="form-control" id="messageText" />
+                        <input name="Text" class="form-control" id="messageText"/>
                     </div>
                     <div class="form-group">
                         <div class="col-md-6 offset-md-5">
-                            <input type="submit" value="Send" id="submitButton" class="btn " />
+                            <input type="submit" value="Send" id="submitButton" class="btn "/>
                         </div>
                     </div>
-                    <input type="hidden" value="@userName" name="username" />
+                    <input type="hidden" value="@userName" name="username"/>
                 </form>
-                </div>
             </div>
+        </div>*@
 
-            <div class="col-md-12">
-                <p></p>
-            </div>
+        <div class="col-md-12">
+            <p></p>
         </div>
+
+    }
+
+    else
+    {
+        <h1>Let's find your friend soon</h1>
+    }
+    </div>
 </div>
 
 
