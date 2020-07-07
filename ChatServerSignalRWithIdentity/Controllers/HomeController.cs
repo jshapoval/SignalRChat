@@ -322,6 +322,23 @@ using ChatServerSignalRWithIdentity.Models;
             return Ok();
         }
 
+        [HttpGet("home/GetMessages/{dialogId}")]
+        public async Task<IActionResult> Index(int dialogId)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (User.Identity.IsAuthenticated)
+            {
+                ViewBag.CurrentUserName = currentUser.UserName;
+            }
+
+            var dialog = _context.Dialogs.ToList().Find(i => i.Id == dialogId);
+
+            await _context.Entry(currentUser).Collection(x => x.Messages).LoadAsync();
+            var messages = dialog.Messages;
+
+            return View(messages);
+        }
         public IActionResult Privacy()
         {
             return View();

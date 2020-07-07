@@ -15,98 +15,83 @@
 <div class="jumbotron bg-light">
 
     <div class="row">
-    @*список диалогов с друзьями*@
-    @if (Model.DialogsWithFriendsList.Count!=0)
-    {
-        <div class="col-md-3" id="friends">
-            Friends
+        @*список диалогов с друзьями*@
+        @if (Model.DialogsWithFriendsList.Count != 0)
+        {
+            <div class="col-md-3" id="friends">
+                Friends
 
-            <form asp-action="Send"
-                  data-ajax-begin="clearInputField" data-ajax-complete=""
-                  data-ajax-failure="alert('Fail')" data-ajax-success="sendMessageToPublicChat"
-                  data-ajax="true" data-ajax-method="POST">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="d-flex form-group">
-                    <input name="Text" class="form-control" id="messageText"/>
-                    <input type="submit" value="Search" id="submitButton" class="btn "/>
+                <form asp-action="Send"
+                      data-ajax-begin="clearInputField" data-ajax-complete=""
+                      data-ajax-failure="alert('Fail')" data-ajax-success="sendMessageToPublicChat"
+                      data-ajax="true" data-ajax-method="POST">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="d-flex form-group">
+                        <input name="Text" class="form-control" id="messageText" />
+                        <input type="submit" value="Search" id="submitButton" class="btn " />
 
+                    </div>
+                    <input type="hidden" value="@userName" name="username" />
+                </form>
+
+                <p></p>
+
+                <div class="scrollbar square scrollbar-lady-lips ">
+                    <div class="force-overflow">
+                        @foreach (var dialog in Model.DialogsWithFriendsList)
+                        {
+                            string containerClass, timePosition, textAlign, contcolor, offset;
+
+                            containerClass = "container";
+                            timePosition = "time-left";
+                            textAlign = "sendertext-right";
+                            contcolor = "bg-light";
+
+                            @if (dialog.Participants.First().AppUserName == userName)
+                            {
+                                <div class="row friend" data-dialog-id="@dialog.Id" data-friend-id="@dialog.Participants.Last().AppUserId" onclick="OpenDialog">
+                                    <div class="col-md-1">
+                                        <img src="Images/pf.jpg"
+                                             width="50" height="50" alt="avatar" class="rounded-circle">
+                                    </div>
+
+                                    <div class="col-md-2 offset-md-2">
+                                        <div class="@containerClass @contcolor">
+                                            <p class="sender @textAlign">@dialog.Participants.Last().AppUserName</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            else
+                            {
+                                <div class="row friend" data-dialog-id="@dialog.Id" data-friend-id="@dialog.Participants.First().AppUserId" onclick="OpenDialog">
+                                    <div class="col-md-1">
+                                        <img src="Images/pf.jpg"
+                                             width="50" height="50" alt="avatar" class="rounded-circle">
+                                    </div>
+
+                                    <div class="col-md-2 offset-md-2">
+                                        <div class="@containerClass @contcolor">
+                                            <p class="sender @textAlign">@dialog.Participants.First().AppUserName</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <p></p>
+                        }
+                    </div>
                 </div>
-                <input type="hidden" value="@userName" name="username"/>
-            </form>
 
-            <p></p>
-
-
-            @foreach (var dialog in Model.DialogsWithFriendsList)
-            {
-            string containerClass, timePosition, textAlign, contcolor, offset;
-
-            containerClass = "container";
-            timePosition = "time-left";
-            textAlign = "sendertext-right";
-            contcolor = "bg-light";
-
-            @if (dialog.Participants.First().AppUserName == userName)
-            {
-                <div class="row friend" data-dialog-id="@dialog.Id" data-friend-id="@dialog.Participants.Last().AppUserId" onclick="OpenDialog">
-                    <div class="col-md-1">
-                        <img src="Images/pf.jpg"
-                             width="50" height="50" alt="avatar" class="rounded-circle">
-                    </div>
-
-                    <div class="col-md-2 offset-md-2">
-                        <div class="@containerClass @contcolor">
-                            <p class="sender @textAlign">@dialog.Participants.Last().AppUserName</p>
-                        </div>
-                    </div>
-                </div>
-            }
-
-            else
-            {
-                <div class="row friend" data-dialog-id="@dialog.Id" data-friend-id="@dialog.Participants.First().AppUserId" onclick="OpenDialog">
-                    <div class="col-md-1">
-                        <img src="Images/pf.jpg"
-                             width="50" height="50" alt="avatar" class="rounded-circle">
-                    </div>
-
-                    <div class="col-md-2 offset-md-2">
-                        <div class="@containerClass @contcolor">
-                            <p class="sender @textAlign">@dialog.Participants.First().AppUserName</p>
-                        </div>
-                    </div>
-                </div>
-            }
+               
+            </div>
 
 
-
-            <script type="text/javascript">
-                $('.dialog').click(function() {
-                    let dialogId = $(this).attr('data-dialog-id').val;
-                    let userId = $(this).attr('data-friend-id').val;
-                });
-
-                            
-                @*$("#jqg").jqGrid({
-                                url: '@Url.Action("GetData")',
-                                datatype: "json",
-                          sortname: 'Id', // сортировка по умолчанию по столбцу Id
-                                sortorder: "desc", // порядок сортировки
-                            });
-                        });*@
-            </script>
-            <p></p>
-            }
-          
-
-
-        </div>
-
-
-        @*сообщения*@
-        <div class="col-md-9" id="chat">
-            @if (Model.MessagesList.Any())
-            {
+            @*сообщения       (Model.MessagesList.Any() && *@
+            <div class="col-md-9" id="chat">
+                @*@if (Model?.MessagesList?.First().DialogId == @selectedDialogId)
+                {
                 @foreach (var message in Model.MessagesList.OrderBy(m => m.CreatedUtc))
                 {
                     string containerClass, timePosition, textAlign, contcolor, offset;
@@ -137,44 +122,44 @@
                         </div>
                     </div>
                 }
-            }
-        </div>
-
-
-        <div class="col-md-12">
-            <p></p>
-        </div>
-
-        @*<div class="col-md-12">
-            <div class="col-md-9 offset-md-3">
-                <form asp-action="Send"
-                      data-ajax-begin="clearInputField" data-ajax-complete=""
-                      data-ajax-failure="alert('Fail')" data-ajax-success="sendMessageToPublicChat"
-                      data-ajax="true" data-ajax-method="POST">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group">
-                        <input name="Text" class="form-control" id="messageText"/>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-md-6 offset-md-5">
-                            <input type="submit" value="Send" id="submitButton" class="btn "/>
-                        </div>
-                    </div>
-                    <input type="hidden" value="@userName" name="username"/>
-                </form>
+                }*@
             </div>
-        </div>*@
 
-        <div class="col-md-12">
-            <p></p>
-        </div>
 
-    }
+            <div class="col-md-12">
+                <p></p>
+            </div>
 
-    else
-    {
-        <h1>Let's find your friend soon</h1>
-    }
+            @*<div class="col-md-12">
+                <div class="col-md-9 offset-md-3">
+                    <form asp-action="Send"
+                          data-ajax-begin="clearInputField" data-ajax-complete=""
+                          data-ajax-failure="alert('Fail')" data-ajax-success="sendMessageToPublicChat"
+                          data-ajax="true" data-ajax-method="POST">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <input name="Text" class="form-control" id="messageText"/>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-6 offset-md-5">
+                                <input type="submit" value="Send" id="submitButton" class="btn "/>
+                            </div>
+                        </div>
+                        <input type="hidden" value="@userName" name="username"/>
+                    </form>
+                </div>
+            </div>*@
+
+            <div class="col-md-12">
+                <p></p>
+            </div>
+
+        }
+
+        else
+        {
+            <h1>Let's find your friend soon</h1>
+        }
     </div>
 </div>
 
@@ -185,6 +170,26 @@
         const userName = "@ViewBag.CurrentUserName";
     </script>
 }
+
+
+<script type="text/javascript">
+    $('.dialog').click(function() {
+        let dialogId = $(this).attr('data-dialog-id').val;
+        let userId = $(this).attr('data-friend-id').val;
+
+        $.post("/home/getmessages/" + dialogId, function( data ) {
+            //   alert("You're not friends anymore with " + userId);
+        });
+    });
+
+    @*$("#jqg").jqGrid({
+       url: '@Url.Action("GetData")',
+        datatype: "json",
+    sortname: 'Id', // сортировка по умолчанию по столбцу Id
+    sortorder: "desc", // порядок сортировки
+                    });
+     });*@
+</script>
 
 <script src="~/lib/signalr/signalr.min.js"></script>
 <script src="~/lib/jquery/dist/jquery.unobtrusive-ajax.min.js"></script>
