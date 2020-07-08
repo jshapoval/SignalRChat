@@ -16,7 +16,7 @@
         crossorigin="anonymous"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
     </environment>
-    <link rel="stylesheet" href="https://use.fontawesome.com/release/v5.8.2/css/all.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 
@@ -24,13 +24,16 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-sm flex-column flex-sm-row  navbar-dark bg-primary">
-            <div class="container">
+            <div class="container" >
 
                 <div class="col-md-3" id="friends">
-                    <form action="/home/searching" method="get" class="mt-1">
-                        <div class="d-flex form-group">
+                    <form action="/home/searching" method="get">
+
+                        <div class="d-flex form-group" id="searchNewFriend">
                             <input name="Username" class="form-control" id="username"/>
-                            <input type="submit" value="Go" id="submitButton" class="btn btn-primary"/>
+                            <button type="submit"  id="goSubmitButton" class="btn btn-primary">
+                                <i class="fas fa-search text-white" aria-hidden="true"></i>
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -41,35 +44,9 @@
 
 
 
-                @*<div class="col-md-3" id="toHome">
-
-                            <div class="d-flex form-group">
-                                <style type="text/css">
-                                    .my_content_container a {
-                                        border-bottom: 1px solid #777777;
-                                        border-left: 1px solid #6c757d;
-                                        border-right: 1px solid #333333;
-                                        border-top: 1px solid #6c757d;
-                                        color: #000000;
-                                        display: block;
-                                        height: 1.5em;
-                                        padding: 0 1em;
-                                        width: 3em;
-                                        text-decoration: none;
-                                    }
-                                </style>
-
-                                <div class="my_content_container">
-                                    <a href="/">Home</a>
-                                </div>
-
-                            </div>
-                    </div>*@
-
-
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="_LoginPartial" />
-                    <a href="/" style="color:White;">Home</a>
+                    <a href="/" style="color:White; font-size: 1rem">Home</a>
                     <ul class="navbar-nav flex-grow-1 text-light">
                     </ul>
                 </div>
@@ -83,16 +60,18 @@
         @*<script src="~/js/site.js" asp-append-version="true"></script>*@
     </environment>
 
-    <div class="container">
+    <div class="container" id="Main">
         <partial name="_CookieConsentPartial" />
-        <main role="main" class="pb-3">
+        <main role="main" class="pb-1" id="indexMain">
             @RenderBody()
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2020 - JuliaChat - <a asp-area="" asp-controller="Home" asp-action="Privacy">@*ili index?*@</a>
+        <div class="container" id="footerContainer">
+            <p style="margin-top: 0.5rem">
+                &copy; 2020 - JuliaChat - <a style="font-size: 1rem" asp-area="" asp-controller="Home" asp-action="Privacy">@*ili index?*@</a>
+            </p> 
         </div>
     </footer>
 

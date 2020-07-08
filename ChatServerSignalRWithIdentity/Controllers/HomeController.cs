@@ -44,7 +44,7 @@ using ChatServerSignalRWithIdentity.Models;
             }
 
             var users = await _context.AspNetUsers.ToListAsync(); 
-            var messages = await _context.Messages.ToListAsync();
+           // var messages = await _context.Messages.ToListAsync();
             var dialogs = await _context.Dialogs.Include(x => x.Participants).ToListAsync();
 
             //в модель передать тех пользователей, с кем статус друзья пока что
@@ -75,8 +75,9 @@ using ChatServerSignalRWithIdentity.Models;
 
             var response = new ChatModel
           {
+              CallerId = currentUser.Id,
               FriendList = _mapper.Map<List<AppUser>>(friends),
-              MessagesList = _mapper.Map<List<Message>>(messages),
+            //  MessagesList = _mapper.Map<List<Message>>(messages),
               DialogsWithFriendsList = _mapper.Map<List<Dialog>>(dialogsWithFriends)
           };
 
@@ -323,7 +324,7 @@ using ChatServerSignalRWithIdentity.Models;
         }
 
         [HttpGet("home/GetMessages/{dialogId}")]
-        public async Task<IActionResult> Index(int dialogId)
+        public async Task<IActionResult> GetMessages(int dialogId)
         {
             var currentUser = await _userManager.GetUserAsync(User);
 
@@ -337,7 +338,7 @@ using ChatServerSignalRWithIdentity.Models;
             await _context.Entry(currentUser).Collection(x => x.Messages).LoadAsync();
             var messages = dialog.Messages;
 
-            return View(messages);
+            return PartialView("Messages", messages);
         }
         public IActionResult Privacy()
         {

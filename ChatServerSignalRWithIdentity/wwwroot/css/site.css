@@ -48,19 +48,106 @@ html {
 
 body {
   /* Margin bottom by footer height */
-  margin-bottom: 60px;
+  margin-bottom: 0px;
+    height: 700px;
 }
 .footer {
-  position: absolute;
+  /*position: absolute;*/
+    position: fixed
   bottom: 0;
   width: 100%;
   white-space: nowrap;
-  /* Set the fixed height of the footer here */
-  height: 60px;
-  line-height: 60px; /* Vertically center the text there */
+  height: 20px;
+ /* line-height: 60px; */
+}
+#indexMain {
+    margin-bottom: 0px;
+    height: 600px;
+}
+#mainContainer {
+    height: 650px;
+    padding-top: 1rem;
+    padding-bottom: 0rem;
 }
 
+#Main {
+    height: 650px
+}
 
+#friendsAndChat {
+    height: 100%;
+    overflow: hidden;
+}
+
+#rowForMessageScroll {
+    height: 580px;
+    margin-bottom: 10px;
+    
+   /* overflow: hidden;*/
+}
+
+#searchDialog {
+    padding-bottom: 25px;
+}
+
+#goSubmitButton {
+
+}
+#dialogRow {
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+#friends {
+    height: 100%;
+}
+
+#chat {
+    height: 100%;
+}
+
+#friendsBar {
+   overflow-y: scroll;
+    overflow-x: hidden;
+    height: 540px;
+}
+
+#messagesBar {
+    overflow-y: scroll;
+    padding-bottom: 10px;
+}
+
+#senderForDialog {
+    font-size: 15px;
+    }
+#loginContainer {
+    padding-left: 0px;
+}
+#logout {
+    padding-left: 15px;
+}
+#hello {
+    font-size: 1rem;
+    padding-left: 30px;
+}
+
+#footerContainer {
+    height: 40px;
+    padding-left: 45px;
+
+}
+#searchNewFriend {
+    margin-bottom: 0rem;
+    margin-left: 20px;
+}
+/*#friends {
+    height: 50%;
+}
+
+#chat {
+    height: 50%;*/
+/*   background: #e7ebf0;*/
+/*}*/
 /* Chat containers */
 #chat .container {
     border: 2px solid #dedede;
@@ -70,7 +157,7 @@ body {
     margin: 1px 0;
     width: 100%;
     font-family: "Open Sans", serif;
-   /* overflow-wrap: break-word;*/
+    /* overflow-wrap: break-word;*/
     word-wrap: break-word;
 }
 

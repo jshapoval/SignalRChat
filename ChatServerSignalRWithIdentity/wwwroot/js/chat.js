@@ -22,6 +22,15 @@ document.getElementById('submitButton').addEventListener('click', () => {
         + currentdate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
 });
 
+document.getElementById('goSubmitButton').addEventListener('click', () => {
+    var currentdate = new Date();
+    CreatedUtc.innerHTML =
+        (currentdate.getMonth() + 1) + "/"
+        + currentdate.getDate() + "/"
+        + currentdate.getFullYear() + " "
+        + currentdate.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+});
+
 function clearInputField() {
     messagesQueue.push(textInput.value);
     textInput.value = "";
