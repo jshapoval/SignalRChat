@@ -8,8 +8,7 @@
     var userName = User.Identity.Name;
     var myUserId = Model.MyUser.Id;
     var otherUserId = Model.OtherUser.Id;
-    var values = new[] { myUserId, otherUserId }.OrderBy(x => x).ToArray();
-    var relationship = Model.MyUser.Relationships.ToList().Find(i => i.Id == String.Concat(values.First(), values.Last()));
+  
     var status = Model.Status;
 }
 
@@ -18,8 +17,11 @@
 
     <div class="row">
 
-        @if (Model != null)
+        @if (Model.OtherUser.Id != null)
         {
+            var values = new[] { myUserId, otherUserId }.OrderBy(x => x).ToArray();
+            var relationship = Model.MyUser.Relationships.ToList().Find(i => i.Id == String.Concat(values.First(), values.Last()));
+
             string containerClass, timePosition, textAlign, contcolor, offset;
 
             containerClass = "container";
@@ -116,7 +118,7 @@
 
         else
         {
-            <h1>No result</h1>
+            <h1 style="margin-left: 2rem">No result</h1>
         }
 
     </div>

@@ -3,25 +3,48 @@
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
 
-<ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
-{
-    <li class="nav-item">
-        <a  class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" id="hello">Hello @User.Identity.Name!</a>
-    </li>
-    <li class="nav-item" id="logout">
-        <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button  type="submit" class="nav-link btn btn-link text-light" style="font-size: 1rem">Logout</button>
-        </form>
-    </li>
-}
-else
-{
-    <li class="nav-item">
-        <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
-}
-</ul>
+    <ul class="navbar-nav" id="headerNavbar">
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <div class="col-md-3" id="friends">
+                <form action="/home/searching" method="get">
+
+                    <div class="d-flex form-group" id="searchNewFriend">
+                        <input name="Username" class="form-control" id="username"/>
+                        <button type="submit"  id="goSubmitButton" class="btn btn-primary">
+                            <i class="fas fa-search text-white" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="col-md-5" style="margin-left: 40px;"></div>
+
+            <li>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <a href="/" style="color:White; font-size: 1rem; margin-top:0.5rem">Home</a>
+                    <ul class="navbar-nav flex-grow-1 text-light">
+                    </ul>
+                </div>
+
+            </li>
+           
+            <li class="nav-item">
+                <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" id="hello">Hello @User.Identity.Name!</a>
+            </li>
+            <li class="nav-item" id="logout">
+                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button type="submit" class="nav-link btn btn-link text-light" style="font-size: 1rem">Logout</button>
+                </form>
+            </li>
+        }
+        else
+        {
+            <li class="nav-item">
+                <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Register">Register</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Login">Login</a>
+            </li>
+        }
+    </ul>

@@ -154,6 +154,7 @@ using ChatServerSignalRWithIdentity.Models;
                 else
                 {
                     status = relationship.Status;
+                  
                 }
 
                 newFriend = _mapper.Map<AppUserResponse>(otherUser);
