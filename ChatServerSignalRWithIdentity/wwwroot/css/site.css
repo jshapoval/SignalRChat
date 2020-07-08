@@ -119,7 +119,8 @@ body {
 
 #senderForDialog {
     font-size: 15px;
-    }
+    font-weight: bold;
+}
 #loginContainer {
     padding-left: 0px;
 }

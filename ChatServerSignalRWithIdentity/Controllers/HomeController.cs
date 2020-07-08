@@ -44,7 +44,7 @@ using ChatServerSignalRWithIdentity.Models;
             }
 
             var users = await _context.AspNetUsers.ToListAsync(); 
-           // var messages = await _context.Messages.ToListAsync();
+            var messages = await _context.Messages.ToListAsync();
             var dialogs = await _context.Dialogs.Include(x => x.Participants).ToListAsync();
 
             //в модель передать тех пользователей, с кем статус друзья пока что
@@ -77,7 +77,7 @@ using ChatServerSignalRWithIdentity.Models;
           {
               CallerId = currentUser.Id,
               FriendList = _mapper.Map<List<AppUser>>(friends),
-            //  MessagesList = _mapper.Map<List<Message>>(messages),
+              MessagesList = _mapper.Map<List<Message>>(messages),
               DialogsWithFriendsList = _mapper.Map<List<Dialog>>(dialogsWithFriends)
           };
 

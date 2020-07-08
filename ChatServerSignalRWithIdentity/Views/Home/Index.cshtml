@@ -29,33 +29,39 @@
 
                 <div class="scrollbar scrollbar-gray bordered-gray thin" id="friendsBar">
                     <div class="force-overflow">
-                        @foreach (var dialog in Model.DialogsWithFriendsList)
+                        @foreach (var dialog in Model.DialogsWithFriendsList.OrderBy(m => m.Id))
+                        //    @foreach (var dialog in Model.DialogsWithFriendsList)                Descending
                         {
                             string containerClass, timePosition, textAlign, contcolor, offset;
 
                             containerClass = "container";
                             timePosition = "time-left";
-                            textAlign = "sendertext-right";
+                            textAlign = "sendertext-left";
                             contcolor = "bg-light";
 
                             var participant = dialog.Participants.FirstOrDefault(i => i.AppUserId != userId);
-                          
-                        <div class="border-bottom" id="bordersForDialog">
-                            <div class="row friend" data-dialog-id="@dialog.Id" data-friend-id="@participant.AppUserId" id="dialogRow">
-                                <div class="col-md-1">
-                                    <img src="Images/pf.jpg"
-                                         width="50" height="50" alt="avatar" class="rounded-circle">
-                                </div>
 
-                                <div class="col-md-2 offset-md-2">
-                                    <div class="@containerClass @contcolor" id="loginContainer">
-                                        <p class="sender @textAlign" id="senderForDialog">@participant.AppUserName</p>
+                            var msg = dialog.Messages.Count != 0 ? (dialog.Messages.OrderBy(t => t.CreatedUtc).Last().Text) : ("");
+                            //   var msg = dialog?.Messages?.OrderBy(t=>t.CreatedUtc).Last();
+
+                            <div class="border-bottom" id="bordersForDialog">
+                                <div class="row friend" data-dialog-id="@dialog.Id" data-friend-id="@participant.AppUserId" id="dialogRow">
+                                    <div class="col-md-1">
+                                        <img src="Images/pf.jpg"
+                                             width="50" height="50" alt="avatar" class="rounded-circle">
+                                    </div>
+
+                                    <div class="col-md-2 offset-md-2">
+                                        <div class="@containerClass @contcolor" id="loginContainer" style="width: 130px;">
+                                            <p class="sender @textAlign" id="senderForDialog">@participant.AppUserName</p>
+                                            <p></p>
+                                            <p class="sender @textAlign" style="font-size: 12px; text-overflow: ellipsis; margin-bottom: 0px">@msg</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         }
-                        </div>
+                    </div>
                 </div>
             </div>
 

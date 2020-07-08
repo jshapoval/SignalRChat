@@ -13,7 +13,7 @@ namespace ChatServerSignalRWithIdentity.Models
         public string CallerId { get; set; }
         public List<AppUser> FriendList { get; set; }
         public List<Dialog> DialogsWithFriendsList { get; set; }
-    //    public List<Message> MessagesList { get; set; }
+        public List<Message> MessagesList { get; set; }
 
     }
 }
