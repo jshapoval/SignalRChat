@@ -176,6 +176,7 @@ body {
 #chat .darker {
     border-color: #fff;
     background-color: #6c757d;
+    float: right;
 }
 
 /* Clear floats */

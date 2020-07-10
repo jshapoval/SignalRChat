@@ -78,10 +78,10 @@ using ChatServerSignalRWithIdentity.Models;
               CallerId = currentUser.Id,
               FriendList = _mapper.Map<List<AppUser>>(friends),
               MessagesList = _mapper.Map<List<Message>>(messages),
-              DialogsWithFriendsList = _mapper.Map<List<Dialog>>(dialogsWithFriends)
+              DialogsWithFriendsList = _mapper.Map<List<Dialog>>(dialogsWithFriends),
           };
 
-          return View(response);
+            return View(response);
         }
 
 
@@ -97,7 +97,7 @@ using ChatServerSignalRWithIdentity.Models;
                 if (dialog is null)
                 {
                     dialog = new Dialog
-                    {
+                    {   LastActivityUtc = DateTime.UtcNow,
                         Participants = new List<Participant>
                             {new Participant {AppUserId = myUser.Id, AppUserName = myUser.UserName}, new Participant {AppUserId = anotherUser.Id, AppUserName = anotherUser.UserName}}
                     };
@@ -111,6 +111,10 @@ using ChatServerSignalRWithIdentity.Models;
                 message.UserName = myUser.UserName;
                 message.SenderId = myUser.Id;
                 message.DialogId = dialog.Id;
+                //добавляю поля еще те, что ниже
+                message.Text = messageModel.Text;
+                message.CreatedUtc=DateTime.UtcNow;
+                dialog.LastActivityUtc=DateTime.UtcNow;
 
                 //var dialog = _context.Dialogs.FirstOrDefaultAsync(x=>x.Participants.Any(y=>y.AppUserId == sender.Id) && x.Participants.Any(y => y.AppUserId == sender.Id))
                 await _context.Messages.AddAsync(message);
@@ -173,7 +177,7 @@ using ChatServerSignalRWithIdentity.Models;
         }
 
 
-       // [HttpGet("home/AddFriend/{anotherUserId}")]
+       // [HttpGet("home/AddFriend/{anotherUs erId}")]
         public async Task<IActionResult> AddFriend(string anotherUserId)
         {
             var currentUser = await _userManager.GetUserAsync(User);
@@ -211,6 +215,7 @@ using ChatServerSignalRWithIdentity.Models;
                     new Participant {AppUserId = currentUser.Id, AppUserName = currentUser.UserName},
                     new Participant {AppUserId = anotherUser.Id, AppUserName = anotherUser.UserName}
                 };
+                dialog.LastActivityUtc=DateTime.UtcNow;
             }
 
             //////await _context.Entry(anotherUser).Collection(x => x.Relationships).LoadAsync();
@@ -324,8 +329,8 @@ using ChatServerSignalRWithIdentity.Models;
             return Ok();
         }
 
-        [HttpGet("home/GetMessages/{dialogId}")]
-        public async Task<IActionResult> GetMessages(int dialogId)
+       // [HttpGet("home/GetMessages/{dialogId}")]
+        public async Task<IActionResult> GetMessages(int dialogId, string userId)
         {
             var currentUser = await _userManager.GetUserAsync(User);
 
@@ -336,10 +341,18 @@ using ChatServerSignalRWithIdentity.Models;
 
             var dialog = _context.Dialogs.ToList().Find(i => i.Id == dialogId);
 
-            await _context.Entry(currentUser).Collection(x => x.Messages).LoadAsync();
-            var messages = dialog.Messages;
+            var otherUser = _context.AspNetUsers.ToList().Find(i => i.Id == userId);
 
-            return PartialView("Messages", messages);
+            await _context.Entry(currentUser).Collection(x => x.Messages).LoadAsync();
+            await _context.Entry(otherUser).Collection(x => x.Messages).LoadAsync();
+            var messages = dialog.Messages.ToList();
+
+            //var response = new ChatModel
+            //{
+            //    MessagesFromOneUser = messages.ToList()
+            //};
+
+            return PartialView("_Messages", messages);
         }
         public IActionResult Privacy()
         {
