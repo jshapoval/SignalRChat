@@ -96,6 +96,10 @@ namespace ChatServerSignalRWithIdentity
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapHub<ChatHub>("/chat");
+            //});
         }
     }
 }

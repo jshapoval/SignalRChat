@@ -62,16 +62,17 @@ body {
 }
 #indexMain {
     margin-bottom: 0px;
-    height: 600px;
+    height: 690px;
 }
 #mainContainer {
-    height: 650px;
-    padding-top: 1rem;
+    height: 690px;
+    padding-top: 0.2rem;
     padding-bottom: 0rem;
+    background: #d5dce3;
 }
 
 #Main {
-    height: 650px
+    height: 690px
 }
 
 #friendsAndChat {
@@ -80,7 +81,7 @@ body {
 }
 
 #rowForMessageScroll {
-    height: 580px;
+    height: 620px;
     margin-bottom: 10px;
     
    /* overflow: hidden;*/
@@ -96,6 +97,8 @@ body {
 #dialogRow {
     padding-bottom: 5px;
     padding-top: 5px;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
 }
 
 #friends {
@@ -109,20 +112,40 @@ body {
 #friendsBar {
    overflow-y: scroll;
     overflow-x: hidden;
-    height: 540px;
+    height: 580px;
 }
 
 #messagesBar {
     overflow-y: scroll;
+    overflow-x: hidden;
     padding-bottom: 10px;
+}
+#sendButton{ 
+    width: 65px;
+    height: 38px;
+    margin-left: 5px;
+}
+#messageText {
+    padding-left: 0px;
+    margin-left: 0px;
+    width: 710px;
+}
+
+textAndButtonForSend {
+    padding-left: 0px;
+    margin-left: 0px;
+    width: 690px;
 }
 
 #senderForDialog {
     font-size: 15px;
     font-weight: bold;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
 }
 #loginContainer {
     padding-left: 0px;
+    width: 170px;
 }
 #logout {
     padding-left: 15px;
@@ -177,6 +200,8 @@ body {
     border-color: #fff;
     background-color: #6c757d;
     float: right;
+    border-color: #4972a6;
+    margin-right: 10px;
 }
 
 /* Clear floats */

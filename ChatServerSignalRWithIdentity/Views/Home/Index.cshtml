@@ -11,13 +11,13 @@
 
 
 
-<div class="jumbotron bg-light" id="mainContainer">
+<div class="jumbotron" id="mainContainer">
 
     <div class="row" id="friendsAndChat">
         @*список диалогов с друзьями*@
         @if (Model.DialogsWithFriendsList.Count != 0)
         {
-            <div class="col-md-3" id="friends">
+            <div class="col-md-3" id="friends" style="padding-top:1rem">
                 Friends
 
                 <form class="form-inline d-flex md-form form-sm active-cyan active-cyan-2 mt-2" id="searchDialog">
@@ -31,21 +31,19 @@
                 <div class="scrollbar scrollbar-gray bordered-gray thin" id="friendsBar">
                     <div class="force-overflow">
                         @foreach (var dialog in Model.DialogsWithFriendsList.OrderByDescending(m => m.LastActivityUtc))
-                        //    @foreach (var dialog in Model.DialogsWithFriendsList)
                         {
                             string containerClass, timePosition, textAlign, contcolor, offset;
 
                             containerClass = "container";
                             timePosition = "time-left";
                             textAlign = "sendertext-left";
-                            contcolor = "bg-light";
+                            
 
                             var participant = dialog.Participants.FirstOrDefault(i => i.AppUserId != userId);
 
                             var msg = dialog.Messages.Count != 0 ? (dialog.Messages.OrderBy(t => t.CreatedUtc).Last().Text) : ("");
-                            //   var msg = dialog?.Messages?.OrderBy(t=>t.CreatedUtc).Last();
 
-                            <div class="border-bottom" id="bordersForDialog">
+                            <div class="border-bottom" id="bordersForDialog" style="        border-color: #bab6b6">
                                 <div class="row friend" data-dialog-id="@dialog.Id" data-friend-id="@participant.AppUserId" id="dialogRow">
                                     <div class="col-md-1">
                                         <img src="Images/pf.jpg"
@@ -53,7 +51,7 @@
                                     </div>
 
                                     <div class="col-md-2 offset-md-2">
-                                        <div class="@containerClass @contcolor" id="loginContainer" style="width: 130px;">
+                                        <div class="@containerClass" id="loginContainer">
                                             <p class="sender @textAlign" id="senderForDialog">@participant.AppUserName</p>
                                             <p class="sender @textAlign" style="font-size: 12px; text-overflow: ellipsis; margin-bottom: 0px">@msg</p>
                                         </div>
@@ -72,35 +70,30 @@
 
                     <div class="scrollbar scrollbar-indigo bordered-indigo" id="messagesBar">
                         <div class="force-overflow">
-                            
+
                             <div id="viewPlaceHolder">
 
                             </div>
                             <br /><br />
-                            @*<partial name="_Messages"/>*@
-                            @*@Html.Partial("_Messages")*@
-
-                            @*@await Html.PartialAsync("Messages")*@
-
                         </div>
                     </div>
                 </div>
 
 
-                <form asp-action="Send"
-                      data-ajax-begin="clearInputField" data-ajax-complete=""
-                      data-ajax-failure="alert('Fail')" data-ajax-success="sendMessageToPublicChat"
-                      data-ajax="true" data-ajax-method="POST">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="d-flex form-group">
+                <div class="row" id="rowForMessageScroll">
+                    <div class="d-flex form-group" id="textAndButtonForSend">
                         <input name="Text" class="form-control" id="messageText" />
 
-                        @*<button type="button" class="btn btn-outline-primary" id="submitButton" value="Send">Send</button>*@
-                        <input type="submit" value="Send" id="submitButton" class="btn " />
+                        <button type="button" class="btn btn-outline-primary" id="sendButton">Send</button>
                     </div>
+                </div>
 
-                    <input type="hidden" value="@userName" name="username" />
-                </form>
+                @*<div id="inputForm">
+                        <input type="text" id="message" />
+                        <input type="button" id="sendBtn" value="Отправить" />
+                    </div>*@
+
+                <input type="hidden" value="@userName" name="username" />
             </div>
 
 
@@ -123,29 +116,74 @@
 
 
 
-<script type="text/javascript">
-    $('.dialog').click(function() {
-        let dialogId = $(this).attr('data-dialog-id').val;
-        let userId = $(this).attr('data-friend-id').val;
 
-        $("#messagesBar").load("/home/getmessages/" + dialogId);
-        //$.get("/home/getmessages/" + dialogId, function( data ) {
-        //    //   alert("You're not friends anymore with " + userId);
-        //});
+<script>
+    var _dialogId;
+    $(".row.friend").click(function () {
+        var dialogId = $(this).attr('data-dialog-id');
+        var userId = $(this).attr('data-friend-id');
+
+        $("#viewPlaceHolder").load("/home/getmessages", { dialogId: dialogId });
+        _dialogId = dialogId;
     });
 </script>
 
 
-
+<script>
+    var _dialogId;
+    $("#dialogRow").click(function () {
+        var dialogId = $(this).attr('data-dialog-id');
+        var userId = $(this).attr('data-friend-id');
+        _dialogId = dialogId;
+        $("#viewPlaceHolder").load("/home/getmessages", { dialogId: dialogId }, function (data) {
+            _dialogId = dialogId;
+        });
+        
+    });
+</script>
 
 <script>
-        $("#dialogRow").click(function()  {
-            var dialogId = $(this).attr('data-dialog-id');
-            var userId = $(this).attr('data-friend-id');
+    $("#sendButton").off().on('click',
+        function () {
+            let text = document.getElementById("messageText").value;
 
-            $("#viewPlaceHolder").load("/home/getmessages", { dialogId: dialogId, userId: userId });
+            $.post("/home/send/", { text: text, dialogId: _dialogId });
+            $("#viewPlaceHolder").load("/home/getmessages", { dialogId: dialogId });
         });
 </script>
+
+
+@*<script>
+        const hubConnection = new signalR.HubConnectionBuilder()
+            .withUrl("/chat")
+            .build();
+
+        var dialogId = 0;
+
+
+        // получение сообщения от сервера
+        //hubConnection.on('Send', function (text, dialogId) {
+        //    // создает элемент <p> для сообщения пользователя
+        //    let elem = document.createElement("p");
+        //    elem.appendChild(document.createTextNode(text));
+
+        //    var firstElem = document.getElementById("chatroom").firstChild;
+        //    document.getElementById("chatroom").insertBefore(elem, firstElem);
+        //});
+
+        // установка имени пользователя
+        //document.getElementById("loginBtn").addEventListener("click", function (e) {
+        //    userName = document.getElementById("userName").value;
+        //    document.getElementById("header").innerHTML = '<h3>Welcome ' + userName + '</h3>';
+        //});
+        // отправка сообщения на сервер
+        document.getElementById("sendButton").addEventListener("click", function (e) {
+            let text = document.getElementById("messageText").value;
+            hubConnection.invoke("Send", text, dialogId);
+        });
+
+        hubConnection.start();
+    </script>*@
 
 <script src="~/lib/signalr/signalr.min.js"></script>
 <script src="~/lib/jquery/dist/jquery.unobtrusive-ajax.min.js"></script>

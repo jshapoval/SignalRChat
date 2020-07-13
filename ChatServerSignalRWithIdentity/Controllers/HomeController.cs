@@ -84,39 +84,51 @@ using ChatServerSignalRWithIdentity.Models;
             return View(response);
         }
 
-
-        public async Task<IActionResult> Send(MessageModel messageModel)
+       [HttpPost("home/Send/")]
+        public async Task<IActionResult> Send(string text, int dialogId)
         {
             if (ModelState.IsValid)
             {
-                var dialog = await _context.Dialogs.FindAsync(messageModel.DialogId);
+                var dialog =  await _context.Dialogs
+                    .Include(x => x.Participants).Include(m => m.Messages).FirstOrDefaultAsync(x =>
+                        x.Id.Equals(dialogId));
 
-                var myUser = await _userManager.GetUserAsync(User);
-                var anotherUser = await _userManager.FindByIdAsync(messageModel.UserId);
+                
+                    var myUser = await _userManager.GetUserAsync(User);
+                    var anotherUser = dialog.Participants.FirstOrDefault(i => i.AppUserId != myUser.Id);
 
-                if (dialog is null)
+                //if(dialog is null)
+                //{
+                //    dialog = new Dialog
+                //    {
+                //        LastActivityUtc = DateTime.UtcNow,
+                //        Participants = new List<Participant>
+                //            {new Participant {AppUserId = myUser.Id, AppUserName = myUser.UserName}, new Participant {AppUserId = anotherUser.Id, AppUserName = anotherUser.UserName}}
+                //    };
+
+                //    await _context.Dialogs.AddAsync(dialog);
+                //    await _context.SaveChangesAsync();
+                //}
+
+                var messageModel = new MessageModel
                 {
-                    dialog = new Dialog
-                    {   LastActivityUtc = DateTime.UtcNow,
-                        Participants = new List<Participant>
-                            {new Participant {AppUserId = myUser.Id, AppUserName = myUser.UserName}, new Participant {AppUserId = anotherUser.Id, AppUserName = anotherUser.UserName}}
-                    };
-
-                    await _context.Dialogs.AddAsync(dialog);
-                    await _context.SaveChangesAsync();
-                }
+                    DialogId = dialogId,
+                    UserId = myUser.Id,
+                    Text = text
+                };
 
                 var message = _mapper.Map<Message>(messageModel);
-                
+
                 message.UserName = myUser.UserName;
                 message.SenderId = myUser.Id;
+                message.OwnerId = anotherUser.AppUserId;
                 message.DialogId = dialog.Id;
+
                 //добавляю поля еще те, что ниже
                 message.Text = messageModel.Text;
-                message.CreatedUtc=DateTime.UtcNow;
-                dialog.LastActivityUtc=DateTime.UtcNow;
+                message.CreatedUtc = DateTime.UtcNow;
+                dialog.LastActivityUtc = DateTime.UtcNow;
 
-                //var dialog = _context.Dialogs.FirstOrDefaultAsync(x=>x.Participants.Any(y=>y.AppUserId == sender.Id) && x.Participants.Any(y => y.AppUserId == sender.Id))
                 await _context.Messages.AddAsync(message);
                 await _context.SaveChangesAsync();
 
@@ -330,7 +342,7 @@ using ChatServerSignalRWithIdentity.Models;
         }
 
        // [HttpGet("home/GetMessages/{dialogId}")]
-        public async Task<IActionResult> GetMessages(int dialogId, string userId)
+        public async Task<IActionResult> GetMessages(int dialogId)
         {
             var currentUser = await _userManager.GetUserAsync(User);
 
@@ -339,18 +351,9 @@ using ChatServerSignalRWithIdentity.Models;
                 ViewBag.CurrentUserName = currentUser.UserName;
             }
 
-            var dialog = _context.Dialogs.ToList().Find(i => i.Id == dialogId);
-
-            var otherUser = _context.AspNetUsers.ToList().Find(i => i.Id == userId);
-
-            await _context.Entry(currentUser).Collection(x => x.Messages).LoadAsync();
-            await _context.Entry(otherUser).Collection(x => x.Messages).LoadAsync();
-            var messages = dialog.Messages.ToList();
-
-            //var response = new ChatModel
-            //{
-            //    MessagesFromOneUser = messages.ToList()
-            //};
+            var dialog = await _context.Dialogs.Where(i => i.Id == dialogId).Include(x => x.Messages).Include(p => p.Participants).ToListAsync();
+           
+            var messages = dialog.First().Messages.ToList();
 
             return PartialView("_Messages", messages);
         }

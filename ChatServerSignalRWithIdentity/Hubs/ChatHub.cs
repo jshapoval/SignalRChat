@@ -12,15 +12,23 @@ namespace ChatServerSignalRWithIdentity.Hubs
 {
     public class ChatHub : Hub
     {
+        private readonly DialogService _dialogService;
+
+        private static readonly HashSet<string> ConnectedUsers = new HashSet<string>();
+
+      
         private readonly ApplicationDbContext _context;
-        public ChatHub( ApplicationDbContext context)
+        public ChatHub( ApplicationDbContext context, DialogService dialogService)
         {
             _context = context;
+            _dialogService = dialogService;
         }
 
         [Authorize]
         public async Task SendMessageToPublicChat(Message message) =>
             await Clients.All.SendAsync("receiveMessageToPublicChat", message);
+
+        
 
         //public async Task FindFriendInBase(string friendLogin) =>
         //    await Clients.All.SendAsync("receiveMessageToPublicChat", friendLogin);
@@ -37,40 +45,41 @@ namespace ChatServerSignalRWithIdentity.Hubs
         //    await Clients.User(to).SendAsync("receiveMessageToPrivateChat", message, userName);
         //}
 
-        //public async Task SendMessage(int dialogId, string data, string ownerEncKey, string recipientEncKey)
-        //{
-        //    var currentUserId = Context.UserIdentifier;
+        public async Task Send(string text, int dialogId)
+        {
+            var currentUserId = Context.UserIdentifier;
 
-        //    var dialog = await _context.Dialogs
-        //        .Include(x => x.Participants).FirstOrDefaultAsync(x =>
-        //            x.Id.Equals(dialogId) );//&& x.Status == DialogStatus.Active
+            var dialog = await _context.Dialogs
+                .Include(x => x.Participants).Include(m=>m.Messages).FirstOrDefaultAsync(x =>
+                    x.Id.Equals(dialogId));
 
-        //    if (dialog == null)
-        //        return;
+            if (dialog == null)
+                return;
 
-        //    var currentUser = dialog.Participants.FirstOrDefault(x => x.Id.Equals(currentUserId));
+            var currentUser = dialog.Participants.FirstOrDefault(x => x.AppUserId.Equals(currentUserId));
 
-        //    if (currentUser == null)
-        //        return;
+            if (currentUser == null)
+                return;
 
-        //    var anotherUser = dialog.Participants.FirstOrDefault(x =>
-        //        !x.Id.Equals(currentUser.Id));
+            var anotherUser = dialog.Participants.FirstOrDefault(x =>
+                !x.AppUserId.Equals(currentUser.AppUserId));
 
-        //    var message = new Message
-        //    {
-        //        Text = data,
-        //        CreatedUtc = DateTime.UtcNow,
-        //        OwnerId = currentUserId
-        //    };
+            var message = new Message
+            {
+                Text = text,
+                CreatedUtc = DateTime.UtcNow,
+                OwnerId = currentUserId,
+                SenderId = anotherUser.AppUserId
+            };
 
-        //    await _dialogService.WriteMessage(dialog, message);
+            await _dialogService.WriteMessage(dialog, message);
 
-        //    dialog.LastActivityUtc = DateTime.UtcNow;
-        //    _context.Dialogs.Update(dialog);
-        //    await _context.SaveChangesAsync();
+            dialog.LastActivityUtc = DateTime.UtcNow;
+            _context.Dialogs.Update(dialog);
+            await _context.SaveChangesAsync();
 
-        //    await Clients.Users(dialog.Participants.Select(x => x.Id).ToList())
-        //        .SendAsync("Notify", message);
-        //}
+            await Clients.Users(dialog.Participants.Select(x => x.AppUserId).ToList())
+                .SendAsync("Notify", message);
+        }
     }
 }
