@@ -103,6 +103,7 @@ body {
 
 #friends {
     height: 100%;
+    padding-left: 0rem;
 }
 
 #chat {
@@ -127,7 +128,7 @@ body {
 }
 #messageText {
     padding-left: 0px;
-    margin-left: 0px;
+    margin-left: 8px;
     width: 710px;
 }
 
@@ -166,6 +167,7 @@ textAndButtonForSend {
 #searchNewFriend {
     margin-bottom: 0rem;
     margin-left: 20px;
+    margin-top: 2.5px;
 }
 /*#friends {
     height: 50%;

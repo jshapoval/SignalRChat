@@ -43,6 +43,8 @@ namespace ChatServerSignalRWithIdentity.Data
                 .HasForeignKey(d => d.SenderId);
 
             builder.Entity<Participant>().HasKey("DialogId", "AppUserId");
+
+            builder.Entity<AppUser>().HasMany(x => x.Relationships);
         }
         
     }

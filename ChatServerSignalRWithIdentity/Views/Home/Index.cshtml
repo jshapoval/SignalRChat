@@ -5,7 +5,6 @@
     var userName = User.Identity.Name;
     var userId = Model.CallerId;
     var id = Model.Id;
-    var auList = Model.FriendList;
     var dList = Model.DialogsWithFriendsList.Count;
 }
 
@@ -17,15 +16,17 @@
         @*список диалогов с друзьями*@
         @if (Model.DialogsWithFriendsList.Count != 0)
         {
-            <div class="col-md-3" id="friends" style="padding-top:1rem">
-                Friends
+            <div class="col-md-3" id="friends" style="padding-top: 1rem; ">
+                <div style="padding-left: 1rem">
+                    Friends
+                    
+                    <form class="form-inline d-flex md-form form-sm active-cyan active-cyan-2 mt-2" id="searchDialog">
 
-                <form class="form-inline d-flex md-form form-sm active-cyan active-cyan-2 mt-2" id="searchDialog">
-
-                    <input class="form-control form-control-sm ml-0 w-100" type="text" placeholder="Search"
-                           aria-label="Search">
-                    @*<i class="fas fa-search" aria-hidden="true" id="iSearch"></i>*@
-                </form>
+                        <input class="form-control form-control-sm ml-0 w-100" type="text" placeholder="Search"
+                               aria-label="Search">
+                        @*<i class="fas fa-search" aria-hidden="true" id="iSearch"></i>*@
+                    </form>
+                </div>
 
 
                 <div class="scrollbar scrollbar-gray bordered-gray thin" id="friendsBar">
@@ -43,19 +44,22 @@
 
                             var msg = dialog.Messages.Count != 0 ? (dialog.Messages.OrderBy(t => t.CreatedUtc).Last().Text) : ("");
 
-                            <div class="border-bottom" id="bordersForDialog" style="        border-color: #bab6b6">
+                            <div class="border-bottom" id="bordersForDialog" style="border-color: #bab6b6">
                                 <div class="row friend" data-dialog-id="@dialog.Id" data-friend-id="@participant.AppUserId" id="dialogRow">
-                                    <div class="col-md-1">
-                                        <img src="Images/pf.jpg"
-                                             width="50" height="50" alt="avatar" class="rounded-circle">
-                                    </div>
-
-                                    <div class="col-md-2 offset-md-2">
-                                        <div class="@containerClass" id="loginContainer">
-                                            <p class="sender @textAlign" id="senderForDialog">@participant.AppUserName</p>
-                                            <p class="sender @textAlign" style="font-size: 12px; text-overflow: ellipsis; margin-bottom: 0px">@msg</p>
+                                   
+                
+                                        <div class="col-md-1 offset-md-1">
+                                            <img src="Images/pf.jpg"
+                                                 width="50" height="50" alt="avatar" class="rounded-circle">
                                         </div>
-                                    </div>
+
+                                        <div class="col-md-2 offset-md-2">
+                                            <div class="@containerClass" id="loginContainer">
+                                                <p class="sender @textAlign" id="senderForDialog">@participant.AppUserName</p>
+                                                <p class="sender @textAlign" id="messageFromDialogRow" style="font-size: 12px; overflow-x: hidden; text-overflow: ellipsis; margin-bottom: 0px">@msg</p>
+                                            </div>
+                                        </div>
+                                    
                                 </div>
                             </div>
                         }
@@ -69,7 +73,7 @@
                 <div class="row" id="rowForMessageScroll">
 
                     <div class="scrollbar scrollbar-indigo bordered-indigo" id="messagesBar">
-                        <div class="force-overflow">
+                        <div class="force-overflow" id="msgScroll">
 
                             <div id="viewPlaceHolder">
 
@@ -120,70 +124,36 @@
 <script>
     var _dialogId;
     $(".row.friend").click(function () {
+
+        if (_dialogId != null) {
+            $(".row.friend").css('background', '#d5dce3');
+            $(".row.friend").css('color', 'black');
+        }
+
         var dialogId = $(this).attr('data-dialog-id');
         var userId = $(this).attr('data-friend-id');
-
+        $(this).css('background', '#4972a6');
+        $(this).css('color', 'white');
         $("#viewPlaceHolder").load("/home/getmessages", { dialogId: dialogId });
         _dialogId = dialogId;
     });
 </script>
 
 
-<script>
-    var _dialogId;
-    $("#dialogRow").click(function () {
-        var dialogId = $(this).attr('data-dialog-id');
-        var userId = $(this).attr('data-friend-id');
-        _dialogId = dialogId;
-        $("#viewPlaceHolder").load("/home/getmessages", { dialogId: dialogId }, function (data) {
-            _dialogId = dialogId;
-        });
-        
-    });
-</script>
 
 <script>
     $("#sendButton").off().on('click',
         function () {
             let text = document.getElementById("messageText").value;
-
-            $.post("/home/send/", { text: text, dialogId: _dialogId });
-            $("#viewPlaceHolder").load("/home/getmessages", { dialogId: dialogId });
+            
+            $.post("/home/send/", { text: text, dialogId: _dialogId }, function () {
+                    $("#viewPlaceHolder").load("/home/getmessages", { dialogId: _dialogId });
+                }
+            );
         });
 </script>
 
 
-@*<script>
-        const hubConnection = new signalR.HubConnectionBuilder()
-            .withUrl("/chat")
-            .build();
-
-        var dialogId = 0;
-
-
-        // получение сообщения от сервера
-        //hubConnection.on('Send', function (text, dialogId) {
-        //    // создает элемент <p> для сообщения пользователя
-        //    let elem = document.createElement("p");
-        //    elem.appendChild(document.createTextNode(text));
-
-        //    var firstElem = document.getElementById("chatroom").firstChild;
-        //    document.getElementById("chatroom").insertBefore(elem, firstElem);
-        //});
-
-        // установка имени пользователя
-        //document.getElementById("loginBtn").addEventListener("click", function (e) {
-        //    userName = document.getElementById("userName").value;
-        //    document.getElementById("header").innerHTML = '<h3>Welcome ' + userName + '</h3>';
-        //});
-        // отправка сообщения на сервер
-        document.getElementById("sendButton").addEventListener("click", function (e) {
-            let text = document.getElementById("messageText").value;
-            hubConnection.invoke("Send", text, dialogId);
-        });
-
-        hubConnection.start();
-    </script>*@
 
 <script src="~/lib/signalr/signalr.min.js"></script>
 <script src="~/lib/jquery/dist/jquery.unobtrusive-ajax.min.js"></script>
