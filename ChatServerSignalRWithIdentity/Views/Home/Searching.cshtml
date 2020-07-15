@@ -19,7 +19,7 @@
 
         @if (Model.OtherUser.Id != null)
         {
-            var values = new[] { myUserId, otherUserId }.OrderBy(x => x).ToArray();
+            @*var values = new[] { myUserId, otherUserId }.OrderBy(x => x).ToArray();
             var relationship = Model.MyUser.Relationships.ToList().Find(i => i.Id == String.Concat(values.First(), values.Last()));
 
             string containerClass, timePosition, textAlign, contcolor, offset;
@@ -57,13 +57,7 @@
 
                             <button id="blockActionsButton" class="block btn" data-user-id="@anotherUserId" data-action-type="block">Block</button>
 
-                            @*value="@anotherUserId"*@
-                            @*1<button class="block btn" data-user-id="@anotherUserId">Block</button>*@
-
-                            @*2<div id="blockButton">
-            <button data-user-id="@anotherUserId" id="1" name="block" class="btn btn-info block">Block</button>
-            <button data-user-id="@anotherUserId" id="1" name="unblock" class="btn btn-danger unblock">Unblock</button>
-        </div>*@
+                           
                         </div>
 
                         }
@@ -74,11 +68,8 @@
                             <button class="delete btn" data-user-id="@anotherUserId">Unfollow</button>
                            
                             <button id="blockActionsButton" class="block btn" data-user-id="@anotherUserId" data-action-type="block">Block</button>
-                            @*1<button class="block btn" data-user-id="@anotherUserId">Block</button>*@
-                            @*2<div id="blockButton">
-                                <button data-user-id="@anotherUserId" id="1" name="block" class="btn btn-info block">Block</button>
-                                <button data-user-id="@anotherUserId" id="1" name="unblock" class="btn btn-danger unblock">Unblock</button>
-                            </div>*@
+                            
+                         
                         </div>
                         }
 
@@ -87,7 +78,6 @@
                         {
                         <div class="d-flex form-group">
 
-                        @*по идее кнопка подписки должна быть видна, но не доступна, пока заблочен*@
                              <form action="AddFriend">
                                   <input type="submit" onclick="changeButtonFollow()" value="Follow" id="followButton" class="btn" />
                                   <input type="hidden" value="@anotherUserId" name="anotherUserId" />
@@ -95,11 +85,7 @@
                       
                         <button id="blockActionsButton" class="unblock btn" data-user-id="@anotherUserId" data-action-type="unblock">Unblock</button>
                        
-                        @*1<button class="unblock btn" data-user-id="@anotherUserId">Unblock</button>*@
-                        @*2<div id="unblockButton">
-                            <button data-user-id="@anotherUserId" id="1" name="unblock" class="btn btn-info unblock">unBlock</button>
-                            <button data-user-id="@anotherUserId" id="1" name="block" class="btn btn-danger block">block</button>
-                        </div>*@
+                  
                         </div>
 
                         }
@@ -112,7 +98,7 @@
 
                     </div>
                 </div>
-            </div>
+            </div>*@
 
         }
 

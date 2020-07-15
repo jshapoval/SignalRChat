@@ -25,7 +25,6 @@ namespace ChatServerSignalRWithIdentity.Data
         public DbSet<Avatar> Avatars { get; set; }
         public DbSet<File> Files { get; set; }
         public DbSet<UserRelationship> UserRelationships { get; set; }
-        public DbSet<ChatModel> ChatModels { get; set; }
 
         public DbSet<Dialog> Dialogs { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -44,7 +43,8 @@ namespace ChatServerSignalRWithIdentity.Data
 
             builder.Entity<Participant>().HasKey("DialogId", "AppUserId");
 
-            builder.Entity<AppUser>().HasMany(x => x.Relationships);
+         
+         //   builder.Entity<AppUser>().HasMany(x => x.Relationships);
         }
         
     }

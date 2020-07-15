@@ -10,10 +10,9 @@ namespace ChatServerSignalRWithIdentity.Models
     public class AppUser : IdentityUser
     {
         public virtual ICollection<Message> Messages { get; set; }
-        public virtual ICollection<UserRelationship> Relationships { get; set; }
+        //public virtual ICollection<UserRelationship> Relationships { get; set; }
         [ForeignKey("OwnerId")]
         public ICollection<File> Files { get; set; }
-
         public  virtual Avatar Avatar { get; set; }
         public bool IsDeleted { get; set; }
 

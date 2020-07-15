@@ -7,9 +7,10 @@ namespace ChatServerSignalRWithIdentity.Models
 {
     public class UserRelationship
     {
-        public string Id { get; set; }
-        public string SmallUserId { get; set; }
-        public string BigUserId { get; set; }
+        public int Id { get; set; }
+
+        public string SmallerUserId { get; set; }
+        public string BiggerUserId { get; set; }
         public RelationshipStatus Status { get; set; }
     }
 }
