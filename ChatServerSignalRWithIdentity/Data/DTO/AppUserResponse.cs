@@ -12,7 +12,7 @@ namespace ChatServerSignalRWithIdentity.Data.DTO
         public string Id { get; set; }
         public string Login { get; set; }
         public string ImageId { get; set; }
-        public virtual ICollection<UserRelationship> Relationships { get; set; }
+    //    public virtual ICollection<UserRelationship> Relationships { get; set; }
 
         //public AppUserResponse()
         //{

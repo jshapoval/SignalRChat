@@ -8,7 +8,6 @@
     var userName = User.Identity.Name;
     var myUserId = Model.MyUser.Id;
     var otherUserId = Model.OtherUser.Id;
-  
     var status = Model.Status;
 }
 
@@ -19,8 +18,8 @@
 
         @if (Model.OtherUser.Id != null)
         {
-            @*var values = new[] { myUserId, otherUserId }.OrderBy(x => x).ToArray();
-            var relationship = Model.MyUser.Relationships.ToList().Find(i => i.Id == String.Concat(values.First(), values.Last()));
+            var values = new[] { myUserId, otherUserId }.OrderBy(x => x).ToArray();
+           // var relationship = await  _context.UserRelationships.Where(f => (f.BiggerUserId == values.Last()) && f.SmallerUserId == values.First()).ToListAsync();
 
             string containerClass, timePosition, textAlign, contcolor, offset;
 
@@ -47,58 +46,51 @@
                     </div>
 
                     <div class="col-md-3 offset-4">
-                        @if (relationship is null || status==RelationshipStatus.Stranger)
+                        @if (Model.Status==RelationshipStatus.Stranger)
                         {
                         <div class="d-flex form-group">
-                            <form action="AddFriend">
+                            <form action="AddFriendAndCreateDialog">
                                 <input type="submit" value="Follow" class="btn" />
                                 <input type="hidden" value="@anotherUserId" name="anotherUserId" />
                             </form>
 
                             <button id="blockActionsButton" class="block btn" data-user-id="@anotherUserId" data-action-type="block">Block</button>
-
-                           
                         </div>
 
                         }
                         
-                        else if (relationship?.Status==RelationshipStatus.Friend)
+                        else if (Model.Status==RelationshipStatus.Friend)
                         {
                         <div class="d-flex form-group">
                             <button class="delete btn" data-user-id="@anotherUserId">Unfollow</button>
                            
                             <button id="blockActionsButton" class="block btn" data-user-id="@anotherUserId" data-action-type="block">Block</button>
-                            
-                         
                         </div>
                         }
 
-                        else if (relationship?.Status==RelationshipStatus.BigBlockSmaller && Model.MyUser.Id== values.Last()
-                                 || relationship?.Status == RelationshipStatus.SmallBlockBigger && Model.MyUser.Id == values.First())
+                        else if (Model.Status==RelationshipStatus.BigBlockSmaller && Model.MyUser.Id== values.Last()
+                                 || Model.Status == RelationshipStatus.SmallBlockBigger && Model.MyUser.Id == values.First())
                         {
                         <div class="d-flex form-group">
 
-                             <form action="AddFriend">
+                             <form action="AddFriendAndCreateDialog">
                                   <input type="submit" onclick="changeButtonFollow()" value="Follow" id="followButton" class="btn" />
                                   <input type="hidden" value="@anotherUserId" name="anotherUserId" />
                              </form>
                       
-                        <button id="blockActionsButton" class="unblock btn" data-user-id="@anotherUserId" data-action-type="unblock">Unblock</button>
-                       
-                  
+                             <button id="blockActionsButton" class="unblock btn" data-user-id="@anotherUserId" data-action-type="unblock">Unblock</button>
                         </div>
-
                         }
 
-                        else if (relationship?.Status == RelationshipStatus.SmallBlockBigger && Model.MyUser.Id == values.Last()
-                                 || relationship?.Status == RelationshipStatus.BigBlockSmaller && Model.MyUser.Id == values.First())
+                        else if (Model.Status == RelationshipStatus.SmallBlockBigger && Model.MyUser.Id == values.Last()
+                                 || Model.Status == RelationshipStatus.BigBlockSmaller && Model.MyUser.Id == values.First())
                         {
                             <h1>you are in the block </h1>
                         }
 
                     </div>
                 </div>
-            </div>*@
+            </div>
 
         }
 

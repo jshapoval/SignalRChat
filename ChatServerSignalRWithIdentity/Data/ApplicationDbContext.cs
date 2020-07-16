@@ -20,8 +20,6 @@ namespace ChatServerSignalRWithIdentity.Data
         public DbSet<AppUser> AspNetUsers { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Participant> Participants { get; set; }
-        //public DbSet<MessageResponse> MessageResponses { get; set; }
-        //public DbSet<AppUserResponse> AppUserResponses { get; set; }
         public DbSet<Avatar> Avatars { get; set; }
         public DbSet<File> Files { get; set; }
         public DbSet<UserRelationship> UserRelationships { get; set; }

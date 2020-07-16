@@ -161,236 +161,214 @@ namespace ChatServerSignalRWithIdentity.Controllers
         //}
 
 
-        //public async Task<IActionResult> Searching(string username)
-        //{
-        //    var currentUser = await _userManager.GetUserAsync(User);
-        //    if (User.Identity.IsAuthenticated)
-        //    {
-        //        ViewBag.CurrentUserName = currentUser.UserName;
-        //    }
+        public async Task<IActionResult> Searching(string username)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            ViewBag.CurrentUserName = currentUser.UserName;
+           
+            var otherUser = await _context.AspNetUsers.Where(i => i.UserName == username).ToListAsync();
+          
+            string[] values;
+            var _otherUser = new AppUserResponse();
+            var myUser = new AppUserResponse();
+            var status = RelationshipStatus.Stranger;
 
-        //    var otherUser = _context.AspNetUsers.ToList().Find(i => i.UserName == username);
-        //    string[] values;
-        //    var newFriend = new AppUserResponse();
-        //    var myUser = new AppUserResponse();
-        //    var status = new RelationshipStatus();
+            if (otherUser.Count != 0)
+            {
+                values = new[] { currentUser.Id, otherUser.First().Id }.OrderBy(x => x).ToArray();
 
-        //    if (otherUser != null)
-        //    {
-        //        await _context.Entry(currentUser).Collection(x => x.Relationships).LoadAsync();
+                var relationship = await _context.UserRelationships.Where(f=> (f.BiggerUserId==values.Last()) && f.SmallerUserId==values.First()).ToListAsync();
 
-        //        values = new[] {currentUser.Id, otherUser.Id}.OrderBy(x => x).ToArray();
+                if (relationship.Count != 0)
+                {
+                    status = relationship.First().Status;
+                }
 
-        //        var relationship = currentUser.Relationships.ToList()
-        //            .Find(i => i.Id == String.Concat(values.First(), values.Last()));
+                _otherUser = _mapper.Map<AppUserResponse>(otherUser.First());
+                myUser = _mapper.Map<AppUserResponse>(currentUser);
+            }
 
-        //        if (relationship is null)
-        //        {
-        //            currentUser.Relationships.Add(new UserRelationship()
-        //            {
-        //                BigUserId = values.Last(), SmallUserId = values.First(),
-        //                Id = String.Concat(values.First(), values.Last()), Status = RelationshipStatus.Stranger
-        //            });
-        //            status = RelationshipStatus.Stranger;
-        //        }
+            var response = new Couple()
+            {
+                MyUser = myUser,
+                OtherUser = _otherUser,
+                Status = status
+            };
 
-        //        else
-        //        {
-        //            status = relationship.Status;
-
-        //        }
-
-        //        newFriend = _mapper.Map<AppUserResponse>(otherUser);
-        //        myUser = _mapper.Map<AppUserResponse>(currentUser);
-        //    }
+            return View(response);
+        }
 
 
-        //    var response = new Couple()
-        //    {
-        //        MyUser = myUser,
-        //        OtherUser = newFriend,
-        //        Status = status
-        //    };
+        // [HttpGet("home/AddFriendAndCreateDialog/{anotherUserId}")]
+        public async Task<IActionResult> AddFriendAndCreateDialog(string anotherUserId)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            ViewBag.CurrentUserName = currentUser.UserName;
+            
+            var anotherUser = await _context.AspNetUsers.FindAsync(anotherUserId);
 
-        //    return View(response);
-        //}
+            // добавляем в друзья без требования ответного подтверждения, т.е. статус отношений устанавливаем у юсера и создаем диалог
+
+            var values = new[] { currentUser.Id, anotherUserId }.OrderBy(x => x).ToArray();
+
+            //ПРОВЕРКА НА СУЩЕСТВОВАНИЕ ОТНОШЕНИЙ, ВДРУГ Я РАЗБЛОЧИДА ПОЛЬЗОВАТЕЛЯ И ХОЧУ ДОБАВИТЬ В ДРУЗЬЯ
+            var relationship = _context.UserRelationships.FirstOrDefault(i =>
+                i.SmallerUserId==values.First() &&
+                i.BiggerUserId == values.Last());
+
+            var dialog = new Dialog();
+
+            if (relationship != null)
+            {
+                relationship.Status = RelationshipStatus.Friend;
+
+                dialog = _context.Dialogs.Include(x => x.Participants).Where(x => x.Participants.Any(y => y.AppUserId == currentUser.Id))
+                   .Where(q => q.Participants.Any(w => w.AppUserId == anotherUserId)).First();
+
+                ////
+                //(n.Participants.First().AppUserId == currentUser.Id) &&
+                //    (n.Participants.Last().AppUserId == anotherUserId) ||
+                //    (n.Participants.First().AppUserId == anotherUserId) &&
+                //    (n.Participants.Last().AppUserId == currentUser.Id)).First();
+            }
+
+            else
+            {
+                _context.UserRelationships.Add(new UserRelationship()
+                {
+                    BiggerUserId = values.Last(),
+                    SmallerUserId = values.First(),
+                    Status = RelationshipStatus.Friend
+                });
 
 
-        //// [HttpGet("home/AddFriend/{anotherUs erId}")]
-        //public async Task<IActionResult> AddFriend(string anotherUserId)
-        //{
-        //    var currentUser = await _userManager.GetUserAsync(User);
+                dialog.Participants = new List<Participant>
+                {
+                    new Participant {AppUserId = currentUser.Id, AppUserName = currentUser.UserName},
+                    new Participant {AppUserId = anotherUser.Id, AppUserName = anotherUser.UserName}
+                };
+                dialog.LastActivityUtc = DateTime.UtcNow;
+            }
 
-        //    if (User.Identity.IsAuthenticated)
-        //    {
-        //        ViewBag.CurrentUserName = currentUser.UserName;
-        //    }
+            //////await _context.Entry(anotherUser).Collection(x => x.Relationships).LoadAsync();
+            //////anotherUser.Relationships.Add(new UserRelationship() { BigUserId = values.Last(), SmallUserId = values.First(), Id = String.Concat(values.Last(), values.First()), Status = RelationshipStatus.Friend });
+            //////не надо ли второму пользователю добавлять этот же диалог и статус???????????????????
 
-        //    var anotherUser = await _context.AspNetUsers.FindAsync(anotherUserId);
+            await _context.Dialogs.AddAsync(dialog);
+            await _context.SaveChangesAsync();
 
-        //    //теперь добавляем в друзья (пока без требования ответного подтверждения), т.е. статус отношений устанавливаем у юсера и создаем диалог
+            //  return Ok();\
+            return View(dialog);
+        }
 
-        //    var values = new[] {currentUser.Id, anotherUserId}.OrderBy(x => x).ToArray();
+        [HttpPost("home/DeleteFriend/{anotherUserId}")]
+        public async Task<IActionResult> DeleteFriend(string anotherUserId)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
 
-        //    await _context.Entry(currentUser).Collection(x => x.Relationships).LoadAsync();
+            ViewBag.CurrentUserName = currentUser.UserName;
+            
+            //статус отношений меняю на чужака у юсера, с диалогом наверное ничего не делаю, допустим в индексе перестает предлагаться друг с этим ником
 
-        //    //ПРОВЕРКА НА СУЩЕСТВОВАНИЕ ОТНОШЕНИЙ, ВДРУГ Я РАЗБЛОЧИДА ПОЛЬЗОВАТЕЛЯ И ХОЧУ ДОБАВИТЬ В ДРУЗЬЯ
-        //    var relationship = currentUser.Relationships.FirstOrDefault(i =>
-        //        i.SmallUserId.Equals(values.First(), StringComparison.OrdinalIgnoreCase) &&
-        //        i.BigUserId == values.Last());
+            var anotherUser = _context.AspNetUsers.ToList().Find(i => i.Id == anotherUserId);
+            var values = new[] { currentUser.Id, anotherUserId }.OrderBy(x => x).ToArray();
 
-        //    var dialog = new Dialog();
+            var relationship = _context.UserRelationships.FirstOrDefault(i =>
+                i.SmallerUserId == values.First() &&
+                i.BiggerUserId == values.Last());
 
-        //    if (relationship != null && relationship.Status != RelationshipStatus.Friend)
-        //    {
-        //        relationship.Status = RelationshipStatus.Friend;
-        //        //var dialogs = await _context.Dialogs.Include(x => x.Participants).ToListAsync();
-        //        //dialog = dialogs.Find(n =>
-        //        //    (n.Participants.First().AppUserId == currentUser.Id) &&
-        //        //    (n.Participants.Last().AppUserId == anotherUserId) ||
-        //        //    (n.Participants.First().AppUserId == anotherUserId) &&
-        //        //    (n.Participants.Last().AppUserId == currentUser.Id));
-        //    }
-        //    else
-        //    {
-        //        currentUser.Relationships.Add(new UserRelationship()
-        //        {
-        //            BigUserId = values.Last(), SmallUserId = values.First()
-        //        });
+            if (relationship != null)
+            {
+                relationship.Status = RelationshipStatus.Stranger;
+            }
+           
+            await _context.SaveChangesAsync();
 
-        //        dialog.Participants = new List<Participant>
-        //        {
-        //            new Participant {AppUserId = currentUser.Id, AppUserName = currentUser.UserName},
-        //            new Participant {AppUserId = anotherUser.Id, AppUserName = anotherUser.UserName}
-        //        };
-        //        dialog.LastActivityUtc = DateTime.UtcNow;
-        //    }
+            //  return View("Searching");
+            return Ok();
+        }
 
-        //    //////await _context.Entry(anotherUser).Collection(x => x.Relationships).LoadAsync();
-        //    //////anotherUser.Relationships.Add(new UserRelationship() { BigUserId = values.Last(), SmallUserId = values.First(), Id = String.Concat(values.Last(), values.First()), Status = RelationshipStatus.Friend });
-        //    //////не надо ли второму пользователю добавлять этот же диалог и статус???????????????????
+        [HttpPost("home/Block/{anotherUserId}")]
+        public async Task<IActionResult> Block(string anotherUserId)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
 
-        //    await _context.Dialogs.AddAsync(dialog);
-        //    await _context.SaveChangesAsync();
+            ViewBag.CurrentUserName = currentUser.UserName;
+            
+            var values = new[] { currentUser.Id, anotherUserId }.OrderBy(x => x).ToArray();
 
-        //    //  return Ok();\
-        //    return View(dialog);
-        //}
+            var userForBlock = _context.UserRelationships.FirstOrDefault(i =>
+                i.SmallerUserId == values.First() &&
+                i.BiggerUserId == values.Last());
 
-        //[HttpPost("home/DeleteFriend/{anotherUserId}")]
-        //public async Task<IActionResult> DeleteFriend(string anotherUserId)
-        //{
-        //    var currentUser = await _userManager.GetUserAsync(User);
+            if (userForBlock != null)
+            {
+                if (currentUser.Id == values.First())
+                {
+                    userForBlock.Status = RelationshipStatus.SmallBlockBigger;
+                }
+                else
+                {
+                    userForBlock.Status = RelationshipStatus.BigBlockSmaller;
+                }
 
-        //    if (User.Identity.IsAuthenticated)
-        //    {
-        //        ViewBag.CurrentUserName = currentUser.UserName;
-        //    }
+            }
+            else
+            {
+                if (currentUser.Id == values.First())
+                {
+                    _context.UserRelationships.Add(new UserRelationship()
+                    {
+                        BiggerUserId = values.Last(),
+                        SmallerUserId = values.First(),
+                        Status = RelationshipStatus.SmallBlockBigger
+                    });
+                }
+                else
+                {
+                    _context.UserRelationships.Add(new UserRelationship()
+                    {
+                        BiggerUserId = values.Last(),
+                        SmallerUserId = values.First(),
+                        Status = RelationshipStatus.BigBlockSmaller
+                    });
+                }
 
-        //    //статус отношений меняю на чужака у юсера, с диалогом наверное ничего не делаю, допустим в индексе перестает предлагаться друг с этим ником, но если пользователю все-таки написал тот чел,то появится диалог?
+            }
 
-        //    var anotherUser = _context.AspNetUsers.ToList().Find(i => i.Id == anotherUserId);
-        //    var values = new[] {currentUser.Id, anotherUserId}.OrderBy(x => x).ToArray();
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
 
-        //    await _context.Entry(currentUser).Collection(x => x.Relationships).LoadAsync();
+        [HttpPost("home/Unblock/{anotherUserId}")]
+        public async Task<IActionResult> Unblock(string anotherUserId)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
 
-        //    var CURelationship =
-        //        currentUser.Relationships.SingleOrDefault(i =>
-        //            i.Id == String.Concat(values.First(), values.Last()));
+            ViewBag.CurrentUserName = currentUser.UserName;
 
-        //    CURelationship.Status = RelationshipStatus.Stranger;
-        //    //var firstVersionForAU = anotherUser.Relationships.SingleOrDefault(i => i.Id == String.Concat(values.Last(), values.First()));
-        //    //firstVersionForAU.Status = RelationshipStatus.Stranger;
+            var values = new[] { currentUser.Id, anotherUserId }.OrderBy(x => x).ToArray();
 
-        //    //currentUser.Relationships.Remove(itemToRemove);
 
-        //    await _context.SaveChangesAsync();
+            var userForUnblock = _context.UserRelationships.FirstOrDefault(i =>
+                i.SmallerUserId == values.First() &&
+                i.BiggerUserId == values.Last());
 
-        //    //  return View("Searching");
-        //    return Ok();
-        //}
 
-        //[HttpPost("home/Block/{anotherUserId}")]
-        //public async Task<IActionResult> Block(string anotherUserId)
-        //{
-        //    var currentUser = await _userManager.GetUserAsync(User);
+            if (userForUnblock != null)
+            {
+                userForUnblock.Status = RelationshipStatus.Stranger;
+            }
 
-        //    if (User.Identity.IsAuthenticated)
-        //    {
-        //        ViewBag.CurrentUserName = currentUser.UserName;
-        //    }
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
 
-        //    var values = new[] {currentUser.Id, anotherUserId}.OrderBy(x => x).ToArray();
 
-        //    await _context.Entry(currentUser).Collection(x => x.Relationships).LoadAsync();
 
-        //    var userForBlock = currentUser.Relationships.ToList()
-        //        .Find(i => i.Id == String.Concat(values.First(), values.Last()));
-        //    if (userForBlock != null)
-        //    {
-        //        if (currentUser.Id == values.First())
-        //        {
-        //            userForBlock.Status = RelationshipStatus.SmallBlockBigger;
-        //        }
-        //        else
-        //        {
-        //            userForBlock.Status = RelationshipStatus.BigBlockSmaller;
-        //        }
 
-        //    }
-        //    else
-        //    {
-        //        if (currentUser.Id == values.First())
-        //        {
-        //            currentUser.Relationships.Add(new UserRelationship()
-        //            {
-        //                BigUserId = values.Last(), SmallUserId = values.First(),
-        //                Id = String.Concat(values.First(), values.Last()),
-        //                Status = RelationshipStatus.SmallBlockBigger
-        //            });
-        //        }
-        //        else
-        //        {
-        //            currentUser.Relationships.Add(new UserRelationship()
-        //            {
-        //                BigUserId = values.Last(), SmallUserId = values.First(),
-        //                Id = String.Concat(values.First(), values.Last()),
-        //                Status = RelationshipStatus.BigBlockSmaller
-        //            });
-        //        }
 
-        //    }
-
-        //    await _context.SaveChangesAsync();
-        //    return Ok();
-        //}
-
-        //[HttpPost("home/Unblock/{anotherUserId}")]
-        //public async Task<IActionResult> Unblock(string anotherUserId)
-        //{
-        //    var currentUser = await _userManager.GetUserAsync(User);
-
-        //    if (User.Identity.IsAuthenticated)
-        //    {
-        //        ViewBag.CurrentUserName = currentUser.UserName;
-        //    }
-
-        //    var values = new[] {currentUser.Id, anotherUserId}.OrderBy(x => x).ToArray();
-
-        //    await _context.Entry(currentUser).Collection(x => x.Relationships).LoadAsync();
-
-        //    var userForUnblock = currentUser.Relationships.ToList()
-        //        .Find(i => i.Id == String.Concat(values.First(), values.Last()));
-        //    if (userForUnblock != null)
-        //    {
-        //        userForUnblock.Status = RelationshipStatus.Stranger;
-        //    }
-
-        //    await _context.SaveChangesAsync();
-        //    return Ok();
-        //}
-
-        // [HttpGet("home/GetMessages/{dialogId}")]
+        //[HttpGet("home/GetMessages/{dialogId}")]
         public async Task<IActionResult> GetMessages(int dialogId)
         {
             var currentUser = await _userManager.GetUserAsync(User);
@@ -402,14 +380,8 @@ namespace ChatServerSignalRWithIdentity.Controllers
 
             var dialog = await _context.Dialogs.Where(i => i.Id == dialogId).Include(x => x.Messages)
                 .Include(p => p.Participants).ToArrayAsync();
-            //var messages=new List<Message>();
-            //foreach (var item in dialog.First().Messages.Skip(Math.Max(0, dialog.First().Messages.Count - 20)))
-            //{
-            //    messages.Add(item);
-            //}
-
+          
             var messages = dialog.First().Messages.OrderByDescending(c => c.CreatedUtc).Take(10).ToList();
-
            
             return PartialView("_Messages", messages);
         }
@@ -424,7 +396,6 @@ namespace ChatServerSignalRWithIdentity.Controllers
         {
             return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
         }
-
 
         //avatars
 
