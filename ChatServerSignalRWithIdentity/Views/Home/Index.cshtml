@@ -92,11 +92,6 @@
                     </div>
                 </div>
 
-                @*<div id="inputForm">
-                        <input type="text" id="message" />
-                        <input type="button" id="sendBtn" value="Отправить" />
-                    </div>*@
-
                 <input type="hidden" value="@userName" name="username" />
             </div>
 
@@ -105,7 +100,7 @@
 
         else
         {
-            <h1 style="margin-left: 1rem">Let's find your friend soon</h1>
+            <h1 style="margin-left: ">Let's find your friend soon</h1>
         }
     </div>
 </div>
@@ -134,7 +129,7 @@
         var userId = $(this).attr('data-friend-id');
         $(this).css('background', '#4972a6');
         $(this).css('color', 'white');
-        $("#viewPlaceHolder").load("/home/getmessages", { dialogId: dialogId });
+        $("#viewPlaceHolder").load("/home/getmessagesfordialog", { dialogId: dialogId });
         _dialogId = dialogId;
     });
 </script>
@@ -147,7 +142,7 @@
             let text = document.getElementById("messageText").value;
             
             $.post("/home/send/", { text: text, dialogId: _dialogId }, function () {
-                    $("#viewPlaceHolder").load("/home/getmessages", { dialogId: _dialogId });
+                    $("#viewPlaceHolder").load("/home/getmessagesfordialog", { dialogId: _dialogId });
                 }
             );
         });

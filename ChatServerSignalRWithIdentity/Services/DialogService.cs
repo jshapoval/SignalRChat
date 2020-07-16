@@ -66,7 +66,7 @@ namespace ChatServerSignalRWithIdentity
             await db.SaveChangesAsync();
         }
 
-        public async Task<ICollection<Message>> GetMessages(Dialog dialog)
+        public async Task<ICollection<Message>> GetMessagesForDialog(Dialog dialog)
         {
             await db.Entry(dialog).Collection(i => i.Messages).LoadAsync();
             return dialog.Messages;

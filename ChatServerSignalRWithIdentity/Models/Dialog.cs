@@ -10,6 +10,7 @@ namespace ChatServerSignalRWithIdentity.Models
     {
         public int Id { get; set; }
         public bool Status { get; set; }
+        public int LastMessageId { get; set; }
         public virtual ICollection<Participant> Participants { get; set; }
         public ICollection<Message> Messages { get; set; }
         public DateTime LastActivityUtc { get; set; }

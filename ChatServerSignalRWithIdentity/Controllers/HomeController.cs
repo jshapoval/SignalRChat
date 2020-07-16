@@ -40,8 +40,6 @@ namespace ChatServerSignalRWithIdentity.Controllers
 
             ViewBag.CurrentUserName = currentUser.UserName;
 
-            //var users = await _context.AspNetUsers.ToListAsync();
-        
              //получаю все диалоги с моим участием
              var allDialogsWitMe = await _context
                  .Dialogs
@@ -106,60 +104,59 @@ namespace ChatServerSignalRWithIdentity.Controllers
             return View(response);
         }
 
-        //[HttpPost("home/Send/")]
-        //public async Task<IActionResult> Send(string text, int dialogId)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var dialog = await _context.Dialogs
-        //            .Include(x => x.Participants).Include(m => m.Messages).FirstOrDefaultAsync(x =>
-        //                x.Id.Equals(dialogId));
+        [HttpPost("home/Send/")]
+        public async Task<IActionResult> Send(string text, int dialogId)
+        {
+            if (ModelState.IsValid)
+            {
+                var dialog = await _context.Dialogs
+                    .Include(x => x.Participants).Include(m => m.Messages).FirstOrDefaultAsync(x =>
+                        x.Id.Equals(dialogId));
 
+                var myUser = await _userManager.GetUserAsync(User);
+                var anotherUser = dialog.Participants.FirstOrDefault(i => i.AppUserId != myUser.Id);
 
-        //        var myUser = await _userManager.GetUserAsync(User);
-        //        var anotherUser = dialog.Participants.FirstOrDefault(i => i.AppUserId != myUser.Id);
+                if (dialog is null)
+                {
+                    dialog = new Dialog
+                    {
+                        
+                        LastActivityUtc = DateTime.UtcNow,
+                        Participants = new List<Participant>
+                            {new Participant {AppUserId = myUser.Id, AppUserName = myUser.UserName}, new Participant {AppUserId = anotherUser.AppUserId, AppUserName = anotherUser.AppUserId}}
+                    };
 
-        //        //if(dialog is null)
-        //        //{
-        //        //    dialog = new Dialog
-        //        //    {
-        //        //        LastActivityUtc = DateTime.UtcNow,
-        //        //        Participants = new List<Participant>
-        //        //            {new Participant {AppUserId = myUser.Id, AppUserName = myUser.UserName}, new Participant {AppUserId = anotherUser.Id, AppUserName = anotherUser.UserName}}
-        //        //    };
+                    await _context.Dialogs.AddAsync(dialog);
+                    await _context.SaveChangesAsync();
+                }
 
-        //        //    await _context.Dialogs.AddAsync(dialog);
-        //        //    await _context.SaveChangesAsync();
-        //        //}
+                var messageModel = new MessageModel
+                {
+                    DialogId = dialogId,
+                    UserId = myUser.Id,
+                    Text = text
+                };
 
-        //        var messageModel = new MessageModel
-        //        {
-        //            DialogId = dialogId,
-        //            UserId = myUser.Id,
-        //            Text = text
-        //        };
+                var message = _mapper.Map<Message>(messageModel);
+                message.UserName = myUser.UserName;
+                message.SenderId = myUser.Id;
+                message.OwnerId = anotherUser.AppUserId;
+                message.DialogId = dialog.Id;
 
-        //        var message = _mapper.Map<Message>(messageModel);
+                //добавляю поля еще те, что ниже
+                message.Text = messageModel.Text;
+                message.CreatedUtc = DateTime.UtcNow;
+                dialog.LastActivityUtc = DateTime.UtcNow;
+                dialog.LastMessageId = message.Id;
 
-        //        message.UserName = myUser.UserName;
-        //        message.SenderId = myUser.Id;
-        //        message.OwnerId = anotherUser.AppUserId;
-        //        message.DialogId = dialog.Id;
+                await _context.Messages.AddAsync(message);
+                await _context.SaveChangesAsync();
 
-        //        //добавляю поля еще те, что ниже
-        //        message.Text = messageModel.Text;
-        //        message.CreatedUtc = DateTime.UtcNow;
-        //        dialog.LastActivityUtc = DateTime.UtcNow;
+                return Ok();
+            }
 
-        //        await _context.Messages.AddAsync(message);
-        //        await _context.SaveChangesAsync();
-
-        //        return Ok();
-        //    }
-
-        //    return Error();
-        //}
-
+            return Error();
+        }
 
         public async Task<IActionResult> Searching(string username)
         {
@@ -197,7 +194,6 @@ namespace ChatServerSignalRWithIdentity.Controllers
 
             return View(response);
         }
-
 
         // [HttpGet("home/AddFriendAndCreateDialog/{anotherUserId}")]
         public async Task<IActionResult> AddFriendAndCreateDialog(string anotherUserId)
@@ -364,12 +360,8 @@ namespace ChatServerSignalRWithIdentity.Controllers
             return Ok();
         }
 
-
-
-
-
-        //[HttpGet("home/GetMessages/{dialogId}")]
-        public async Task<IActionResult> GetMessages(int dialogId)
+        //[HttpGet("home/GetMessagesForDialog/{dialogId}")]
+        public async Task<IActionResult> GetMessagesForDialog(int dialogId)
         {
             var currentUser = await _userManager.GetUserAsync(User);
 
