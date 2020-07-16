@@ -43,7 +43,7 @@ namespace ChatServerSignalRWithIdentity.Controllers
             //var users = await _context.AspNetUsers.ToListAsync();
         
              //получаю все диалоги с моим участием
-             var allDialogsWitMeFirst = await _context
+             var allDialogsWitMe = await _context
                  .Dialogs
                  .Include(x => x.Participants)
                  .Where(x => x.Participants.Any(y => y.AppUserId == currentUser.Id))
@@ -66,28 +66,16 @@ namespace ChatServerSignalRWithIdentity.Controllers
                     var dialogWithFriend = new Dialog();
                     if (currentUser.Id == friend.SmallerUserId)
                     {
-                        dialogWithFriend = allDialogsWitMeFirst.Find(x =>
+                        dialogWithFriend = allDialogsWitMe.Find(x =>
                             x.Participants.First().AppUserId == friend.BiggerUserId ||
                             x.Participants.Last().AppUserId == friend.BiggerUserId);
 
-                        //if (dialogWithFriend == null)
-                        //{
-                        //    dialogWithFriend = allDialogsWitMeLast.Find(x =>
-                        //        x.Participants.First().AppUserId == friend.BiggerUserId ||
-                        //        x.Participants.Last().AppUserId == friend.BiggerUserId);
-                        //}
                     }
                     else
                     {
-                        dialogWithFriend = allDialogsWitMeFirst.Find(x =>
+                        dialogWithFriend = allDialogsWitMe.Find(x =>
                             x.Participants.First().AppUserId == friend.SmallerUserId ||
                             x.Participants.Last().AppUserId == friend.SmallerUserId);
-                        //if (dialogWithFriend == null)
-                        //{
-                        //    dialogWithFriend = allDialogsWitMeLast.Find(x =>
-                        //        x.Participants.First().AppUserId == friend.SmallerUserId ||
-                        //        x.Participants.Last().AppUserId == friend.SmallerUserId);
-                        //}
                     }
                     myDialogsWithFriends.Add(dialogWithFriend);
                 }
