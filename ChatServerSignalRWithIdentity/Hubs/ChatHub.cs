@@ -16,8 +16,8 @@ namespace ChatServerSignalRWithIdentity.Hubs
 
         private static readonly HashSet<string> ConnectedUsers = new HashSet<string>();
 
-      
         private readonly ApplicationDbContext _context;
+      
         public ChatHub( ApplicationDbContext context, DialogService dialogService)
         {
             _context = context;
@@ -25,13 +25,16 @@ namespace ChatServerSignalRWithIdentity.Hubs
         }
 
         [Authorize]
+
+        public async Task GetNewMessage(Message message)
+        {
+           var owner = message.OwnerId;
+            Clients.User(owner).GetMessage(message);
+          //  await Clients.User(owner).SendAsync("GetMessage", message);
+        }
         public async Task SendMessageToPublicChat(Message message) =>
             await Clients.All.SendAsync("receiveMessageToPublicChat", message);
 
-        
-
-        //public async Task FindFriendInBase(string friendLogin) =>
-        //    await Clients.All.SendAsync("receiveMessageToPublicChat", friendLogin);
 
 
         //public async Task SendMessageToPrivateChat(Message message, string to)
@@ -79,7 +82,7 @@ namespace ChatServerSignalRWithIdentity.Hubs
             await _context.SaveChangesAsync();
 
             await Clients.Users(dialog.Participants.Select(x => x.AppUserId).ToList())
-                .SendAsync("Notify", message);
+                .SendAsync("GetMessages", message);
         }
     }
 }

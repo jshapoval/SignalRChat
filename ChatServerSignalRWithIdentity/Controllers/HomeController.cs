@@ -78,10 +78,8 @@ namespace ChatServerSignalRWithIdentity.Controllers
                     myDialogsWithFriends.Add(dialogWithFriend);
                 }
             }
-         //   await _context.Entry(currentUser).Collection(x => x.Relationships).LoadAsync();
 
-         var dialogsForModel = myDialogsWithFriends.OrderByDescending(l => l.LastActivityUtc).Take(10);
-
+            var dialogsForModel = myDialogsWithFriends.OrderByDescending(l => l.LastActivityUtc).Take(10).ToList();
 
             var lastMessages = new List<Message>();
 
@@ -120,7 +118,6 @@ namespace ChatServerSignalRWithIdentity.Controllers
                 {
                     dialog = new Dialog
                     {
-                        
                         LastActivityUtc = DateTime.UtcNow,
                         Participants = new List<Participant>
                             {new Participant {AppUserId = myUser.Id, AppUserName = myUser.UserName}, new Participant {AppUserId = anotherUser.AppUserId, AppUserName = anotherUser.AppUserId}}
@@ -142,14 +139,17 @@ namespace ChatServerSignalRWithIdentity.Controllers
                 message.SenderId = myUser.Id;
                 message.OwnerId = anotherUser.AppUserId;
                 message.DialogId = dialog.Id;
-
                 //добавляю поля еще те, что ниже
                 message.Text = messageModel.Text;
                 message.CreatedUtc = DateTime.UtcNow;
-                dialog.LastActivityUtc = DateTime.UtcNow;
-                dialog.LastMessageId = message.Id;
 
                 await _context.Messages.AddAsync(message);
+                await _context.SaveChangesAsync();
+
+                dialog.LastActivityUtc = DateTime.UtcNow;
+                dialog.Messages.Add(message);
+                dialog.LastMessageId = message.Id;
+
                 await _context.SaveChangesAsync();
 
                 return Ok();
