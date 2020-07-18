@@ -29,7 +29,7 @@ namespace ChatServerSignalRWithIdentity.Hubs
         public async Task GetNewMessage(Message message)
         {
            var owner = message.OwnerId;
-            Clients.User(owner).GetMessage(message);
+            //Clients.User(owner).GetMessage(message);
           //  await Clients.User(owner).SendAsync("GetMessage", message);
         }
         public async Task SendMessageToPublicChat(Message message) =>

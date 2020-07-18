@@ -23,7 +23,7 @@
                     <form class="form-inline d-flex md-form form-sm active-cyan active-cyan-2 mt-2" id="searchDialog">
 
                         <input class="form-control form-control-sm ml-0 w-100" type="text" placeholder="Search"
-                               aria-label="Search">
+                               aria-label="Search" id="searchRow">
                         @*<i class="fas fa-search" aria-hidden="true" id="iSearch"></i>*@
                     </form>
                 </div>
@@ -134,11 +134,12 @@
     $("#sendButton").off().on('click',
         function () {
             let text = document.getElementById("messageText").value;
-
+            let textForMessage = document.getElementById('messageText');
             $.post("/home/send/", { text: text, dialogId: _dialogId }, function () {
                     $("#viewPlaceHolder").load("/home/getmessagesfordialog", { dialogId: _dialogId });
                 }
             );
+            textForMessage.value = "";
         });
 </script>
 
@@ -148,6 +149,18 @@
         $("#viewPlaceHolder").scrollTo(0, document.body.scrollHeight);
     }
 </script>*@
+
+<script>
+    $("#messagesBar").animate({ scrollTop: $("#messagesBar").height() }, 'slow');
+</script>
+
+<script>
+    $('#searchRow').change(function () {
+        let text = gjgljg;
+        $("#viewPlaceHolder").load("/home/getmessagesfordialog", { dialogId: _dialogId });
+        //$('#ui-id-1 li:first-child').trigger('click');
+    });
+</script>
 
 <script>
     ChatHub.client.getnewmessage = function (model) {

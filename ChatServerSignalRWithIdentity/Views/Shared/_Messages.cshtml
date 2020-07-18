@@ -18,32 +18,44 @@
     var userName = User.Identity.Name;
 }
 
-@foreach (var message in Model.OrderBy(m => m.CreatedUtc))
-{
-    string containerClass, timePosition, textAlign, contcolor, offset;
-    if (userName == message.UserName)
-    {
-        containerClass = "container darker";
-        timePosition = "time-left text-light";
-        textAlign = "text-left text-white";
-        contcolor = "bg-primary";
-        offset = "col-md-6 offset-md-6";
-    }
-    else
-    {
-        containerClass = "container";
-        timePosition = "time-left";
-        textAlign = "text-left";
-        contcolor = "bg-light";
-        offset = "col-md-6";
-    }
-    <div class="row" style="padding-left:20px">
-        <div class="@offset">
-            <div class="@containerClass @contcolor" style="width: 200px; height:auto">
+    <div id="contForScroll">
+        @foreach (var message in Model.OrderBy(m => m.CreatedUtc))
+        {
+            string containerClass, timePosition, textAlign, contcolor, offset;
+            if (userName == message.UserName)
+            {
+                containerClass = "container darker";
+                timePosition = "time-left text-light";
+                textAlign = "text-left text-white";
+                contcolor = "bg-primary";
+                offset = "col-md-6 offset-md-6";
+            }
+            else
+            {
+                containerClass = "container";
+                timePosition = "time-left";
+                textAlign = "text-left";
+                contcolor = "bg-light";
+                offset = "col-md-6";
+            }
+            <div class="row" style="padding-left:20px">
+                <div class="@offset">
+                    <div class="@containerClass @contcolor" style="width: 200px; height:auto">
 
-                <p class="@textAlign">@message.Text</p>
-                <span class="@timePosition">@message.CreatedUtc.ToString("HH:mm")</span>
+                        <p class="@textAlign">@message.Text</p>
+                        <span class="@timePosition">@message.CreatedUtc.ToString("HH:mm")</span>
+                    </div>
+                </div>
             </div>
-        </div>
+        }
     </div>
-}
+
+
+
+@*<script>
+    window.onload = toBottom;
+    function toBottom() {
+        alert("Scrolling to bottom ...");
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+</script>*@
