@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using ChatServerSignalRWithIdentity.Data;
 using ChatServerSignalRWithIdentity.Data.DTO;
+using ChatServerSignalRWithIdentity.Hubs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ChatServerSignalRWithIdentity.Models;
@@ -45,6 +46,7 @@ namespace ChatServerSignalRWithIdentity.Controllers
                  .Dialogs
                  .Include(x => x.Participants)
                  .Where(x => x.Participants.Any(y => y.AppUserId == currentUser.Id))
+                 .Include(m=>m.Messages)
                  .OrderByDescending(x => x.LastActivityUtc)
                  .ToListAsync();
 
@@ -57,26 +59,26 @@ namespace ChatServerSignalRWithIdentity.Controllers
             
             var myDialogsWithFriends = new List<Dialog>();
             //в модель передать последние 10 диалогов с ДРУЗЬЯМИ (т.е. для каждого друга ищу диалог с собой, добавляю в список выводимых диалогов)
-            if (myFriends!=null && myFriends.Count!=0)
+         
+            foreach (var friend in myFriends)
             {
-                foreach (var friend in myFriends)
-                {
-                    var dialogWithFriend = new Dialog();
-                    if (currentUser.Id == friend.SmallerUserId)
-                    {
-                        dialogWithFriend = allDialogsWitMe.Find(x =>
-                            x.Participants.First().AppUserId == friend.BiggerUserId ||
-                            x.Participants.Last().AppUserId == friend.BiggerUserId);
+                var dialogWithFriend = new Dialog();
 
-                    }
-                    else
-                    {
-                        dialogWithFriend = allDialogsWitMe.Find(x =>
-                            x.Participants.First().AppUserId == friend.SmallerUserId ||
-                            x.Participants.Last().AppUserId == friend.SmallerUserId);
-                    }
-                    myDialogsWithFriends.Add(dialogWithFriend);
+                if (currentUser.Id == friend.SmallerUserId)
+                {
+                    dialogWithFriend = allDialogsWitMe.Find(x =>
+                        x.Participants.First().AppUserId == friend.BiggerUserId ||
+                        x.Participants.Last().AppUserId == friend.BiggerUserId);
+
                 }
+                else
+                {
+                    dialogWithFriend = allDialogsWitMe.Find(x =>
+                        x.Participants.First().AppUserId == friend.SmallerUserId ||
+                        x.Participants.Last().AppUserId == friend.SmallerUserId);
+                }
+
+                myDialogsWithFriends.Add(dialogWithFriend);
             }
 
             var dialogsForModel = myDialogsWithFriends.OrderByDescending(l => l.LastActivityUtc).Take(10).ToList();
@@ -85,9 +87,9 @@ namespace ChatServerSignalRWithIdentity.Controllers
 
             foreach (var dialog in dialogsForModel)
             {
-                if (dialog.Messages.Count != 0)
+                if (dialog.LastMessageId != 0)
                 {
-                    var m = dialog.Messages?.OrderByDescending(c => c.CreatedUtc).First();
+                    var m = dialog.Messages.FirstOrDefault(x => x.Id == dialog.LastMessageId);
                     lastMessages.Add(m);
                 }
             }
@@ -364,13 +366,9 @@ namespace ChatServerSignalRWithIdentity.Controllers
         public async Task<IActionResult> GetMessagesForDialog(int dialogId)
         {
             var currentUser = await _userManager.GetUserAsync(User);
+            ViewBag.CurrentUserName = currentUser.UserName;
 
-            if (User.Identity.IsAuthenticated)
-            {
-                ViewBag.CurrentUserName = currentUser.UserName;
-            }
-
-            var dialog = await _context.Dialogs.Where(i => i.Id == dialogId).Include(x => x.Messages)
+                var dialog = await _context.Dialogs.Where(i => i.Id == dialogId).Include(x => x.Messages)
                 .Include(p => p.Participants).ToArrayAsync();
           
             var messages = dialog.First().Messages.OrderByDescending(c => c.CreatedUtc).Take(10).ToList();
@@ -378,6 +376,58 @@ namespace ChatServerSignalRWithIdentity.Controllers
             return PartialView("_Messages", messages);
         }
 
+        public async Task<IActionResult> GetDialogByLogin(string login)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            ViewBag.CurrentUserName = currentUser.UserName;
+
+            var userFromDialog = _context.AspNetUsers.Where(x => x.UserName == login).ToListAsync();
+            //!!!!!!!добавить загрузку вариантов, отличающихся немного, вдруг опечатка или пользователь забыл ник друга
+
+           
+            var friend = new UserRelationship();
+            var dialogsWithFriend = new List<Dialog>();
+            var lastMessages = new List<Message>();
+
+            //проверяю друзья ли мы с ним по-прежнему
+            foreach (var user in userFromDialog.Result)
+            {
+                var values = new[] { currentUser.Id, user.Id }.OrderBy(x => x).ToArray();
+                
+                friend =  _context.UserRelationships
+                    .First(c => (c.SmallerUserId == values.First() &&
+                                 c.BiggerUserId == values.Last())
+                                && c.Status == RelationshipStatus.Friend);
+
+                if (friend != null)
+                {
+                    //ищу диалог, где participants - я и введенный ник
+                    var dialogWithFriend = _context.Dialogs
+                        .Include(l => l.LastMessageId)
+                        .Include(m => m.Messages)
+                        .Include(x => x.Participants)
+                        .Where(x => x.Participants.Any(y => y.AppUserId == currentUser.Id))
+                        .Where(q => q.Participants.Any(w => w.AppUserId == user.Id)).First();
+
+                    dialogsWithFriend.Add(dialogWithFriend);
+
+                    if (dialogWithFriend.LastMessageId != 0)
+                    {
+                        var message = dialogWithFriend.Messages.FirstOrDefault(x => x.Id == dialogWithFriend.LastMessageId);
+                        lastMessages.Add(message);
+                    }
+                }
+            }
+
+            var response = new DialogsModel
+            {
+                MessagesList = _mapper.Map<List<Message>>(lastMessages),
+                DialogsWithFriendsList = _mapper.Map<List<Dialog>>(dialogsWithFriend),
+            };
+
+            return PartialView("_Dialogs", response);
+        }
+        
         public IActionResult Privacy()
         {
             return View();

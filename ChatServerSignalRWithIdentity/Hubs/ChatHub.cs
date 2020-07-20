@@ -10,8 +10,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ChatServerSignalRWithIdentity.Hubs
 {
+    [Authorize]
     public class ChatHub : Hub
     {
+
         private readonly DialogService _dialogService;
 
         private static readonly HashSet<string> ConnectedUsers = new HashSet<string>();
@@ -23,8 +25,6 @@ namespace ChatServerSignalRWithIdentity.Hubs
             _context = context;
             _dialogService = dialogService;
         }
-
-        [Authorize]
 
         public async Task GetNewMessage(Message message)
         {

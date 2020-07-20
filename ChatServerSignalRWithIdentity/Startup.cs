@@ -42,6 +42,8 @@ namespace ChatServerSignalRWithIdentity
             IMapper mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
 
+            //services.AddSingleton<ChatHub>();
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;

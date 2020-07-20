@@ -125,13 +125,13 @@ body {
     width: 840px;
 }
 #sendButton{ 
-    width: 65px;
+    width: 68px;
     height: 38px;
     margin-left: 5px;
 }
 #messageText {
-    margin-left: 8px;
-    width: 760px;
+    margin-left: 5px;
+    width: 762px;
 }
 
 textAndButtonForSend {
