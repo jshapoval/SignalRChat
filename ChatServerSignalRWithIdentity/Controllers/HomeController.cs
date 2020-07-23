@@ -141,7 +141,7 @@ namespace ChatServerSignalRWithIdentity.Controllers
                 message.SenderId = myUser.Id;
                 message.OwnerId = anotherUser.AppUserId;
                 message.DialogId = dialog.Id;
-                //добавляю поля еще те, что ниже
+                //    добавляю поля еще те, что ниже
                 message.Text = messageModel.Text;
                 message.CreatedUtc = DateTime.UtcNow;
 
@@ -439,7 +439,7 @@ namespace ChatServerSignalRWithIdentity.Controllers
             return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
         }
 
-        //avatars
+     
 
         //public ActionResult GetAvatar()
         //{

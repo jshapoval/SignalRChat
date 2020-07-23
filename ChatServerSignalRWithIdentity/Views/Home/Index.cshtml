@@ -21,11 +21,8 @@
                     Friends
 
                     <form class="form-inline d-flex md-form form-sm active-cyan active-cyan-2 mt-2" id="searchDialog">
-
                         <input class="form-control form-control-sm ml-0 w-100" type="text" placeholder="Search"
-                               aria-label="Search" id="searchRow" onkeyup="myFunction()">
-                        @*<input type="text" id="searchRow" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">*@
-                        @*<i class="fas fa-search" aria-hidden="true" id="iSearch"></i>*@
+                               aria-label="Search" id="searchRow" onkeyup="SearchFunction()">
                     </form>
                 </div>
 
@@ -58,7 +55,7 @@
                                                 <div class="col-md-2 offset-md-2">
                                                     <div class="@containerClass" id="loginContainer">
                                                         <p class="sender @textAlign" id="senderForDialog" style="margin-bottom: 0.5rem;">@participant.AppUserName</p>
-                                                        <p class="sender @textAlign" id="messageFromDialogRow" style="font-size: 12px; overflow-x: hidden; text-overflow: ellipsis; margin-bottom: 0px; color: gray">@msg</p>
+                                                        <p class="sender @textAlign" id="messageFromDialogRow" style="font-size: 12px; overflow-x: hidden; text-overflow: ellipsis; margin-bottom: 0px; color:gray">@msg</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -90,8 +87,23 @@
 
                 <div class="row" id="rowForMessageScroll">
                     <div class="d-flex form-group" id="textAndButtonForSend">
-                        <input name="Text" class="form-control" id="messageText" />
 
+
+                        @*<form asp-action="Send"
+                                  data-ajax-begin="clearInputField" data-ajax-complete=""
+                                  data-ajax-failure="alert('Fail')" data-ajax-success="sendMessage"
+                                  data-ajax="true" data-ajax-method="POST">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="form-group">
+                                    <input name="Text" class="form-control" id="messageText" />
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" value="Send" id="submitButton" class="btn " />
+                                </div>
+                                <input type="hidden" value="@userName" name="username" />
+                            </form>*@
+
+                        <input name="Text" class="form-control" id="messageText" />
                         <button type="button" class="btn btn-outline-primary" id="sendButton">Send</button>
                     </div>
                 </div>
@@ -102,19 +114,24 @@
 
         else
         {
-            <h1 style="margin-left: ">Let's find your friend soon</h1>
+            <h1 style="margin-left: 1rem">Let's find your friend soon</h1>
         }
     </div>
 </div>
 
 
-@if (User.Identity.IsAuthenticated)
-{
-    <script>
-        const userName = "@ViewBag.CurrentUserName";
-    </script>
-}
 
+@*<script>
+        function sendMessage() {
+            let text = messagesQueue.shift() || "";
+            if (text.trim() === "") return;
+
+            let when = new Date();
+            let message = new Message(username, text);
+            sendMessageToHub(message);
+        }
+
+    </script>*@
 
 
 <script>
@@ -124,6 +141,7 @@
         if (_dialogId != null) {
             $(".row.friend").css('background', '#d5dce3');
             $(".row.friend").css('color', 'black');
+
         }
 
         var dialogId = $(this).attr('data-dialog-id');
@@ -139,38 +157,51 @@
 
 
 <script>
-    $("#sendButton").off().on('click',
-        function () {
-            let text = document.getElementById("messageText").value;
-            let textForMessage = document.getElementById('messageText');
-            $.post("/home/send/", { text: text, dialogId: _dialogId }, function () {
-                $("#viewPlaceHolder").load("/home/getmessagesfordialog", { dialogId: _dialogId });
-            }
-            );
-            textForMessage.value = "";
-        });
+    const hubConnection = new signalR.HubConnectionBuilder()
+        .withUrl("/ChatHub")
+        .build();
+
+    hubConnection.on("SendSignalGetMessage", function (message) {
+        $("#viewPlaceHolder").load("/home/getmessagesfordialog", { dialogId: _dialogId });
+
+    });
+
+    document.getElementById("sendButton").addEventListener("click", function (e) {
+        let message = document.getElementById("messageText").value;
+        hubConnection.invoke("SendMessage", message, _dialogId);
+    });
+
+    hubConnection.start();
 </script>
 
 
-
-
 @*<script>
-        $("#viewPlaceHolder").onload = toBottom;
-        function toBottom() {
-            $("#viewPlaceHolder").scrollTo(0, document.body.scrollHeight);
-        }
+        $("#sendButton").off().on('click',
+            function () {
+                let text = document.getElementById("messageText").value;
+                let textForMessage = document.getElementById('messageText');
+                $.post("home/send/", { text: text, dialogId: _dialogId }, function () {
+                        $("#viewPlaceHolder").load("/home/getmessagesfordialog", { dialogId: _dialogId });
+                    }
+                );
+                textForMessage.value = "";
+            });
     </script>*@
 
 
-@*SCROLL DIALOG
-        <script>
-        $("#messagesBar").animate({ scrollTop: $("#messagesBar").height() }, 'slow');
+
+
+@if (User.Identity.IsAuthenticated)
+{
+    <script>
+        const userName = "@ViewBag.CurrentUserName";
     </script>
+}
 
 
-@*SEARCH DIALOG*@
+
 <script>
-    function myFunction() {
+    function SearchFunction() {
         var input, filter, ul, li, a, i, txtValue;
         input = document.getElementById("searchRow");
         filter = input.value.toUpperCase();
@@ -189,15 +220,24 @@
 </script>
 
 
-@*METHOD FROM HUB*@
-<script>
-    ChatHub.client.getnewmessage = function (model) {
-        alert("Name: " + model.name + ". Order: " + model.order);
-    };
-</script>
+
+@*<script>
+        $("#viewPlaceHolder").onload = toBottom;
+        function toBottom() {
+            $("#viewPlaceHolder").scrollTo(0, document.body.scrollHeight);
+        }
+    </script>*@
+
+
+@*SCROLL DIALOG
+        <script>
+        $("#messagesBar").animate({ scrollTop: $("#messagesBar").height() }, 'slow');
+    </script>
+*@
 
 <script src="~/lib/signalr/signalr.min.js"></script>
 <script src="~/lib/jquery/dist/jquery.unobtrusive-ajax.min.js"></script>
 <script src="~/js/chat.js"></script>
 <script src="~/js/signalrReqHandler.js"></script>
+<script src="~/lib/signalr/signalr.js"></script>
 @*<script src = "testme.js" language="javascript" type="text/javascript"></script>*@

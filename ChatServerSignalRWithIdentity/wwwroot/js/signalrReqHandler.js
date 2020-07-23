@@ -1,14 +1,14 @@
-﻿var connection = new signalR.HubConnectionBuilder()
-    .withUrl('/Home/Index')
-    .build();
+﻿//var connection = new signalR.HubConnectionBuilder()
+//    .withUrl('/Home/Index')
+//    .build();
 
-connection.on('receiveMessageToPublicChat', addMessageToChat);
+//connection.on('receiveMessageToPublicChat', addMessageToChat);
 
-connection.start()
-    .catch(error => {
-        console.error(error.message);
-    });
+//connection.start()
+//    .catch(error => {
+//        console.error(error.message);
+//    });
 
-function sendMessageToPublicChatToHub(message) {
-    connection.invoke('sendMessageToPublicChat', message);
-}
+//function sendMessageToPublicChatToHub(message) {
+//    connection.invoke('sendMessageToPublicChat', message);
+//}

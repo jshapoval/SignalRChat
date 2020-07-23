@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+using Microsoft.AspNetCore.Razor.Language;
 
 
 namespace ChatServerSignalRWithIdentity
@@ -86,9 +87,16 @@ namespace ChatServerSignalRWithIdentity
             app.UseCookiePolicy();
 
             app.UseAuthentication();
-            app.UseSignalR(route =>
+
+            //app.UseSignalR(route =>
+            //{
+            //    route.MapHub<ChatHub>("/Home/Index");
+            //});
+
+            //в вкр так
+            app.UseSignalR(routes =>
             {
-                route.MapHub<ChatHub>("/Home/Index");
+                routes.MapHub<ChatHub>("/ChatHub");
             });
 
             app.UseMvc(routes =>
