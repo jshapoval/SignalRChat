@@ -52,18 +52,21 @@ namespace ChatServerSignalRWithIdentity
             });
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-              
-                    Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true).AddDefaultUI()
-                .AddEntityFrameworkStores<ApplicationDbContext>();//AddDefaultUI(UIFramework.Bootstrap4)   AddIdentityUI();
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddDefaultUI()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+            //AddDefaultUI(UIFramework.Bootstrap4)   AddIdentityUI();
             //
+
+            services.AddScoped<DialogService>();
 
             services.AddMvc(options => options.EnableEndpointRouting = false);
             // MvcOptions.EnableEndpointRouting = false;
             //services.AddControllersWithViews();
             //services.AddRazorPages();
-            services.AddSignalR();
+            services.AddSignalR(o => o.EnableDetailedErrors = true);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);//Version_2_1
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();

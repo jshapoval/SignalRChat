@@ -119,6 +119,10 @@
     </div>
 </div>
 
+<script src="~/lib/signalr/signalr.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.unobtrusive-ajax.min.js"></script>
+@*<script src="~/js/chat.js"></script>*@
+<script src="~/js/signalrReqHandler.js"></script>
 
 
 @*<script>
@@ -161,14 +165,14 @@
         .withUrl("/ChatHub")
         .build();
 
-    hubConnection.on("SendSignalGetMessage", function (message) {
+    hubConnection.on("GetMessage", function (message) {
         $("#viewPlaceHolder").load("/home/getmessagesfordialog", { dialogId: _dialogId });
 
     });
 
     document.getElementById("sendButton").addEventListener("click", function (e) {
         let message = document.getElementById("messageText").value;
-        hubConnection.invoke("SendMessage", message, _dialogId);
+        hubConnection.invoke("SendMessage", message, parseInt(_dialogId));
     });
 
     hubConnection.start();
@@ -235,9 +239,3 @@
     </script>
 *@
 
-<script src="~/lib/signalr/signalr.min.js"></script>
-<script src="~/lib/jquery/dist/jquery.unobtrusive-ajax.min.js"></script>
-<script src="~/js/chat.js"></script>
-<script src="~/js/signalrReqHandler.js"></script>
-<script src="~/lib/signalr/signalr.js"></script>
-@*<script src = "testme.js" language="javascript" type="text/javascript"></script>*@

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ChatServerSignalRWithIdentity.Hubs
 {
-    [Authorize]
+    //[Authorize]
     public class ChatHub : Hub
     {
 
@@ -28,9 +28,13 @@ namespace ChatServerSignalRWithIdentity.Hubs
             _dialogService = dialogService;
         }
 
-       
-       //public async Task SendMessage(Message message) =>
-       //     await Clients.All.SendAsync("receiveMessage", message);
+        public override Task OnConnectedAsync()
+        {
+            return base.OnConnectedAsync();
+        }
+
+        //public async Task SendMessage(Message message) =>
+        //     await Clients.All.SendAsync("receiveMessage", message);
 
         public async Task SendMessage(string text, int dialogId)
         {
