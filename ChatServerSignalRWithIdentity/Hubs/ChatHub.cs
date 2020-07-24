@@ -33,8 +33,6 @@ namespace ChatServerSignalRWithIdentity.Hubs
             return base.OnConnectedAsync();
         }
 
-        //public async Task SendMessage(Message message) =>
-        //     await Clients.All.SendAsync("receiveMessage", message);
 
         public async Task SendMessage(string text, int dialogId)
         {
@@ -56,8 +54,7 @@ namespace ChatServerSignalRWithIdentity.Hubs
             var anotherUser = dialog.Participants.FirstOrDefault(x =>
                 !x.AppUserId.Equals(currentUser.AppUserId));
 
-          //  var message = _mapper.Map<Message>(messageModel);
-          //??????????????преобразовать ли сообщение????????????????????????????????????????????????????????????????
+        
             var message = new Message
             {
                 Text = text,
