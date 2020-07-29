@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ChatServerSignalRWithIdentity.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -27,14 +28,17 @@ namespace ChatServerSignalRWithIdentity.Controllers
         public readonly ApplicationDbContext _context;
         public readonly UserManager<AppUser> _userManager;
         protected readonly IMapper _mapper;
+        IWebHostEnvironment _appEnvironment;
 
-        public HomeController(ApplicationDbContext context, UserManager<AppUser> userManager, IMapper mapper)
+        public HomeController(ApplicationDbContext context, UserManager<AppUser> userManager, IMapper mapper, IWebHostEnvironment appEnvironment)
         {
             _context = context;
             _userManager = userManager;
             _mapper = mapper;
+            _appEnvironment = appEnvironment;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var currentUser = await _userManager.GetUserAsync(User);
@@ -84,6 +88,7 @@ namespace ChatServerSignalRWithIdentity.Controllers
             var dialogsForModel = myDialogsWithFriends.OrderByDescending(l => l.LastActivityUtc).Take(10).ToList();
 
             var lastMessages = new List<Message>();
+            var newMessagesCount = new List<int>();
 
             foreach (var dialog in dialogsForModel)
             {
@@ -104,60 +109,58 @@ namespace ChatServerSignalRWithIdentity.Controllers
             return View(response);
         }
 
-        [HttpPost("home/Send/")]
-        public async Task<IActionResult> Send(string text, int dialogId)
+        [HttpGet]
+        public async Task<IActionResult> Manage()
         {
-            if (ModelState.IsValid)
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            ViewBag.CurrentUserName = currentUser.UserName;
+
+            var response = new AppUser()
             {
-                var dialog = await _context.Dialogs
-                    .Include(x => x.Participants).Include(m => m.Messages).FirstOrDefaultAsync(x =>
-                        x.Id.Equals(dialogId));
+                UserName = currentUser.UserName,
+              //  Avatar = currentUser.Avatar,
+                PhoneNumber = currentUser.PhoneNumber,
+                Avatar = currentUser.Avatar
+            };
 
-                var myUser = await _userManager.GetUserAsync(User);
-                var anotherUser = dialog.Participants.FirstOrDefault(i => i.AppUserId != myUser.Id);
+            return View(response);
+        }
 
-                if (dialog is null)
+        [HttpPost]
+        public async Task<IActionResult> Manage(AppUserResponse model)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            ViewBag.CurrentUserName = currentUser.UserName;
+
+             currentUser.PhoneNumber = model.PhoneNumber;
+            if (model.Avatar != null)
+            {
+                byte[] imageData = null;
+                using (var binaryReader = new BinaryReader(model.Avatar.OpenReadStream()))
                 {
-                    dialog = new Dialog
-                    {
-                        LastActivityUtc = DateTime.UtcNow,
-                        Participants = new List<Participant>
-                            {new Participant {AppUserId = myUser.Id, AppUserName = myUser.UserName}, new Participant {AppUserId = anotherUser.AppUserId, AppUserName = anotherUser.AppUserId}}
-                    };
-
-                    await _context.Dialogs.AddAsync(dialog);
-                    await _context.SaveChangesAsync();
+                    imageData = binaryReader.ReadBytes((int)model.Avatar.Length);
                 }
-
-                var messageModel = new MessageModel
-                {
-                    DialogId = dialogId,
-                    UserId = myUser.Id,
-                    Text = text
-                };
-
-                var message = _mapper.Map<Message>(messageModel);
-                message.UserName = myUser.UserName;
-                message.SenderId = myUser.Id;
-                message.OwnerId = anotherUser.AppUserId;
-                message.DialogId = dialog.Id;
-                //    добавляю поля еще те, что ниже
-                message.Text = messageModel.Text;
-                message.CreatedUtc = DateTime.UtcNow;
-
-                await _context.Messages.AddAsync(message);
-                await _context.SaveChangesAsync();
-
-                dialog.LastActivityUtc = DateTime.UtcNow;
-                dialog.Messages.Add(message);
-                dialog.LastMessageId = message.Id;
-
-                await _context.SaveChangesAsync();
-
-                return Ok();
+                currentUser.MyAvatar = imageData;
             }
 
-            return Error();
+            //  var operationDetails = await _accountService.Update(currentUser);
+            //  currentUser.Avatar= new FileResponse();
+
+            await _context.SaveChangesAsync();
+
+            //return Ok();
+
+
+            var response = new AppUser()
+            {
+                UserName = currentUser.UserName,
+                PhoneNumber = currentUser.PhoneNumber,
+                Avatar = currentUser.Avatar
+            };
+
+            return View(response);
         }
 
         public async Task<IActionResult> Searching(string username)
@@ -205,11 +208,8 @@ namespace ChatServerSignalRWithIdentity.Controllers
             
             var anotherUser = await _context.AspNetUsers.FindAsync(anotherUserId);
 
-            // добавляем в друзья без требования ответного подтверждения, т.е. статус отношений устанавливаем у юсера и создаем диалог
-
             var values = new[] { currentUser.Id, anotherUserId }.OrderBy(x => x).ToArray();
 
-            //ПРОВЕРКА НА СУЩЕСТВОВАНИЕ ОТНОШЕНИЙ, ВДРУГ Я РАЗБЛОЧИДА ПОЛЬЗОВАТЕЛЯ И ХОЧУ ДОБАВИТЬ В ДРУЗЬЯ
             var relationship = _context.UserRelationships.FirstOrDefault(i =>
                 i.SmallerUserId==values.First() &&
                 i.BiggerUserId == values.Last());
@@ -222,12 +222,6 @@ namespace ChatServerSignalRWithIdentity.Controllers
 
                 dialog = _context.Dialogs.Include(x => x.Participants).Where(x => x.Participants.Any(y => y.AppUserId == currentUser.Id))
                    .Where(q => q.Participants.Any(w => w.AppUserId == anotherUserId)).First();
-
-                ////
-                //(n.Participants.First().AppUserId == currentUser.Id) &&
-                //    (n.Participants.Last().AppUserId == anotherUserId) ||
-                //    (n.Participants.First().AppUserId == anotherUserId) &&
-                //    (n.Participants.Last().AppUserId == currentUser.Id)).First();
             }
 
             else
@@ -248,14 +242,9 @@ namespace ChatServerSignalRWithIdentity.Controllers
                 dialog.LastActivityUtc = DateTime.UtcNow;
             }
 
-            //////await _context.Entry(anotherUser).Collection(x => x.Relationships).LoadAsync();
-            //////anotherUser.Relationships.Add(new UserRelationship() { BigUserId = values.Last(), SmallUserId = values.First(), Id = String.Concat(values.Last(), values.First()), Status = RelationshipStatus.Friend });
-            //////не надо ли второму пользователю добавлять этот же диалог и статус???????????????????
-
             await _context.Dialogs.AddAsync(dialog);
             await _context.SaveChangesAsync();
 
-            //  return Ok();\
             return View(dialog);
         }
 
@@ -266,8 +255,6 @@ namespace ChatServerSignalRWithIdentity.Controllers
 
             ViewBag.CurrentUserName = currentUser.UserName;
             
-            //статус отношений меняю на чужака у юсера, с диалогом наверное ничего не делаю, допустим в индексе перестает предлагаться друг с этим ником
-
             var anotherUser = _context.AspNetUsers.ToList().Find(i => i.Id == anotherUserId);
             var values = new[] { currentUser.Id, anotherUserId }.OrderBy(x => x).ToArray();
 
@@ -282,7 +269,6 @@ namespace ChatServerSignalRWithIdentity.Controllers
            
             await _context.SaveChangesAsync();
 
-            //  return View("Searching");
             return Ok();
         }
 
@@ -305,6 +291,7 @@ namespace ChatServerSignalRWithIdentity.Controllers
                 {
                     userForBlock.Status = RelationshipStatus.SmallBlockBigger;
                 }
+
                 else
                 {
                     userForBlock.Status = RelationshipStatus.BigBlockSmaller;
@@ -362,7 +349,6 @@ namespace ChatServerSignalRWithIdentity.Controllers
             return Ok();
         }
 
-        //[HttpGet("home/GetMessagesForDialog/{dialogId}")]
         public async Task<IActionResult> GetMessagesForDialog(int dialogId)
         {
             var currentUser = await _userManager.GetUserAsync(User);
@@ -372,62 +358,69 @@ namespace ChatServerSignalRWithIdentity.Controllers
                 .Include(p => p.Participants).ToArrayAsync();
           
             var messages = dialog.First().Messages.OrderByDescending(c => c.CreatedUtc).Take(10).ToList();
-           
-            return PartialView("_Messages", messages);
-        }
-
-        public async Task<IActionResult> GetDialogByLogin(string login)
-        {
-            var currentUser = await _userManager.GetUserAsync(User);
-            ViewBag.CurrentUserName = currentUser.UserName;
-
-            var userFromDialog = _context.AspNetUsers.Where(x => x.UserName == login).ToListAsync();
-            //!!!!!!!добавить загрузку вариантов, отличающихся немного, вдруг опечатка или пользователь забыл ник друга
-
-           
-            var friend = new UserRelationship();
-            var dialogsWithFriend = new List<Dialog>();
-            var lastMessages = new List<Message>();
-
-            //проверяю друзья ли мы с ним по-прежнему
-            foreach (var user in userFromDialog.Result)
+            foreach (var message in messages)
             {
-                var values = new[] { currentUser.Id, user.Id }.OrderBy(x => x).ToArray();
-                
-                friend =  _context.UserRelationships
-                    .First(c => (c.SmallerUserId == values.First() &&
-                                 c.BiggerUserId == values.Last())
-                                && c.Status == RelationshipStatus.Friend);
-
-                if (friend != null)
+                if (message.OwnerId==currentUser.Id)
                 {
-                    //ищу диалог, где participants - я и введенный ник
-                    var dialogWithFriend = _context.Dialogs
-                        .Include(l => l.LastMessageId)
-                        .Include(m => m.Messages)
-                        .Include(x => x.Participants)
-                        .Where(x => x.Participants.Any(y => y.AppUserId == currentUser.Id))
-                        .Where(q => q.Participants.Any(w => w.AppUserId == user.Id)).First();
-
-                    dialogsWithFriend.Add(dialogWithFriend);
-
-                    if (dialogWithFriend.LastMessageId != 0)
-                    {
-                        var message = dialogWithFriend.Messages.FirstOrDefault(x => x.Id == dialogWithFriend.LastMessageId);
-                        lastMessages.Add(message);
-                    }
+                    message.Read = true;
                 }
             }
 
-            var response = new DialogsModel
-            {
-                MessagesList = _mapper.Map<List<Message>>(lastMessages),
-                DialogsWithFriendsList = _mapper.Map<List<Dialog>>(dialogsWithFriend),
-            };
+            await _context.SaveChangesAsync();
 
-            return PartialView("_Dialogs", response);
+            return PartialView("_Messages", messages);
         }
-        
+
+        [HttpPost]
+        //public async Task<IActionResult> SaveInfo(string phoneNumber, string avatarPath, IFormFile upload, [FromServices] IHostingEnvironment env)
+        public async Task<IActionResult> SaveInfo(AppUserResponse au)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            ViewBag.CurrentUserName = currentUser.UserName;
+
+           // currentUser.PhoneNumber = phoneNumber;
+            if (au.Avatar != null)
+            {
+                byte[] imageData = null;
+                using (var binaryReader = new BinaryReader(au.Avatar.OpenReadStream()))
+                {
+                    imageData = binaryReader.ReadBytes((int)au.Avatar.Length);
+                }
+                currentUser.MyAvatar = imageData;
+            }
+
+            //if (upload != null && upload.Length > 0)
+            //{
+            //    using (var reader = new BinaryReader(upload.OpenReadStream()))
+            //    {
+            //     //   currentUser.HasAvatar = true;
+            //        currentUser.Avatar = new Avatar()
+            //        {
+            //            FileName = Path.GetFileName(upload.FileName),
+            //            ContentType = upload.ContentType,
+            //            Content = reader.ReadBytes((int)upload.Length)
+            //        };
+            //    }
+            //}
+            //else
+            //{
+            //    var webRoot = env.WebRootPath;
+            //    var p = Path.Combine(webRoot, "Images/pf.jpg");
+            //    currentUser.Avatar = new Avatar()
+            //    {
+            //        FileName = "pf.jpg",
+            //        ContentType = "image/jpeg",
+            //        Content = System.IO.File.ReadAllBytes(p)
+            //    };
+            //}
+            //  var operationDetails = await _accountService.Update(currentUser);
+            //  currentUser.Avatar= new FileResponse();
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
         public IActionResult Privacy()
         {
             return View();
@@ -439,54 +432,5 @@ namespace ChatServerSignalRWithIdentity.Controllers
             return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
         }
 
-     
-
-        //public ActionResult GetAvatar()
-        //{
-        //    return View(_context.Avatars);
-        //}
-
-        //public ActionResult CreateAvatar()
-        //{
-        //    return View();
-        //}
-
-        //[HttpPost]
-        //public ActionResult CreateAvatar(Avatar pic, HttpPostedFileBase uploadImage)
-        //{
-        //    if (ModelState.IsValid && uploadImage != null)
-        //    {
-        //        byte[] imageData = null;
-        //        // считываем переданный файл в массив байтов
-        //        using (var binaryReader = new BinaryReader(uploadImage.InputStream))
-        //        {
-        //            imageData = binaryReader.ReadBytes(uploadImage.ContentLength);
-        //        }
-        //        // установка массива байтов
-        //        pic.Image = imageData;
-
-        //        _context.Avatars.Add(pic);
-        //        _context.SaveChanges();
-
-        //        return RedirectToAction("GetAvatar");
-        //    }
-        //    return View(pic);
-        //}
-
-
-        public async Task<IActionResult> CreatePrivate(Message message, AppUserResponse to)
-        {
-            if (ModelState.IsValid)
-            {
-                message.UserName = User.Identity.Name;
-                var sender = await _userManager.GetUserAsync(User);
-                message.SenderId = sender.Id;
-                await _context.Messages.AddAsync(message);
-                await _context.SaveChangesAsync();
-                return Ok();
-            }
-
-            return Error();
-        }
     }
 }

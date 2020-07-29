@@ -13,6 +13,5 @@ namespace ChatServerSignalRWithIdentity.Models
         public string CallerId { get; set; }
         public List<Dialog> DialogsWithFriendsList { get; set; }
         public List<Message> MessagesList { get; set; }
-
     }
 }

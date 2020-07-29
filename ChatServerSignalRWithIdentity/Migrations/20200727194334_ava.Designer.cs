@@ -4,14 +4,16 @@ using ChatServerSignalRWithIdentity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ChatServerSignalRWithIdentity.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200727194334_ava")]
+    partial class ava
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,23 +28,11 @@ namespace ChatServerSignalRWithIdentity.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<byte[]>("Content")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("ContentType")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("Default")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FileName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid?>("OriginalId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("OwnerId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("SquareId")
                         .HasColumnType("uniqueidentifier");
@@ -117,6 +107,24 @@ namespace ChatServerSignalRWithIdentity.Migrations
                     b.HasIndex("OwnerId");
 
                     b.ToTable("Files");
+                });
+
+            modelBuilder.Entity("ChatServerSignalRWithIdentity.Models.FileModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FilesForAvatar");
                 });
 
             modelBuilder.Entity("ChatServerSignalRWithIdentity.Models.Message", b =>
@@ -414,7 +422,7 @@ namespace ChatServerSignalRWithIdentity.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<byte[]>("MyAvatar")
+                    b.Property<byte[]>("UserAvatar")
                         .HasColumnType("varbinary(max)");
 
                     b.HasIndex("AvatarId");

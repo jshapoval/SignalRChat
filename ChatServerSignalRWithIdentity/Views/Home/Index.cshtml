@@ -43,10 +43,12 @@
                                     var participant = dialog.Participants.FirstOrDefault(i => i.AppUserId != userId);
 
                                     var msg = dialog.Messages.Count != 0 ? (dialog.Messages.OrderBy(t => t.CreatedUtc).Last().Text) : ("");
+                                    var newMessages = dialog.Messages.Where(x => x.Read == false).Where(s=>s.OwnerId==userId).ToList().Count;
 
                                     <li>
                                         <div class="border-bottom" id="bordersForDialog" style="border-color: #bab6b6">
                                             <div class="row friend" data-dialog-id="@dialog.Id" data-friend-id="@participant.AppUserId" id="dialogRow">
+                                                
                                                 <div class="col-md-1 offset-md-1">
                                                     <img src="Images/pf.jpg"
                                                          width="50" height="50" alt="avatar" class="rounded-circle">
@@ -55,14 +57,20 @@
                                                 <div class="col-md-2 offset-md-2">
                                                     <div class="@containerClass" id="loginContainer">
                                                         <p class="sender @textAlign" id="senderForDialog" style="margin-bottom: 0.5rem;">@participant.AppUserName</p>
-                                                        <p class="sender @textAlign" id="messageFromDialogRow" style="font-size: 12px; overflow-x: hidden; text-overflow: ellipsis; margin-bottom: 0px; color:gray">@msg</p>
+                                                        <p class="sender @textAlign" id="messageFromDialogRow" style="font-size: 12px; overflow-x: hidden; text-overflow: ellipsis; margin-bottom: 0px; color: gray">@msg</p>
                                                     </div>
+                                                </div>
+
+                                                <div class="col-md-1 offset-md-3">
+                                                    @if (newMessages != 0)
+                                                    {
+                                                        <span class="badge badge-pill badge-primary" style="margin-top: 30px; margin-left: 20px; font-size: 10px">@newMessages</span>
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
                                     </li>
-
-                                }
+                                 }
                             </ul>
                         </div>
                     </div>
@@ -87,22 +95,6 @@
 
                 <div class="row" id="rowForMessageScroll">
                     <div class="d-flex form-group" id="textAndButtonForSend">
-
-
-                        @*<form asp-action="Send"
-                                  data-ajax-begin="clearInputField" data-ajax-complete=""
-                                  data-ajax-failure="alert('Fail')" data-ajax-success="sendMessage"
-                                  data-ajax="true" data-ajax-method="POST">
-                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                <div class="form-group">
-                                    <input name="Text" class="form-control" id="messageText" />
-                                </div>
-                                <div class="form-group">
-                                    <input type="submit" value="Send" id="submitButton" class="btn " />
-                                </div>
-                                <input type="hidden" value="@userName" name="username" />
-                            </form>*@
-
                         <input name="Text" class="form-control" id="messageText" />
                         <button type="button" class="btn btn-outline-primary" id="sendButton">Send</button>
                     </div>
@@ -121,21 +113,6 @@
 
 <script src="~/lib/signalr/signalr.min.js"></script>
 <script src="~/lib/jquery/dist/jquery.unobtrusive-ajax.min.js"></script>
-@*<script src="~/js/chat.js"></script>*@
-<script src="~/js/signalrReqHandler.js"></script>
-
-
-@*<script>
-        function sendMessage() {
-            let text = messagesQueue.shift() || "";
-            if (text.trim() === "") return;
-
-            let when = new Date();
-            let message = new Message(username, text);
-            sendMessageToHub(message);
-        }
-
-    </script>*@
 
 
 <script>
@@ -167,31 +144,19 @@
 
     hubConnection.on("GetMessage", function (message) {
         $("#viewPlaceHolder").load("/home/getmessagesfordialog", { dialogId: _dialogId });
+    //    $.get("/home/index/", function( data ) {});
 
     });
 
     document.getElementById("sendButton").addEventListener("click", function (e) {
         let message = document.getElementById("messageText").value;
+        let inputText = document.getElementById('messageText');
         hubConnection.invoke("SendMessage", message, parseInt(_dialogId));
+        inputText.value = "";
     });
 
     hubConnection.start();
 </script>
-
-
-@*<script>
-        $("#sendButton").off().on('click',
-            function () {
-                let text = document.getElementById("messageText").value;
-                let textForMessage = document.getElementById('messageText');
-                $.post("home/send/", { text: text, dialogId: _dialogId }, function () {
-                        $("#viewPlaceHolder").load("/home/getmessagesfordialog", { dialogId: _dialogId });
-                    }
-                );
-                textForMessage.value = "";
-            });
-    </script>*@
-
 
 
 

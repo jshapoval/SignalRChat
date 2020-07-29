@@ -20,7 +20,7 @@
             </form>
         </div>
 
-        <div class="col-md-6" style="margin-left: 40px;"></div>
+        <div class="col-md-6" style="margin-left: 10px;"></div>
 
         @if (this.Context.Request.Path.Value != "/home/index" && this.Context.Request.Path.Value != "/" && this.Context.Request.Path.Value != "/home")
         {
@@ -34,7 +34,8 @@
         }
 
         <li class="nav-item">
-            <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" id="hello">Hello @User.Identity.Name!</a>
+            <a href="/home/manage" style="color: White; font-size: 1rem; margin-top: 0.5rem"id="hello">Hello @User.Identity.Name!</a>
+            @*<a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" id="hello">Hello @User.Identity.Name!</a>*@
         </li>
         <li class="nav-item" id="logout">
             <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new {area = ""})">

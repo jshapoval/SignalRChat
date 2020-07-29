@@ -9,8 +9,12 @@ namespace ChatServerSignalRWithIdentity.Models
     {
         public int Id { get; set; }
         public bool Default { get; set; }
-
-    //    public byte[] Image { get; set; }
+        //
+        public string FileName { get; set; }
+        public string ContentType { get; set; }
+        public byte[] Content { get; set; }
+        public string OwnerId { get; set; }
+        //    public byte[] Image { get; set; }
 
         public File Original { get; set; }
         public File Square { get; set; }

@@ -63,9 +63,11 @@ body {
 #indexMain {
     margin-bottom: 0px;
     height: 690px;
+    width: 100%;
 }
 #mainContainer {
     height: 690px;
+    width: 100%;
     padding-top: 0.2rem;
     padding-right: 5px;
     padding-bottom: 0rem;
@@ -148,7 +150,7 @@ textAndButtonForSend {
 }
 #loginContainer {
     padding-left: 0px;
-    width: 170px;
+    width: 160px;
 }
 #logout {
     padding-left: 15px;

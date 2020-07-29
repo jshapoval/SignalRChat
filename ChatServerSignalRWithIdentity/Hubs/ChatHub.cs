@@ -59,10 +59,11 @@ namespace ChatServerSignalRWithIdentity.Hubs
             {
                 Text = text,
                 CreatedUtc = DateTime.UtcNow,
-                OwnerId = currentUserId,
-                SenderId = anotherUser.AppUserId,
+                OwnerId = anotherUser.AppUserId,
+                SenderId = currentUserId,
                 DialogId = dialogId,
-                UserName = myUser.UserName
+                UserName = myUser.UserName,
+                Read = false
             };
 
             await _dialogService.WriteMessage(dialog, message);
