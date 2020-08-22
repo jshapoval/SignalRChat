@@ -142,9 +142,38 @@
         .withUrl("/ChatHub")
         .build();
 
-    hubConnection.on("GetMessage", function (message) {
-        $("#viewPlaceHolder").load("/home/getmessagesfordialog", { dialogId: _dialogId });
-    //    $.get("/home/index/", function( data ) {});
+    hubConnection.on("GetMessage", function (dId ) {
+        $("#viewPlaceHolder").load("/home/getmessagesfordialog", { dialogId: dId });
+
+        $.ajax({
+            type: "GET",
+            url: "/home/GetNewMessageForIndex/" + dId,
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+
+                var ul = document.getElementById("myUL");
+                var li = ul.getElementsByTagName("li");
+
+                for (i = 0; i < li.length; i++) {
+
+                    var p = li[i].getElementsByTagName("p")[0];
+                    var name = p.textContent || p.innerText;
+
+                    if (name === result[0].senderUserName || name === result[0].ownerUserName ) {
+                        //то обновить текст сообщения и количество непрочитанных
+                        var oldMsg = li[i].getElementsByTagName("p")[1];
+                        oldMsg.textContent = result[0].text;
+                        oldMsg.innerText = result[0].text;
+                    }
+                }
+            },
+            error: function (err) {
+
+                console.log(err);
+                alert('error');
+            }
+        });  
 
     });
 

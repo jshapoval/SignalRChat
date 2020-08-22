@@ -119,7 +119,6 @@ namespace ChatServerSignalRWithIdentity.Controllers
             var response = new AppUser()
             {
                 UserName = currentUser.UserName,
-              //  Avatar = currentUser.Avatar,
                 PhoneNumber = currentUser.PhoneNumber,
                 Avatar = currentUser.Avatar
             };
@@ -261,7 +260,7 @@ namespace ChatServerSignalRWithIdentity.Controllers
             var relationship = _context.UserRelationships.FirstOrDefault(i =>
                 i.SmallerUserId == values.First() &&
                 i.BiggerUserId == values.Last());
-
+            
             if (relationship != null)
             {
                 relationship.Status = RelationshipStatus.Stranger;
@@ -369,6 +368,27 @@ namespace ChatServerSignalRWithIdentity.Controllers
             await _context.SaveChangesAsync();
 
             return PartialView("_Messages", messages);
+        }
+
+        [HttpGet("home/GetNewMessageForIndex/{dialogId}")]
+        public JsonResult GetNewMessageForIndex(int dialogId)
+        {
+            var currentUser =  _userManager.GetUserAsync(User);
+            ViewBag.CurrentUserName = currentUser.Result.UserName;
+
+            var dialog =  _context.Dialogs
+                .Include(x => x.Participants).Include(m => m.Messages).FirstOrDefaultAsync(x =>
+                    x.Id.Equals(dialogId)).Result;
+
+            var messages = dialog.Messages.OrderByDescending(c => c.CreatedUtc).Where(x => x.Read == false).ToList();
+
+            if (messages is null)
+            {
+                messages = dialog.Messages.OrderByDescending(c => c.CreatedUtc).Take(1).ToList();
+            }
+
+            //Получила ЛИСТ С НЕПРОЧИТАННЫМИ(чтобы взять их количество для отображения) СООБЩЕНИЯМИ ИЛИ ПРОСТО ПОСЛЕДНИМ
+            return Json(messages);
         }
 
         [HttpPost]

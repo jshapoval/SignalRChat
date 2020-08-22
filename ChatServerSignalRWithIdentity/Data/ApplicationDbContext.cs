@@ -29,7 +29,7 @@ namespace ChatServerSignalRWithIdentity.Data
             : base(options)
         {
         }
-
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -38,6 +38,7 @@ namespace ChatServerSignalRWithIdentity.Data
                 .HasOne<AppUser>(a => a.Sender)
                 .WithMany(d => d.Messages)
                 .HasForeignKey(d => d.SenderId);
+
 
             builder.Entity<Participant>().HasKey("DialogId", "AppUserId");
 

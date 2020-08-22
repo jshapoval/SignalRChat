@@ -62,8 +62,9 @@ namespace ChatServerSignalRWithIdentity.Hubs
                 OwnerId = anotherUser.AppUserId,
                 SenderId = currentUserId,
                 DialogId = dialogId,
-                UserName = myUser.UserName,
-                Read = false
+                SenderUserName = myUser.UserName,
+                Read = false,
+                OwnerUserName = anotherUser.AppUserName
             };
 
             await _dialogService.WriteMessage(dialog, message);
@@ -77,7 +78,10 @@ namespace ChatServerSignalRWithIdentity.Hubs
             await _context.SaveChangesAsync();
 
             await Clients.Users(dialog.Participants.Select(x => x.AppUserId).ToList())
-                .SendAsync("GetMessage");
+                .SendAsync("GetMessage",dialogId);
         }
+
+        
+
     }
 }

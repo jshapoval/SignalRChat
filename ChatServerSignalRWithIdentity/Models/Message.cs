@@ -12,7 +12,9 @@ namespace ChatServerSignalRWithIdentity.Models
         public int DialogId { get; set; }
         public string SenderId { get; set; }
         public string OwnerId { get; set; }
-        public string UserName { get; set; }
+        public string SenderUserName { get; set; }
+
+        public string OwnerUserName { get; set; }
         [Required]
         public string Text { get; set;}
         public DateTime CreatedUtc { get; set; }

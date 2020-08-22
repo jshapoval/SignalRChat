@@ -22,7 +22,7 @@
         @foreach (var message in Model.OrderBy(m => m.CreatedUtc))
         {
             string containerClass, timePosition, textAlign, contcolor, offset;
-            if (userName == message.UserName)
+            if (userName == message.SenderUserName)
             {
                 containerClass = "container darker";
                 timePosition = "time-left text-light";
