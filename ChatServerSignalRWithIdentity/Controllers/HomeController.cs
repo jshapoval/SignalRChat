@@ -149,14 +149,11 @@ namespace ChatServerSignalRWithIdentity.Controllers
 
             await _context.SaveChangesAsync();
 
-            //return Ok();
-
-
             var response = new AppUser()
             {
                 UserName = currentUser.UserName,
                 PhoneNumber = currentUser.PhoneNumber,
-                Avatar = currentUser.Avatar
+                MyAvatar = currentUser.MyAvatar
             };
 
             return View(response);
@@ -235,8 +232,8 @@ namespace ChatServerSignalRWithIdentity.Controllers
 
                 dialog.Participants = new List<Participant>
                 {
-                    new Participant {AppUserId = currentUser.Id, AppUserName = currentUser.UserName},
-                    new Participant {AppUserId = anotherUser.Id, AppUserName = anotherUser.UserName}
+                    new Participant {AppUserId = currentUser.Id, AppUserName = currentUser.UserName, MyAvatar = currentUser.MyAvatar},
+                    new Participant {AppUserId = anotherUser.Id, AppUserName = anotherUser.UserName, MyAvatar = anotherUser.MyAvatar}
                 };
                 dialog.LastActivityUtc = DateTime.UtcNow;
             }

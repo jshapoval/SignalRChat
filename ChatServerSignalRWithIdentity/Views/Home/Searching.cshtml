@@ -35,7 +35,8 @@
                 <div class="row" style="margin-left: 1rem">
 
                     <div class="col-md-2">
-                        <img src="/Images/pf.jpg" width="50" height="50" alt="avatar" class="rounded-circle" />
+                        @Html.Raw("<img width='50' height='50' alt='avatar' class='rounded-circle' src=\"data:image/jpeg;base64,"
+                                  + Convert.ToBase64String(@Model.OtherUser.MyAvatar) + "\" />")
                     </div>
 
 

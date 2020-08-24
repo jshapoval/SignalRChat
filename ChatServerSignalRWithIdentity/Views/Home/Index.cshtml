@@ -50,8 +50,19 @@
                                             <div class="row friend" data-dialog-id="@dialog.Id" data-friend-id="@participant.AppUserId" id="dialogRow">
                                                 
                                                 <div class="col-md-1 offset-md-1">
-                                                    <img src="Images/pf.jpg"
-                                                         width="50" height="50" alt="avatar" class="rounded-circle">
+
+                                                    @if (@participant.MyAvatar == null)
+                                                    {
+                                                        <img src="Images/pf.jpg" width="50" height="50" alt="avatar" class="rounded-circle">
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.Raw("<img width='50' height='50' alt='avatar' class='rounded-circle' src=\"data:image/jpeg;base64,"
+                                                                  + Convert.ToBase64String(@participant.MyAvatar) + "\" />")
+                                                        @*<img src="@participant.MyAvatar"
+                                                             width="50" height="50" alt="avatar" class="rounded-circle">*@
+                                                    }
+
                                                 </div>
 
                                                 <div class="col-md-2 offset-md-2">

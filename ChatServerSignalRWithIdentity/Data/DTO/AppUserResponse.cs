@@ -14,6 +14,8 @@ namespace ChatServerSignalRWithIdentity.Data.DTO
         public string Login { get; set; }
         public string ImageId { get; set; }
         public string PhoneNumber { get; set; }
+        public byte[] MyAvatar { get; set; }
+
 
         public IFormFile Avatar { get; set; }
         //    public virtual ICollection<UserRelationship> Relationships { get; set; }

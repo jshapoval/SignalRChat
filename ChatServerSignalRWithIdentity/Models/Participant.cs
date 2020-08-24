@@ -12,7 +12,7 @@ namespace ChatServerSignalRWithIdentity.Models
         public int DialogId { get; set; }
         public string AppUserId { get; set; }
         public string AppUserName { get; set; }
-
+        public byte[] MyAvatar { get; set; }
         public virtual AppUser AppUser { get; set; }
     }
 }
