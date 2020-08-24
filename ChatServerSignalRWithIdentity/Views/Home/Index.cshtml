@@ -57,7 +57,7 @@
                                                 <div class="col-md-2 offset-md-2">
                                                     <div class="@containerClass" id="loginContainer">
                                                         <p class="sender @textAlign" id="senderForDialog" style="margin-bottom: 0.5rem;">@participant.AppUserName</p>
-                                                        <p class="sender @textAlign" id="messageFromDialogRow" style="font-size: 12px; overflow-x: hidden; text-overflow: ellipsis; margin-bottom: 0px; color: gray">@msg</p>
+                                                        <p class="sender @textAlign" id="messageFromDialogRow" style="font-size: 12px; overflow-x: hidden; text-overflow: ellipsis; margin-bottom: 0px; color: #4972a6;">@msg</p>
                                                     </div>
                                                 </div>
 
@@ -129,9 +129,11 @@
         var userId = $(this).attr('data-friend-id');
         $(this).css('background', '#4972a6');
         $(this).css('color', 'white');
+
         $("#viewPlaceHolder").load("/home/getmessagesfordialog", { dialogId: dialogId });
 
         _dialogId = dialogId;
+
     });
 </script>
 
@@ -143,7 +145,7 @@
         .build();
 
     hubConnection.on("GetMessage", function (dId ) {
-        $("#viewPlaceHolder").load("/home/getmessagesfordialog", { dialogId: dId });
+        $("#viewPlaceHolder").load("/home/getmessagesfordialog", { dialogId: _dialogId });
 
         $.ajax({
             type: "GET",

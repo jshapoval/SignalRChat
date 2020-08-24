@@ -141,6 +141,10 @@ textAndButtonForSend {
     margin-left: 0px;
     width: 690px;
 }
+/*
+#messageFromDialogRow {
+    color: #4972a6;
+}*/
 
 #senderForDialog {
     font-size: 15px;
