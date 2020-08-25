@@ -378,15 +378,39 @@ namespace ChatServerSignalRWithIdentity.Controllers
                     x.Id.Equals(dialogId)).Result;
 
             var messages = dialog.Messages.OrderByDescending(c => c.CreatedUtc).Where(x => x.Read == false).ToList();
+            var result = new List<Message>();
 
             if (messages is null)
             {
-                messages = dialog.Messages.OrderByDescending(c => c.CreatedUtc).Take(1).ToList();
+                result = dialog.Messages.OrderByDescending(c => c.CreatedUtc).Take(1).ToList();
             }
-
+            else
+            {
+                foreach (var message in messages)
+                {
+                    result.Add(message);
+                }
+            }
             //Получила ЛИСТ С НЕПРОЧИТАННЫМИ(чтобы взять их количество для отображения) СООБЩЕНИЯМИ ИЛИ ПРОСТО ПОСЛЕДНИМ
-            return Json(messages);
+            return Json(result);
         }
+
+        [HttpGet("home/GetLastMessage/{dialogId}")]
+        public JsonResult GetLastMessage(int dialogId)
+        {
+            var currentUser = _userManager.GetUserAsync(User);
+            ViewBag.CurrentUserName = currentUser.Result.UserName;
+
+            var dialog = _context.Dialogs
+                .Include(x => x.Participants).Include(m => m.Messages).FirstOrDefaultAsync(x =>
+                    x.Id.Equals(dialogId)).Result;
+
+            var message = dialog.Messages.OrderByDescending(c => c.CreatedUtc).Take(1).ToList();
+           
+            //Получила ЛИСТ С НЕПРОЧИТАННЫМИ(чтобы взять их количество для отображения) СООБЩЕНИЯМИ ИЛИ ПРОСТО ПОСЛЕДНИМ
+            return Json(message);
+        }
+
 
         [HttpPost]
         //public async Task<IActionResult> SaveInfo(string phoneNumber, string avatarPath, IFormFile upload, [FromServices] IHostingEnvironment env)

@@ -59,16 +59,15 @@
                                                     {
                                                         @Html.Raw("<img width='50' height='50' alt='avatar' class='rounded-circle' src=\"data:image/jpeg;base64,"
                                                                   + Convert.ToBase64String(@participant.MyAvatar) + "\" />")
-                                                        @*<img src="@participant.MyAvatar"
-                                                             width="50" height="50" alt="avatar" class="rounded-circle">*@
+                                                       
                                                     }
 
                                                 </div>
 
-                                                <div class="col-md-2 offset-md-2">
+                                                <div class="col-md-2 offset-md-2"> 
                                                     <div class="@containerClass" id="loginContainer">
                                                         <p class="sender @textAlign" id="senderForDialog" style="margin-bottom: 0.5rem;">@participant.AppUserName</p>
-                                                        <p class="sender @textAlign" id="messageFromDialogRow" style="font-size: 12px; overflow-x: hidden; text-overflow: ellipsis; margin-bottom: 0px; color: #4972a6;">@msg</p>
+                                                        <p class="sender @textAlign" id="messageFromDialogRow" style="font-size: 12px; overflow-x: hidden; text-overflow: ellipsis; margin-bottom: 0px; color: gray;">@msg</p>
                                                     </div>
                                                 </div>
 
@@ -133,7 +132,6 @@
         if (_dialogId != null) {
             $(".row.friend").css('background', '#d5dce3');
             $(".row.friend").css('color', 'black');
-
         }
 
         var dialogId = $(this).attr('data-dialog-id');
@@ -142,6 +140,8 @@
         $(this).css('color', 'white');
 
         $("#viewPlaceHolder").load("/home/getmessagesfordialog", { dialogId: dialogId });
+
+
 
         _dialogId = dialogId;
 
@@ -160,7 +160,7 @@
 
         $.ajax({
             type: "GET",
-            url: "/home/GetNewMessageForIndex/" + dId,
+            url: "/home/GetLastMessage/" + dId,
             contentType: "application/json;charset=utf-8",
             dataType: "json",
             success: function (result) {
@@ -178,6 +178,15 @@
                         var oldMsg = li[i].getElementsByTagName("p")[1];
                         oldMsg.textContent = result[0].text;
                         oldMsg.innerText = result[0].text;
+                    }
+
+
+                    if (name === result[0].senderUserName) {
+                        var nm = li[i].getElementsByTagName("span")[0];
+                        if (nm!=null) {
+                            console.log(parseInt(nm.textContent));
+                            nm.textContent = parseInt(nm.textContent)+1;
+                        }
                     }
                 }
             },
