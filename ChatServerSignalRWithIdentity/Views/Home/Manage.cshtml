@@ -1,13 +1,9 @@
-﻿@*@using Microsoft.AspNetCore.Identity
-    @using ChatServerSignalRWithIdentity.Models
-    @inject SignInManager<AppUser> SignInManager
-    @inject UserManager<AppUser> UserManager*@
+﻿
 
 @using MongoDB.Bson
 @model ChatServerSignalRWithIdentity.Models.AppUser
 
 @{
-    //ViewData["Title"] = "Add avatar";
     var avatar = Model.MyAvatar;
 }
    
@@ -123,7 +119,6 @@
         function () {
             let pn = document.getElementById("Input_PhoneNumber").value;
             let ap = document.getElementById("avatarPath").value;
-            //upload:, env:
             $.post("/home/saveInfo/", {
                 phoneNumber: pn, avatarPath: ap
             });

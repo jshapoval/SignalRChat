@@ -18,11 +18,6 @@ namespace ChatServerSignalRWithIdentity.Data.DTO
 
 
         public IFormFile Avatar { get; set; }
-        //    public virtual ICollection<UserRelationship> Relationships { get; set; }
-
-        //public AppUserResponse()
-        //{
-        //    // Relationships = new HashSet<RelationshipStatus>();
-        //}
+       
     }
 }

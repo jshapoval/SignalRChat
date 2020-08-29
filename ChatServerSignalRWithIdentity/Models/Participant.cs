@@ -8,7 +8,6 @@ namespace ChatServerSignalRWithIdentity.Models
 {
     public class Participant
     {
-      //  public int  Id { get; set; }
         public int DialogId { get; set; }
         public string AppUserId { get; set; }
         public string AppUserName { get; set; }

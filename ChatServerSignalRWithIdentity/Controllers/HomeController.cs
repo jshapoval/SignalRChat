@@ -45,7 +45,6 @@ namespace ChatServerSignalRWithIdentity.Controllers
 
             ViewBag.CurrentUserName = currentUser.UserName;
 
-             //получаю все диалоги с моим участием
              var allDialogsWitMe = await _context
                  .Dialogs
                  .Include(x => x.Participants)
@@ -54,7 +53,6 @@ namespace ChatServerSignalRWithIdentity.Controllers
                  .OrderByDescending(x => x.LastActivityUtc)
                  .ToListAsync();
 
-            //получаю список своих друзей
             var myFriends = await _context.UserRelationships
                 .Where(c => (c.SmallerUserId == currentUser.Id ||
                              c.BiggerUserId == currentUser.Id)
@@ -62,7 +60,6 @@ namespace ChatServerSignalRWithIdentity.Controllers
 
             
             var myDialogsWithFriends = new List<Dialog>();
-            //в модель передать последние 10 диалогов с ДРУЗЬЯМИ (т.е. для каждого друга ищу диалог с собой, добавляю в список выводимых диалогов)
          
             foreach (var friend in myFriends)
             {
@@ -144,8 +141,7 @@ namespace ChatServerSignalRWithIdentity.Controllers
                 currentUser.MyAvatar = imageData;
             }
 
-            //  var operationDetails = await _accountService.Update(currentUser);
-            //  currentUser.Avatar= new FileResponse();
+            
 
             await _context.SaveChangesAsync();
 
@@ -391,7 +387,6 @@ namespace ChatServerSignalRWithIdentity.Controllers
                     result.Add(message);
                 }
             }
-            //Получила ЛИСТ С НЕПРОЧИТАННЫМИ(чтобы взять их количество для отображения) СООБЩЕНИЯМИ ИЛИ ПРОСТО ПОСЛЕДНИМ
             return Json(result);
         }
 
@@ -407,7 +402,6 @@ namespace ChatServerSignalRWithIdentity.Controllers
 
             var message = dialog.Messages.OrderByDescending(c => c.CreatedUtc).Take(1).ToList();
            
-            //Получила ЛИСТ С НЕПРОЧИТАННЫМИ(чтобы взять их количество для отображения) СООБЩЕНИЯМИ ИЛИ ПРОСТО ПОСЛЕДНИМ
             return Json(message);
         }
 
@@ -431,32 +425,7 @@ namespace ChatServerSignalRWithIdentity.Controllers
                 currentUser.MyAvatar = imageData;
             }
 
-            //if (upload != null && upload.Length > 0)
-            //{
-            //    using (var reader = new BinaryReader(upload.OpenReadStream()))
-            //    {
-            //     //   currentUser.HasAvatar = true;
-            //        currentUser.Avatar = new Avatar()
-            //        {
-            //            FileName = Path.GetFileName(upload.FileName),
-            //            ContentType = upload.ContentType,
-            //            Content = reader.ReadBytes((int)upload.Length)
-            //        };
-            //    }
-            //}
-            //else
-            //{
-            //    var webRoot = env.WebRootPath;
-            //    var p = Path.Combine(webRoot, "Images/pf.jpg");
-            //    currentUser.Avatar = new Avatar()
-            //    {
-            //        FileName = "pf.jpg",
-            //        ContentType = "image/jpeg",
-            //        Content = System.IO.File.ReadAllBytes(p)
-            //    };
-            //}
-            //  var operationDetails = await _accountService.Update(currentUser);
-            //  currentUser.Avatar= new FileResponse();
+         
 
             await _context.SaveChangesAsync();
 

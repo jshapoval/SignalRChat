@@ -1,7 +1,6 @@
 ﻿@using ChatServerSignalRWithIdentity.Data
 @using Microsoft.AspNetCore.Identity
 @model ChatServerSignalRWithIdentity.Models.Couple
-@*поменяй на респонс*@
 
 @{
     ViewData["Title"] = "Home Page";
@@ -19,7 +18,6 @@
         @if (Model.OtherUser.Id != null)
         {
             var values = new[] { myUserId, otherUserId }.OrderBy(x => x).ToArray();
-           // var relationship = await  _context.UserRelationships.Where(f => (f.BiggerUserId == values.Last()) && f.SmallerUserId == values.First()).ToListAsync();
 
             string containerClass, timePosition, textAlign, contcolor, offset;
 
@@ -35,8 +33,17 @@
                 <div class="row" style="margin-left: 1rem">
 
                     <div class="col-md-2">
-                        @Html.Raw("<img width='50' height='50' alt='avatar' class='rounded-circle' src=\"data:image/jpeg;base64,"
-                                  + Convert.ToBase64String(@Model.OtherUser.MyAvatar) + "\" />")
+                        @if (@Model.OtherUser.MyAvatar == null)
+                        {
+                            <img src="Images/pf.jpg" width="50" height="50" alt="avatar" class="rounded-circle">
+                        }
+                        else
+                        {
+                            @Html.Raw("<img width='50' height='50' alt='avatar' class='rounded-circle' src=\"data:image/jpeg;base64,"
+                                      + Convert.ToBase64String(@Model.OtherUser.MyAvatar) + "\" />")
+                                                       
+                        }
+                      
                     </div>
 
 

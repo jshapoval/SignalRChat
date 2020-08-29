@@ -71,15 +71,7 @@ namespace ChatServerSignalRWithIdentity
             await db.Entry(dialog).Collection(i => i.Messages).LoadAsync();
             return dialog.Messages;
         }
-        //public async Task<List<Dialog>> GetByUserId(string userId, int count, int offset, bool last)
-        //{
-        //    return await db.Dialogs
-
-        //        .Include(x => x.Participants).ThenInclude(x => x.Sender).Where(d => d.Participants.Any(p => p.AppUserId == userId))
-        //        .Skip(offset)
-        //        .Take(count)
-        //        .ToListAsync();//.Where(x => x.Status != DialogStatus.Canceled),  .ThenInclude(x => x.Avatar)
-        //}
+     
         public async Task WriteMessage(Dialog dialog, Message message)
         {
             if (dialog != null)
